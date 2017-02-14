@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+∑ * Copyright (C) 2014 The Android Open Source Project
  * Copyright (C) 2023-2024 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,6 +51,8 @@ import com.android.dialer.util.SettingsUtil;
 
 public class SoundSettingsFragment extends PreferenceFragmentCompat
     implements Preference.OnPreferenceChangeListener {
+
+  private static final String BUTTON_SMART_MUTE_KEY = "button_smart_mute";
 
   private static final int NO_DTMF_TONE = 0;
   private static final int PLAY_DTMF_TONE = 1;
@@ -91,6 +94,7 @@ public class SoundSettingsFragment extends PreferenceFragmentCompat
   private SwitchPreferenceCompat playDtmfTone;
   private ListPreference dtmfToneLength;
   private SwitchPreferenceCompat enableDndInCall;
+  private SwitchPreferenceCompat smartMute;
 
   private NotificationManager notificationManager;
 
@@ -117,6 +121,7 @@ public class SoundSettingsFragment extends PreferenceFragmentCompat
     playDtmfTone = findPreference(context.getString(R.string.play_dtmf_preference_key));
     dtmfToneLength = findPreference(context.getString(R.string.dtmf_tone_length_preference_key));
     enableDndInCall = findPreference("incall_enable_dnd");
+    smartMute = findPreference(BUTTON_SMART_MUTE_KEY);
 
     if (hasVibrator()) {
       vibrateWhenRinging.setOnPreferenceChangeListener(this);
@@ -157,6 +162,7 @@ public class SoundSettingsFragment extends PreferenceFragmentCompat
       getPreferenceScreen().removePreference(dtmfToneLength);
       dtmfToneLength = null;
     }
+    smartMute.setOnPreferenceChangeListener(this);
     notificationManager = context.getSystemService(NotificationManager.class);
   }
 
@@ -229,6 +235,14 @@ public class SoundSettingsFragment extends PreferenceFragmentCompat
         // At this time, it is unknown whether the user granted the permission
         return false;
       }
+    } else if (preference == smartMute) {
+      boolean newValue = (Boolean) objValue;
+      final SharedPreferences prefs =
+              getPreferenceManager().getDefaultSharedPreferences(getContext());
+      prefs
+        .edit()
+        .putBoolean(BUTTON_SMART_MUTE_KEY, newValue)
+        .apply();
     }
     return true;
   }
