@@ -1,0 +1,6 @@
+[gerrit]
+host=review.blissroms.com
+port=29418
+project=platform_packages_apps_Dialer.git
+defaultbranch=p9.0
+
