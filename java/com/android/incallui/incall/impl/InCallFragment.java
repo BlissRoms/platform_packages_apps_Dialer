@@ -19,6 +19,8 @@ package com.android.incallui.incall.impl;
 import android.Manifest.permission;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -53,6 +55,7 @@ import com.android.incallui.audioroute.AudioRouteSelectorDialogFragment;
 import com.android.incallui.audioroute.AudioRouteSelectorDialogFragment.AudioRouteSelectorPresenter;
 import com.android.incallui.contactgrid.ContactGridManager;
 import com.android.incallui.hold.OnHoldFragment;
+import com.android.incallui.incall.impl.ButtonController.CallRecordButtonController;
 import com.android.incallui.incall.impl.ButtonController.SpeakerButtonController;
 import com.android.incallui.incall.impl.InCallButtonGridFragment.OnButtonGridCreatedListener;
 import com.android.incallui.incall.protocol.InCallButtonIds;
@@ -93,6 +96,9 @@ public class InCallFragment extends Fragment
   private int phoneType;
   private boolean stateRestored;
 
+  private static final int REQUEST_CODE_CALL_RECORD_PERMISSION = 1000;
+  private boolean isFullscreenPhoto = false;
+
   // Add animation to educate users. If a call has enriched calling attachments then we'll
   // initially show the attachment page. After a delay seconds we'll animate to the button grid.
   private final Handler handler = new Handler();
@@ -114,6 +120,7 @@ public class InCallFragment extends Fragment
         || id == InCallButtonIds.BUTTON_ADD_CALL
         || id == InCallButtonIds.BUTTON_MERGE
         || id == InCallButtonIds.BUTTON_MANAGE_VOICE_CONFERENCE
+	|| id == InCallButtonIds.BUTTON_RECORD_CALL
         || id == InCallButtonIds.BUTTON_SWAP_SIM;
   }
 
@@ -144,10 +151,17 @@ public class InCallFragment extends Fragment
       @Nullable ViewGroup viewGroup,
       @Nullable Bundle bundle) {
     LogUtil.i("InCallFragment.onCreateView", null);
+
+    SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    isFullscreenPhoto = mPrefs.getBoolean("fullscreen_caller_photo", false);
+
+    int res = R.layout.frag_incall_voice;
+    if(isFullscreenPhoto){
+      res = R.layout.frag_incall_voice_fullscreen_photo;
+    }
+
     // Bypass to avoid StrictModeResourceMismatchViolation
-    final View view =
-        StrictModeUtils.bypass(
-            () -> layoutInflater.inflate(R.layout.frag_incall_voice, viewGroup, false));
+    final View view = layoutInflater.inflate(res, viewGroup, false);
     contactGridManager =
         new ContactGridManager(
             view,
@@ -179,8 +193,6 @@ public class InCallFragment extends Fragment
     }
     // TODO(a bug): Change to use corresponding phone type used for current call.
     phoneType = getContext().getSystemService(TelephonyManager.class).getPhoneType();
-    View space = view.findViewById(R.id.navigation_bar_background);
-    space.getLayoutParams().height = ViewUtil.getNavigationBarHeight(getContext());
 
     return view;
   }
@@ -214,6 +226,7 @@ public class InCallFragment extends Fragment
         new ButtonController.ManageConferenceButtonController(inCallScreenDelegate));
     buttonControllers.add(
         new ButtonController.SwitchToSecondaryButtonController(inCallScreenDelegate));
+    buttonControllers.add(new ButtonController.CallRecordButtonController(inCallButtonUiDelegate));
 
     inCallScreenDelegate.onInCallScreenDelegateInit(this);
     inCallScreenDelegate.onInCallScreenReady();
@@ -441,6 +454,39 @@ public class InCallFragment extends Fragment
     ((SpeakerButtonController) getButtonController(InCallButtonIds.BUTTON_AUDIO))
         .setAudioState(audioState);
     getButtonController(InCallButtonIds.BUTTON_MUTE).setChecked(audioState.isMuted());
+  }
+
+  @Override
+  public void setCallRecordingState(boolean isRecording) {
+    ((CallRecordButtonController) getButtonController(InCallButtonIds.BUTTON_RECORD_CALL))
+        .setRecordingState(isRecording);
+  }
+
+  @Override
+  public void setCallRecordingDuration(long durationMs) {
+    ((CallRecordButtonController) getButtonController(InCallButtonIds.BUTTON_RECORD_CALL))
+        .setRecordingDuration(durationMs);
+  }
+
+  @Override
+  public void requestCallRecordingPermissions(String[] permissions) {
+    requestPermissions(permissions, REQUEST_CODE_CALL_RECORD_PERMISSION);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode,
+      @NonNull String[] permissions, @NonNull int[] grantResults) {
+    if (requestCode == REQUEST_CODE_CALL_RECORD_PERMISSION) {
+      boolean allGranted = grantResults.length > 0;
+      for (int i = 0; i < grantResults.length; i++) {
+        allGranted &= grantResults[i] == PackageManager.PERMISSION_GRANTED;
+      }
+      if (allGranted) {
+        inCallButtonUiDelegate.callRecordClicked(true);
+      }
+    } else {
+      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
   }
 
   @Override
