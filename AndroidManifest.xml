@@ -107,6 +107,7 @@
   <application
     android:hardwareAccelerated="true"
     android:icon="@mipmap/ic_launcher_dialer"
+    android:roundIcon="@mipmap/ic_launcher_dialer_round"
     android:label="@string/applicationLabel"
     android:name="com.android.dialer.binary.aosp.AospDialerApplication"
     android:supportsRtl="true"
