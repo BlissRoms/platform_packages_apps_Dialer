@@ -1373,7 +1373,8 @@ public class InCallPresenter implements CallList.Listener, AudioModeProvider.Aud
                 PhoneAccountSuggestion.class);
 
     if (phoneAccountSuggestions == null || phoneAccountSuggestions.isEmpty()) {
-      String scheme = call.getHandle().getScheme();
+      Uri callHandle = call.getHandle();
+      String scheme = callHandle == null ? "null" : callHandle.getScheme();
       final String errorMsg =
           PhoneAccount.SCHEME_TEL.equals(scheme)
               ? context.getString(R.string.callFailed_simError)
