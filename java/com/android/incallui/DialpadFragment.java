@@ -181,8 +181,11 @@ public class DialpadFragment extends BaseFragment<DialpadPresenter, DialpadUi>
       dialpadKey = (DialpadKeyButton) dialpadView.findViewById(buttonIds[i]);
       ((TextView) dialpadKey.findViewById(R.id.dialpad_key_number)).setTextColor(textColor);
     }
-
-    currentTextColor = textColor;
+    if (currentTextColor != ffffff) {
+        currentTextColor = textColor;
+    } else {
+        currentTextColor = (R.color.dialpad_number_text_color);
+    }
   }
 
   @Override

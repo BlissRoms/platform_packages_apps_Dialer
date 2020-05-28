@@ -55,6 +55,7 @@
   </style>
 
   <style name="InCallDialpad" parent="Dialpad.Themed">
+    <item name="dialpad_number_text_color">@*android:color/accent_device_default_dark</item>
     <item name="dialpad_key_number_margin_bottom">
       @dimen/incall_dialpad_key_number_margin_bottom
     </item>
