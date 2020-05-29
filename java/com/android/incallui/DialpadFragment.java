@@ -37,6 +37,7 @@ import com.android.dialer.dialpadview.DialpadKeyButton.OnPressedListener;
 import com.android.dialer.dialpadview.DialpadView;
 import com.android.dialer.logging.DialerImpression;
 import com.android.dialer.logging.Logger;
+import com.android.dialer.theme.base.ThemeComponent;
 import com.android.incallui.DialpadPresenter.DialpadUi;
 import com.android.incallui.baseui.BaseFragment;
 import java.util.Map;
@@ -170,7 +171,7 @@ public class DialpadFragment extends BaseFragment<DialpadPresenter, DialpadUi>
   }
 
   public void updateColors() {
-    int textColor = InCallPresenter.getInstance().getThemeColorManager().getPrimaryColor();
+    int textColor = ThemeComponent.get(getContext()).theme().getColorAccent();
 
     if (currentTextColor == textColor) {
       return;
