@@ -26,4 +26,10 @@
         android:title="@string/call_recording_format"
         app:iconSpaceReserved="false" />
 
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="@string/call_recording_autostart_key"
+        android:title="@string/call_recording_autostart_title"
+        app:iconSpaceReserved="false" />
+
 </PreferenceScreen>

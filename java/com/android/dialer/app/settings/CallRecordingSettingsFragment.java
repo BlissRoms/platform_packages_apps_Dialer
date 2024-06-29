@@ -15,18 +15,63 @@
  */
 package com.android.dialer.app.settings;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.dialer.R;
 
 /** Dedicated call recording settings (audio format), split out from the sound settings screen. */
-public class CallRecordingSettingsFragment extends PreferenceFragmentCompat {
+public class CallRecordingSettingsFragment extends PreferenceFragmentCompat
+    implements Preference.OnPreferenceChangeListener {
+
+  private static final String KEY_RECORDING_WARNING_PRESENTED = "recording_warning_presented";
+
+  private SwitchPreferenceCompat callRecordAutostart;
 
   @Override
   public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
     addPreferencesFromResource(R.xml.call_recording_settings);
+
+    Context context = getActivity();
+    callRecordAutostart = findPreference(context.getString(R.string.call_recording_autostart_key));
+    if (callRecordAutostart != null) {
+      callRecordAutostart.setOnPreferenceChangeListener(this);
+    }
+  }
+
+  @Override
+  public boolean onPreferenceChange(Preference preference, Object objValue) {
+    if (preference == callRecordAutostart) {
+      boolean newValue = (Boolean) objValue;
+      if (newValue) {
+        final SharedPreferences prefs =
+                getPreferenceManager().getDefaultSharedPreferences(getContext());
+        boolean warningPresented = prefs.getBoolean(KEY_RECORDING_WARNING_PRESENTED, false);
+        if (!warningPresented) {
+          new AlertDialog.Builder(getActivity())
+                  .setTitle(R.string.recording_warning_title)
+                  .setMessage(R.string.recording_warning_text)
+                  .setPositiveButton(R.string.onscreenCallRecordText, (dialog, which) -> {
+                    prefs.edit()
+                            .putBoolean(KEY_RECORDING_WARNING_PRESENTED, true)
+                            .apply();
+                    callRecordAutostart.setChecked(true);
+                  })
+                  .setNegativeButton(android.R.string.cancel, null)
+                  .show();
+
+          // At this time, it is unknown whether the user granted the permission
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
