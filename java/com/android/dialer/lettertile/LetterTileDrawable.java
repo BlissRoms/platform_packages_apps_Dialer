@@ -333,7 +333,7 @@ public class LetterTileDrawable extends Drawable {
   private LetterTileDrawable setLetterAndColorFromContactDetails(
       final String displayName, final String identifier) {
     if (displayName != null && !TextUtils.isEmpty(displayName)
-            && Character.isLetter(displayName.charAt(0))) {
+        && Character.isLetter(displayName.charAt(0))) {
       letter = Character.toUpperCase(displayName.charAt(0));
     } else {
       letter = null;
