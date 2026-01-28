@@ -33,6 +33,7 @@ import androidx.annotation.StringRes;
 
 import com.android.dialer.R;
 import com.android.dialer.common.Assert;
+import com.android.dialer.common.LogUtil;
 import com.android.incallui.incall.impl.CheckableLabeledButton.OnCheckedChangeListener;
 import com.android.incallui.incall.protocol.InCallButtonIds;
 import com.android.incallui.incall.protocol.InCallButtonUiDelegate;
@@ -507,6 +508,10 @@ interface ButtonController {
 
     public void setRecordingDuration(long durationMs) {
       recordingSeconds = (durationMs + 500) / 1000;
+      if (!isChecked) {
+        LogUtil.w("CallRecordButtonController.setRecordingDuration", "isChecked was false, enabling button");
+        isChecked = true;
+      }
       setButton(button);
     }
 
