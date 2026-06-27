@@ -22,6 +22,17 @@
   <!-- Background color for spam. This color must match one of background_colors_dark in call UI. -->
   <color name="incall_call_spam_background_color">@color/blocked_contact_background</color>
 
-  <color name="incall_button_background_color">@android:color/system_neutral1_50</color>
+  <!-- Active (checked) circle button fill: Material You primary container -->
+  <color name="incall_button_background_color">@android:color/system_accent1_200</color>
   <color name="incall_end_call_icon_color">@android:color/white</color>
+
+  <!-- Idle (unchecked) circle button fill and icon: Material You neutral surface -->
+  <color name="incall_button_bg_idle">@android:color/system_neutral2_100</color>
+  <color name="incall_button_icon_idle">@android:color/system_neutral1_900</color>
+
+  <!-- In-call control tray (the rounded card holding the call buttons) -->
+  <color name="incall_button_tray_background_color">#FFFFFFFF</color>
+  <!-- Wide hang-up pill: red -->
+  <color name="incall_end_call_pill_color">@color/dialer_end_call_button_color</color>
+  <color name="incall_end_call_pill_icon_color">#FFFFFFFF</color>
 </resources>

@@ -24,4 +24,16 @@
   <dimen name="two_button_bottom_padding">24dp</dimen>
   <dimen name="answer_swipe_dead_zone_sides">50dp</dimen>
   <dimen name="answer_swipe_dead_zone_top">150dp</dimen>
+
+  <!-- Horizontal swipe-to-answer puck method -->
+  <dimen name="swipe_horizontal_track_height">88dp</dimen>
+  <dimen name="swipe_horizontal_track_corner">44dp</dimen>
+  <dimen name="swipe_horizontal_track_margin_horizontal">24dp</dimen>
+  <dimen name="swipe_horizontal_track_margin_bottom">24dp</dimen>
+  <dimen name="swipe_horizontal_puck_width">104dp</dimen>
+  <dimen name="swipe_horizontal_puck_height">72dp</dimen>
+  <dimen name="swipe_horizontal_puck_corner">36dp</dimen>
+  <dimen name="swipe_horizontal_puck_elevation">3dp</dimen>
+  <dimen name="swipe_horizontal_edge_padding">8dp</dimen>
+  <dimen name="swipe_horizontal_label_margin">36dp</dimen>
 </resources>

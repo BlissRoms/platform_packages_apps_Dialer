@@ -160,20 +160,10 @@ public class TopRow {
     }
   }
 
-  private static Spannable getColoredConnectionLabel(Context context, PrimaryCallState state) {
+  private static CharSequence getColoredConnectionLabel(Context context, PrimaryCallState state) {
     Assert.isNotNull(state.connectionLabel());
-    String label =
-        context.getString(R.string.contact_grid_incoming_via_template, state.connectionLabel());
-    Spannable spannable = new SpannableString(label);
-
-    int start = label.indexOf(state.connectionLabel());
-    int end = start + state.connectionLabel().length();
-    spannable.setSpan(
-        new ForegroundColorSpan(state.primaryColor()),
-        start,
-        end,
-        Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-    return spannable;
+    // Not tinted with the call accent: it is unreadable on the flat light background.
+    return context.getString(R.string.contact_grid_incoming_via_template, state.connectionLabel());
   }
 
   private static CharSequence getLabelForIncomingVideo(

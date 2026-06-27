@@ -46,7 +46,6 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.dialer.R;
-import com.android.dialer.callrecord.impl.CallRecorderService;
 import com.android.dialer.util.SettingsUtil;
 
 public class SoundSettingsFragment extends PreferenceFragmentCompat
@@ -157,10 +156,6 @@ public class SoundSettingsFragment extends PreferenceFragmentCompat
     } else {
       getPreferenceScreen().removePreference(dtmfToneLength);
       dtmfToneLength = null;
-    }
-    if (!CallRecorderService.isEnabled(getActivity())) {
-      getPreferenceScreen().removePreference(
-              findPreference(context.getString(R.string.call_recording_category_key)));
     }
     notificationManager = context.getSystemService(NotificationManager.class);
   }

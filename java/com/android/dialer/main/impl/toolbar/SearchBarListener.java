@@ -40,6 +40,9 @@ public interface SearchBarListener {
   /** Called when a toolbar menu item is clicked. */
   boolean onMenuItemClicked(MenuItem menuItem);
 
+  /** Called when the profile avatar next to the search bar is clicked. */
+  default void onProfileButtonClicked() {}
+
   /** Called when {@link Activity#onPause()} is called. */
   void onActivityPause();
 

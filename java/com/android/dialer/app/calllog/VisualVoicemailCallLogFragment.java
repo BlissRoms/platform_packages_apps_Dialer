@@ -61,6 +61,11 @@ public class VisualVoicemailCallLogFragment extends CallLogFragment {
   }
 
   @Override
+  protected boolean showFilterChips() {
+    return false;
+  }
+
+  @Override
   protected VoicemailPlaybackPresenter getVoicemailPlaybackPresenter() {
     return voicemailPlaybackPresenter;
   }

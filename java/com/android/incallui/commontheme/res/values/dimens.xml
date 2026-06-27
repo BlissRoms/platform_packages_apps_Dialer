@@ -18,4 +18,14 @@
 <resources>
   <dimen name="incall_end_call_button_size">48dp</dimen>
   <dimen name="incall_call_button_elevation">8dp</dimen>
+
+  <!-- Wide hang-up pill -->
+  <dimen name="incall_end_call_pill_height">72dp</dimen>
+  <dimen name="incall_end_call_pill_corner">36dp</dimen>
+  <dimen name="incall_end_call_pill_margin_horizontal">24dp</dimen>
+
+  <!-- Rounded control tray -->
+  <dimen name="incall_button_tray_corner">32dp</dimen>
+  <dimen name="incall_button_tray_padding">16dp</dimen>
+  <dimen name="incall_button_tray_margin_horizontal">12dp</dimen>
 </resources>

@@ -18,4 +18,29 @@
   <color name="nav_item">@android:color/system_neutral1_300</color>
   <color name="dialer_pill_color">@android:color/system_accent2_700</color>
   <color name="dialer_fab_icon_color">#ff000000</color>
+
+  <!-- Recents redesign tokens (dark). -->
+  <color name="recents_fab_bg">@android:color/system_accent1_200</color>
+  <color name="recents_fab_icon">@android:color/system_accent1_900</color>
+  <color name="recents_search_bar_bg">#2D2D2D</color>
+  <color name="recents_searchbar_icon">#BCBCBC</color>
+  <color name="recents_day_header_text">#BCBCBC</color>
+  <color name="recents_card_bg">#2D2D2D</color>
+  <color name="recents_name_text">#FFFFFF</color>
+  <color name="recents_subtitle_text">#BCBCBC</color>
+  <color name="recents_callback_icon">#BCBCBC</color>
+  <color name="recents_nav_bar_bg">#CC2D2D2D</color>
+  <color name="recents_nav_glass_tint">#592D2D2D</color>
+  <color name="recents_nav_selected_pill">@android:color/system_accent1_200</color>
+  <color name="recents_nav_selected_text">@android:color/system_accent1_900</color>
+  <color name="recents_nav_unselected_text">#BCBCBC</color>
+  <color name="recents_screen_bg">#111111</color>
+  <color name="recents_chip_selected_bg">@android:color/system_accent1_200</color>
+  <color name="recents_chip_selected_text">@android:color/system_accent1_900</color>
+  <color name="recents_chip_unselected_bg">#2D2D2D</color>
+  <color name="recents_chip_border">#393939</color>
+  <color name="recents_chip_unselected_text">#BCBCBC</color>
+
+  <!-- Redesigned settings screen (dark). -->
+  <color name="settings_row_divider">#3C3C3C</color>
 </resources>

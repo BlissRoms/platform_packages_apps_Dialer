@@ -8,7 +8,7 @@ package com.android.dialer.glidephotomanager;
 
 // Contains information associated with a number, which is used to create the
 // photo.
-// Next ID: 13
+// Next ID: 14
 message PhotoInfo {
   // The display name of the number.
   optional string name = 1;
@@ -46,4 +46,8 @@ message PhotoInfo {
 
   // Whether to show conference call icon instead of contact icon.
   optional bool is_conference = 12;
+
+  // Whether the photo should be cropped to a circle. When false the photo is
+  // left square so callers can apply their own mask (e.g. a clover shape).
+  optional bool is_circular = 13 [default = true];
 }

@@ -60,7 +60,7 @@
       android:layout_centerInParent="true"
       android:elevation="@dimen/answer_data_elevation"/>
 
-  <ImageView
+  <com.android.incallui.contactgrid.CloverImageView
       android:id="@id/answer_message_avatar"
       android:layout_width="@dimen/answer_message_avatar_size"
       android:layout_height="@dimen/answer_message_avatar_size"

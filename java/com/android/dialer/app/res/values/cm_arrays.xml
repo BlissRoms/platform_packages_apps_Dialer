@@ -26,4 +26,20 @@
         <item>"1"</item>
     </string-array>
 
+    <string-array name="on_device_voicemail_timeout_entries">
+        <item>10 seconds</item>
+        <item>15 seconds</item>
+        <item>20 seconds</item>
+        <item>30 seconds</item>
+        <item>45 seconds</item>
+    </string-array>
+
+    <string-array name="on_device_voicemail_timeout_values" translatable="false">
+        <item>"10"</item>
+        <item>"15"</item>
+        <item>"20"</item>
+        <item>"30"</item>
+        <item>"45"</item>
+    </string-array>
+
 </resources>

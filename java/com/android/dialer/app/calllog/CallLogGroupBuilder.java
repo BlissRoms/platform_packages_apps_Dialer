@@ -52,8 +52,12 @@ public class CallLogGroupBuilder {
   public static final int DAY_GROUP_TODAY = 0;
   /** Day grouping for calls which occurred yesterday. */
   public static final int DAY_GROUP_YESTERDAY = 1;
-  /** Day grouping for calls which occurred before last week. */
-  public static final int DAY_GROUP_OTHER = 2;
+  /** Day grouping for calls which occurred earlier this week (2-6 days ago). */
+  public static final int DAY_GROUP_THIS_WEEK = 2;
+  /** Day grouping for calls which occurred a week or more ago. */
+  public static final int DAY_GROUP_OTHER = 3;
+  /** Number of days (exclusive) that still counts as "this week". */
+  private static final int DAYS_IN_WEEK = 7;
   /** Instance of the time object used for time calculations. */
   private static final ZoneId TIME_ZONE = ZoneId.systemDefault();
 
@@ -218,10 +222,12 @@ public class CallLogGroupBuilder {
   private int getDayGroup(long date, long now) {
     int days = DateUtils.getDayDifference(TIME_ZONE, date, now);
 
-    if (days == 0) {
+    if (days <= 0) {
       return DAY_GROUP_TODAY;
     } else if (days == 1) {
       return DAY_GROUP_YESTERDAY;
+    } else if (days < DAYS_IN_WEEK) {
+      return DAY_GROUP_THIS_WEEK;
     } else {
       return DAY_GROUP_OTHER;
     }

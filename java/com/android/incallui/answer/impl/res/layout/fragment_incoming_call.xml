@@ -22,6 +22,7 @@
     android:id="@+id/incoming_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/incall_window_background"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:keepScreenOn="true">
@@ -91,7 +92,7 @@
           layout="@layout/incall_contactgrid_top_row"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="8dp"
+          android:layout_marginBottom="7dp"
           android:layout_marginStart="24dp"
           android:layout_marginEnd="24dp"/>
 
@@ -101,7 +102,7 @@
           android:id="@id/contactgrid_contact_name"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="8dp"
+          android:layout_marginBottom="16dp"
           android:layout_marginStart="24dp"
           android:layout_marginEnd="24dp"
           android:singleLine="true"
@@ -118,6 +119,15 @@
           android:layout_height="wrap_content"
           android:layout_marginStart="24dp"
           android:layout_marginEnd="24dp"/>
+
+      <com.android.incallui.contactgrid.CloverImageView
+          android:id="@id/contactgrid_avatar"
+          android:layout_width="@dimen/incoming_avatar_size"
+          android:layout_height="@dimen/incoming_avatar_size"
+          android:layout_marginTop="40dp"
+          android:elevation="2dp"
+          android:importantForAccessibility="no"
+          android:scaleType="centerCrop"/>
 
       <!-- TODO(a bug): textColorPrimary or textColorPrimaryInverse? -->
       <TextView
@@ -164,11 +174,41 @@
         </LinearLayout>
       </FrameLayout>
 
-      <!-- Space holder for answer method. This is used to get better scaling to make room for
-      incall_data_container on different screen size. -->
+      <LinearLayout
+          android:id="@+id/incoming_message_pill"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="24dp"
+          android:background="@drawable/message_pill_background"
+          android:clickable="true"
+          android:focusable="true"
+          android:gravity="center_vertical"
+          android:orientation="horizontal"
+          android:paddingStart="24dp"
+          android:paddingEnd="28dp"
+          android:paddingTop="14dp"
+          android:paddingBottom="14dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="12dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/quantum_ic_message_vd_theme_24"
+            android:tint="@color/answer_message_pill_foreground"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/incoming_message_label"
+            android:textColor="@color/answer_message_pill_foreground"
+            android:textSize="17sp"/>
+      </LinearLayout>
+
+      <!-- Space holder for the swipe-to-answer method at the bottom of the screen. -->
       <Space
           android:layout_width="match_parent"
-          android:layout_height="220dp"/>
+          android:layout_height="150dp"/>
 
     </LinearLayout>
   </FrameLayout>

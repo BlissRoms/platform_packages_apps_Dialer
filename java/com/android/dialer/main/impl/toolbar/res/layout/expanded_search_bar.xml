@@ -34,6 +34,18 @@
       android:src="@drawable/quantum_ic_arrow_back_vd_theme_24"
       app:tint="?colorIcon" />
 
+  <ImageView
+      android:id="@+id/search_voice_button"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_alignParentEnd="true"
+      android:layout_centerVertical="true"
+      android:scaleType="center"
+      android:background="?attr/selectableItemBackgroundBorderless"
+      android:contentDescription="@string/description_start_voice_search"
+      android:src="@drawable/quantum_ic_mic_vd_theme_24"
+      app:tint="?colorIcon" />
+
   <EditText
       android:forceDarkAllowed="false"
       android:id="@+id/search_view"
@@ -58,7 +70,7 @@
       android:id="@+id/search_clear_button"
       android:layout_width="48dp"
       android:layout_height="48dp"
-      android:layout_alignParentEnd="true"
+      android:layout_toStartOf="@+id/search_voice_button"
       android:layout_centerVertical="true"
       android:scaleType="center"
       android:background="?attr/selectableItemBackgroundBorderless"

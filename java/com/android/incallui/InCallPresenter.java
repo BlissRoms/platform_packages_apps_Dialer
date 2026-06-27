@@ -24,6 +24,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Trace;
+import android.preference.PreferenceManager;
 import android.provider.BlockedNumberContract;
 import android.telecom.Call;
 import android.telecom.Call.Details;
@@ -59,6 +60,7 @@ import com.android.incallui.answerproximitysensor.PseudoScreenState;
 import com.android.incallui.audiomode.AudioModeProvider;
 import com.android.incallui.call.CallList;
 import com.android.incallui.call.DialerCall;
+import com.android.incallui.call.OnDeviceVoicemailController;
 import com.android.incallui.call.ExternalCallList;
 import com.android.incallui.call.TelecomAdapter;
 import com.android.incallui.call.state.DialerCallState;
@@ -340,6 +342,7 @@ public class InCallPresenter implements CallList.Listener, AudioModeProvider.Aud
     this.callList.addListener(spamCallListListener);
     activeCallsListener = new ActiveCallsCallListListener(context);
     this.callList.addListener(activeCallsListener);
+    this.callList.addListener(new OnDeviceVoicemailController(context));
 
     VideoPauseController.getInstance().setUp(this);
 
@@ -516,9 +519,14 @@ public class InCallPresenter implements CallList.Listener, AudioModeProvider.Aud
 
         incomingNumber = PhoneNumberUtils.formatNumberToE164(incomingNumber, countryIso);
 
-        // Check if the number is blocked, to silence the ringer.
-        if (BlockedNumberContract.canCurrentUserBlockNumbers(context) &&
-                BlockedNumberContract.isBlocked(context, incomingNumber)) {
+        // Check if the number is blocked, to silence the ringer. Gated by the "Call blocking"
+        // toggle in the redesigned settings (SettingsRedesignFragment), defaulting to enabled.
+        boolean callBlockingEnabled =
+            PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean("settings_call_blocking", true);
+        if (callBlockingEnabled
+                && BlockedNumberContract.canCurrentUserBlockNumbers(context)
+                && BlockedNumberContract.isBlocked(context, incomingNumber)) {
           TelecomUtil.silenceRinger(context);
         }
       }

@@ -36,6 +36,14 @@
      [CHAR LIMIT=12] -->
   <string name="incall_label_mute">Mute</string>
 
+  <!-- Content description for the drag handle that expands the call control sheet to reveal more
+       options. [CHAR LIMIT=NONE] -->
+  <string name="incall_sheet_show_more">Show more call options</string>
+
+  <!-- Label for the button that expands the control sheet to reveal extra call options.
+       [CHAR LIMIT=12] -->
+  <string name="incall_label_more">More</string>
+
   <!-- Button shown during a phone call to show the dialpad.
      [CHAR LIMIT=12] -->
   <string name="incall_label_dialpad">Keypad</string>

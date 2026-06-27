@@ -33,11 +33,14 @@ import android.provider.CallLog;
 import android.provider.CallLog.Calls;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -155,6 +158,12 @@ public class CallLogFragment extends Fragment
       };
   protected CallLogModalAlertManager modalAlertManager;
   private ViewGroup modalAlertView;
+
+  private View chipFilterScroll;
+  private TextView chipAll;
+  private TextView chipMissed;
+  private TextView chipSpam;
+  private TextView chipCustomize;
 
   private final ActivityResultLauncher<String[]> permissionLauncher = registerForActivityResult(
           new ActivityResultContracts.RequestMultiplePermissions(),
@@ -312,6 +321,84 @@ public class CallLogFragment extends Fragment
     multiSelectUnSelectAllViewContent.setOnClickListener(null);
     selectUnselectAllIcon.setOnClickListener(this);
     selectUnselectAllViewText.setOnClickListener(this);
+
+    chipFilterScroll = view.findViewById(R.id.chip_filter_scroll);
+    if (showFilterChips()) {
+      setupFilterChips(view);
+    } else if (chipFilterScroll != null) {
+      chipFilterScroll.setVisibility(View.GONE);
+    }
+  }
+
+  protected boolean showFilterChips() {
+    return !isCallLogActivity;
+  }
+
+  private void setupFilterChips(View view) {
+    chipAll = view.findViewById(R.id.chip_all);
+    chipMissed = view.findViewById(R.id.chip_missed);
+    chipSpam = view.findViewById(R.id.chip_spam);
+    chipCustomize = view.findViewById(R.id.chip_customize);
+
+    chipAll.setOnClickListener(v -> {
+      selectChip(chipAll);
+      setCallTypeFilter(CallLogQueryHandler.CALL_TYPE_ALL);
+    });
+    chipMissed.setOnClickListener(v -> {
+      selectChip(chipMissed);
+      setCallTypeFilter(Calls.MISSED_TYPE);
+    });
+    chipSpam.setOnClickListener(v -> {
+      selectChip(chipSpam);
+      setCallTypeFilter(Calls.BLOCKED_TYPE);
+    });
+    chipCustomize.setOnClickListener(this::showCustomizeMenu);
+
+    if (callTypeFilter == Calls.MISSED_TYPE) {
+      selectChip(chipMissed);
+    } else if (callTypeFilter == Calls.BLOCKED_TYPE) {
+      selectChip(chipSpam);
+    } else if (callTypeFilter == CallLogQueryHandler.CALL_TYPE_ALL) {
+      selectChip(chipAll);
+    } else {
+      selectChip(chipCustomize);
+    }
+  }
+
+  private void selectChip(TextView selected) {
+    chipAll.setSelected(selected == chipAll);
+    chipMissed.setSelected(selected == chipMissed);
+    chipSpam.setSelected(selected == chipSpam);
+    chipCustomize.setSelected(selected == chipCustomize);
+  }
+
+  private void showCustomizeMenu(View anchor) {
+    PopupMenu menu = new PopupMenu(getContext(), anchor);
+    menu.getMenu().add(0, Calls.INCOMING_TYPE, 0, R.string.recents_filter_incoming);
+    menu.getMenu().add(0, Calls.OUTGOING_TYPE, 1, R.string.recents_filter_outgoing);
+    menu.getMenu().add(0, Calls.MISSED_TYPE, 2, R.string.call_log_missed_title);
+    menu.getMenu().add(0, CallLogQueryHandler.CALL_TYPE_ALL, 3, R.string.call_log_all_title);
+    menu.setOnMenuItemClickListener(this::onCustomizeMenuItemClick);
+    menu.show();
+  }
+
+  private boolean onCustomizeMenuItemClick(MenuItem item) {
+    int filter = item.getItemId();
+    selectChip(filter == CallLogQueryHandler.CALL_TYPE_ALL ? chipAll
+        : filter == Calls.MISSED_TYPE ? chipMissed : chipCustomize);
+    setCallTypeFilter(filter);
+    return true;
+  }
+
+  public void setCallTypeFilter(int filterType) {
+    if (callTypeFilter == filterType) {
+      return;
+    }
+    callTypeFilter = filterType;
+    scrollToTop = true;
+    if (adapter != null) {
+      fetchCalls();
+    }
   }
 
   protected void setupData() {

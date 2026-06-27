@@ -19,6 +19,7 @@ package com.android.dialer.voicemail.settings;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telecom.PhoneAccount;
@@ -31,6 +32,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
@@ -43,6 +45,7 @@ import com.android.voicemail.VoicemailClient;
 import com.android.voicemail.VoicemailClient.ActivationStateListener;
 import com.android.voicemail.VoicemailComponent;
 
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Optional;
@@ -84,7 +87,7 @@ public class VoicemailSettingsFragment extends PreferenceFragmentCompat
 
   @Override
   public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
-
+    getPreferenceManager().setStorageDeviceProtected();
   }
 
   @Override
@@ -168,6 +171,58 @@ public class VoicemailSettingsFragment extends PreferenceFragmentCompat
 
     voicemailChangePinPreference = findPreference(getString(R.string.voicemail_change_pin_key));
     voicemailChangePinPreference.setOrder(VMSettingOrdering.VOICEMAIL_CHANGE_PIN);
+
+    Preference locationPreference = findPreference(getString(R.string.on_device_voicemail_location_key));
+    if (locationPreference != null) {
+      locationPreference.setOnPreferenceClickListener(preference -> {
+        try {
+          Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+          intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION 
+              | Intent.FLAG_GRANT_WRITE_URI_PERMISSION 
+              | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+          startActivityForResult(intent, 1001);
+        } catch (Exception e) {
+          android.widget.Toast.makeText(getContext(), "Failed to open folder picker", android.widget.Toast.LENGTH_SHORT).show();
+        }
+        return true;
+      });
+      updateLocationPreferenceSummary(locationPreference);
+    }
+  }
+
+  private void updateLocationPreferenceSummary(Preference locationPreference) {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+    String uriString = prefs.getString("on_device_voicemail_location_uri", null);
+    if (uriString != null) {
+      locationPreference.setSummary(uriString);
+    } else {
+      File dir = new File(getContext().getFilesDir(), "voicemails");
+      locationPreference.setSummary(dir.getAbsolutePath());
+    }
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == 1001 && resultCode == android.app.Activity.RESULT_OK && data != null) {
+      android.net.Uri uri = data.getData();
+      if (uri != null) {
+        try {
+          final int takeFlags = data.getFlags()
+              & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+              | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+          getContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
+          SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+          prefs.edit().putString("on_device_voicemail_location_uri", uri.toString()).apply();
+          Preference locationPreference = findPreference(getString(R.string.on_device_voicemail_location_key));
+          if (locationPreference != null) {
+            updateLocationPreferenceSummary(locationPreference);
+          }
+        } catch (Exception e) {
+          android.util.Log.e("VoicemailSettings", "Failed to take persistable URI permission", e);
+        }
+      }
+    }
   }
 
   /** Removes vvm settings since the carrier setup is not supported by Dialer */

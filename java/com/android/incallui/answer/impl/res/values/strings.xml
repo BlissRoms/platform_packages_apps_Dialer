@@ -21,6 +21,10 @@
   <string name="call_incoming_default_label_answer_and_release_third">Swipe up to answer and end call on hold</string>
   <string name="call_incoming_swipe_to_answer_and_release">Swipe from icon to answer and end ongoing call</string>
   <string name="call_incoming_message_custom">Write your own…</string>
+  <!-- Label for the button that opens the reply-with-message menu on an incoming call. [CHAR LIMIT=20] -->
+  <string name="incoming_message_label">Message</string>
+  <!-- Title of the quick-response reply sheet. [CHAR LIMIT=40] -->
+  <string name="qr_sheet_title">Reply with message</string>
   <!-- "Respond via SMS" option that lets you compose a custom response. [CHAR LIMIT=30] -->
   <string name="call_incoming_respond_via_sms_custom_message">Write your own…</string>
   <!-- "Custom Message" Cancel alert dialog button -->

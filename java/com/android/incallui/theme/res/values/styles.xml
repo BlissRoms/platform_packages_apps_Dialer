@@ -17,17 +17,19 @@
 
 <resources>
   <style name="Theme.InCallScreen" parent="@style/Dialer.Dark.ThemeBase.NoActionBar">
-    <item name="android:textColorPrimary">@android:color/white</item>
-    <item name="android:textColorSecondary">#DDFFFFFF</item>
+    <item name="android:textColorPrimary">@color/incall_text_primary</item>
+    <item name="android:textColorSecondary">@color/incall_text_secondary</item>
     <item name="android:statusBarColor">@android:color/transparent</item>
     <item name="android:navigationBarColor">@android:color/transparent</item>
     <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:windowLightStatusBar">@bool/incall_light_system_bars</item>
+    <item name="android:windowLightNavigationBar">@bool/incall_light_system_bars</item>
     <item name="android:colorPrimaryDark">@color/dialer_theme_color_dark</item>
     <item name="colorPrimaryDark">@color/dialer_theme_color_dark</item>
     <item name="dialpad_style">@style/InCallDialpad</item>
     <item name="android:windowAnimationStyle">@null</item>
-    <item name="android:windowBackground">@color/dialer_theme_color_dark</item>
-    <item name="android:windowShowWallpaper">true</item>
+    <item name="android:windowBackground">@color/incall_window_background</item>
+    <item name="android:windowShowWallpaper">false</item>
     <item name="bottomSheetDialogTheme">@style/TransparentBottomSheetDialogTheme</item>
   </style>
 

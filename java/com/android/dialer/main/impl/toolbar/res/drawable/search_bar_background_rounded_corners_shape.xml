@@ -16,6 +16,6 @@
   -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
   android:shape="rectangle">
-  <solid android:color="?attr/colorBackgroundSearchBar"/>
-  <corners android:radius="28dp"/>
+  <solid android:color="@color/recents_search_bar_bg"/>
+  <corners android:radius="9999dp"/>
 </shape>

@@ -91,7 +91,7 @@ public class GlidePhotoManagerImpl implements GlidePhotoManager {
     // directly so be sure not to set tint in the XML of any drawable referenced below.
 
     GlideRequest<Drawable> request;
-    boolean circleCrop = true; // Photos are cropped to a circle by default.
+    boolean circleCrop = photoInfo.getIsCircular(); // Photos are cropped to a circle by default.
 
     if (photoInfo.getIsBlocked()) {
       // Whether the number is blocked takes precedence over the spam status.
@@ -147,7 +147,9 @@ public class GlidePhotoManagerImpl implements GlidePhotoManager {
     letterTileDrawable.setCanonicalDialerLetterTileDetails(
         displayName,
         identifier,
-        LetterTileDrawable.SHAPE_CIRCLE,
+        photoInfo.getIsCircular()
+            ? LetterTileDrawable.SHAPE_CIRCLE
+            : LetterTileDrawable.SHAPE_RECTANGLE,
         LetterTileDrawable.getContactTypeFromPrimitives(
             photoInfo.getIsVoicemail(),
             photoInfo.getIsSpam(),

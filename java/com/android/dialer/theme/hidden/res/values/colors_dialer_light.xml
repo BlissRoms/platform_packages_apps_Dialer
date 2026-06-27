@@ -23,7 +23,15 @@
   <color name="dialer_background_color">@android:color/system_neutral1_10</color>
   <color name="dialer_background_floating">@android:color/system_neutral1_50</color>
   <color name="dialer_search_bar_color">@android:color/system_neutral1_50</color>
-  <color name="rounded_dialpad_bg_color">@android:color/system_neutral1_100</color>
+  <color name="rounded_dialpad_bg_color">#FFFFFF</color>
   <color name="searchbar_icon_color">@android:color/system_neutral1_900</color>
   <color name="dialer_theme_color_light">@android:color/system_accent1_600</color>
+
+  <color name="dialpad_key_fill_color">#F2F2F2</color>
+  <color name="dialpad_digit_color">#000000</color>
+  <color name="dialpad_field_bg_color">#F5F5F5</color>
+  <color name="dialpad_divider_color">#E4E4E4</color>
+  <color name="dialpad_dial_button_bg_color">@android:color/system_accent1_600</color>
+  <color name="dialpad_dial_button_stroke_color">#00000000</color>
+  <color name="dialpad_dial_button_icon_color">@android:color/system_accent1_0</color>
 </resources>

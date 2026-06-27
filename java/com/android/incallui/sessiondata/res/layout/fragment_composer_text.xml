@@ -46,7 +46,7 @@
       app:autoSizeTextType="uniform"
       app:autoSizeMaxTextSize="44sp"/>
 
-  <ImageView
+  <com.android.incallui.contactgrid.CloverImageView
       android:id="@id/answer_message_avatar"
       android:layout_width="@dimen/answer_message_avatar_size"
       android:layout_height="@dimen/answer_message_avatar_size"

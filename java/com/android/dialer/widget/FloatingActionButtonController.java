@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.widget.ImageButton;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -31,9 +32,7 @@ import androidx.annotation.DrawableRes;
 import com.android.dialer.R;
 import com.android.dialer.common.Assert;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-/** Controls the movement and appearance of the FAB (Floating Action Button). */
+/** Controls the movement and appearance of the dial action button. */
 public class FloatingActionButtonController {
 
   public static final int ALIGN_MIDDLE = 0;
@@ -43,12 +42,12 @@ public class FloatingActionButtonController {
   private final int animationDuration;
   private final int floatingActionButtonWidth;
   private final int floatingActionButtonMarginRight;
-  private final FloatingActionButton fab;
+  private final ImageButton fab;
   private final Interpolator fabInterpolator;
   private int fabIconId = -1;
   private int screenWidth;
 
-  public FloatingActionButtonController(Activity activity, FloatingActionButton fab) {
+  public FloatingActionButtonController(Activity activity, ImageButton fab) {
     Resources resources = activity.getResources();
     fabInterpolator =
         AnimationUtils.loadInterpolator(activity, android.R.interpolator.fast_out_slow_in);
@@ -70,7 +69,7 @@ public class FloatingActionButtonController {
     this.screenWidth = screenWidth;
   }
 
-  /** @see FloatingActionButton#isShown() */
+  /** Returns whether the dial button is currently shown. */
   public boolean isVisible() {
     return fab.isShown();
   }
@@ -156,18 +155,28 @@ public class FloatingActionButtonController {
     }
   }
 
-  /** @see FloatingActionButton#show() */
+  /** Scales the dial button into view. */
   public void scaleIn() {
-    fab.show();
+    fab.setVisibility(View.VISIBLE);
+    fab.animate()
+        .scaleX(1f)
+        .scaleY(1f)
+        .alpha(1f)
+        .setInterpolator(fabInterpolator)
+        .setDuration(animationDuration)
+        .start();
   }
 
-  /** @see FloatingActionButton#hide() */
+  /** Scales the dial button out of view. */
   public void scaleOut() {
-    fab.hide();
-  }
-
-  public void scaleOut(FloatingActionButton.OnVisibilityChangedListener listener) {
-    fab.hide(listener);
+    fab.animate()
+        .scaleX(0f)
+        .scaleY(0f)
+        .alpha(0f)
+        .setInterpolator(fabInterpolator)
+        .setDuration(animationDuration)
+        .withEndAction(() -> fab.setVisibility(View.INVISIBLE))
+        .start();
   }
 
   /**

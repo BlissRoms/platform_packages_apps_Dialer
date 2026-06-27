@@ -50,6 +50,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PRECISE_PHONE_STATE" />
+    <!-- On-device voicemail uplink greeting; privileged, needs the ROM privapp allowlist. -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_ROUTING" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
@@ -110,6 +113,12 @@
 
     <!-- Required to close the notification shade -->
     <uses-permission android:name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS" />
+
+    <queries>
+        <intent>
+            <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
+        </intent>
+    </queries>
 
     <application
         android:name="com.android.dialer.binary.aosp.AospDialerApplication"
@@ -286,7 +295,7 @@
             android:excludeFromRecents="true"
             android:exported="true"
             android:label="@string/helplines_name"
-            android:theme="@style/Dialer.ThemeBase.ActionBar">
+            android:theme="@style/HelplinesStyle">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

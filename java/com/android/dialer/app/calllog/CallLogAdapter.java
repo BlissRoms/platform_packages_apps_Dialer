@@ -1244,6 +1244,8 @@ public class CallLogAdapter extends GroupingListAdapter
       return activity.getResources().getString(R.string.call_log_header_today);
     } else if (group == CallLogGroupBuilder.DAY_GROUP_YESTERDAY) {
       return activity.getResources().getString(R.string.call_log_header_yesterday);
+    } else if (group == CallLogGroupBuilder.DAY_GROUP_THIS_WEEK) {
+      return activity.getResources().getString(R.string.call_log_header_this_week);
     } else {
       return activity.getResources().getString(R.string.call_log_header_other);
     }

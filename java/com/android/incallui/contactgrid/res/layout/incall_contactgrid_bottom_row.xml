@@ -60,6 +60,7 @@
         android:layout_gravity="center_horizontal"
         android:singleLine="true"
         android:textAppearance="@style/Dialer.Incall.TextAppearance"
+        android:textSize="25sp"
         tools:gravity="start"
         tools:text="Mobile +1 (650) 253-0000"/>
     <Chronometer
@@ -69,6 +70,7 @@
         android:layout_gravity="center_horizontal"
         android:singleLine="true"
         android:textAppearance="@style/Dialer.Incall.TextAppearance"
+        android:textSize="25sp"
         tools:gravity="center"/>
   </ViewAnimator>
 </LinearLayout>

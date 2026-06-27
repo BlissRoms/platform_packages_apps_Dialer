@@ -19,7 +19,7 @@
   <dimen name="dialpad_key_pound_size">23sp</dimen>
   <dimen name="dialpad_key_star_size">36sp</dimen>
   <dimen name="dialpad_key_height">64dp</dimen>
-  <dimen name="dialpad_symbol_margin_bottom">13dp</dimen>
+  <dimen name="dialpad_symbol_margin_bottom">0dp</dimen>
   <dimen name="dialpad_digits_text_min_size">24sp</dimen>
   <dimen name="dialpad_digits_padding">16dp</dimen>
   <dimen name="dialpad_digits_menu_left_padding">10dp</dimen>
@@ -27,8 +27,14 @@
   <dimen name="dialpad_voicemail_icon_size">18dp</dimen>
   <dimen name="dialpad_key_button_translate_y">100dp</dimen>
   <dimen name="dialpad_overflow_margin">8dp</dimen>
-  <dimen name="dialpad_space_above_keys">14dp</dimen>
-  <dimen name="dialpad_space_below_keys">8dp</dimen>
+  <dimen name="dialpad_space_above_keys">26dp</dimen>
+  <dimen name="dialpad_space_below_keys">20dp</dimen>
+
+  <dimen name="dialpad_dial_button_width">113dp</dimen>
+  <dimen name="dialpad_dial_button_height">62dp</dimen>
+  <dimen name="dialpad_dial_button_corner_radius">31dp</dimen>
+  <dimen name="dialpad_dial_button_icon_size">28dp</dimen>
+  <dimen name="dialpad_dial_button_stroke_width">1.5dp</dimen>
 
   <!-- Top/Bottom padding around the ILD rate display box. -->
   <dimen name="ild_margin_height">10dp</dimen>

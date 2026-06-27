@@ -66,6 +66,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -100,7 +101,6 @@ import com.android.dialer.util.PermissionsUtil;
 import com.android.dialer.util.ViewUtil;
 import com.android.dialer.widget.FloatingActionButtonController;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.base.Ascii;
 
 import java.util.HashSet;
@@ -174,7 +174,7 @@ public class DialpadFragment extends Fragment
   private View delete;
   private ToneGenerator toneGenerator;
   private FloatingActionButtonController floatingActionButtonController;
-  private FloatingActionButton floatingActionButton;
+  private ImageButton floatingActionButton;
   private ListView dialpadChooser;
   private DialpadChooserAdapter dialpadChooserAdapter;
   /** Regular expression prohibiting manual phone call. Can be empty, which means "no rule". */
@@ -717,7 +717,7 @@ public class DialpadFragment extends Fragment
     }
     floatingActionButtonController.changeIcon(
         getContext(), iconId, res.getString(R.string.description_dial_button));
-    floatingActionButtonController.changeIconColor(getContext(), R.color.dialer_call_icon_color);
+    floatingActionButtonController.changeIconColor(getContext(), R.color.dialpad_dial_button_icon_color);
 
     // if the mToneGenerator creation fails, just continue without it.  It is
     // a local audio signal, and is not as important as the dtmf tone itself.
@@ -778,7 +778,13 @@ public class DialpadFragment extends Fragment
     overflowPopupMenu = buildOptionsMenu(overflowMenuButton);
     overflowMenuButton.setOnTouchListener(overflowPopupMenu.getDragToOpenListener());
     overflowMenuButton.setOnClickListener(this);
-    overflowMenuButton.setVisibility(isDigitsEmpty() ? View.INVISIBLE : View.VISIBLE);
+    overflowMenuButton.setVisibility(View.GONE);
+
+    View backButton = dialpadView.getBackButton();
+    if (backButton != null) {
+      backButton.setOnClickListener(this);
+      backButton.setVisibility(View.VISIBLE);
+    }
 
     updateDialpadHint();
 
@@ -1032,6 +1038,8 @@ public class DialpadFragment extends Fragment
       }
     } else if (resId == R.id.dialpad_overflow) {
       overflowPopupMenu.show();
+    } else if (resId == R.id.dialpad_back) {
+      FragmentUtils.getParentUnsafe(this, DialpadListener.class).onDialpadClosed();
     } else {
       LogUtil.w("DialpadFragment.onClick", "Unexpected event from: " + view);
     }
@@ -1459,6 +1467,11 @@ public class DialpadFragment extends Fragment
    * @param transitionIn True if transitioning in, False if transitioning out
    */
   private void updateMenuOverflowButton(boolean transitionIn) {
+    // The overflow menu is replaced by a back/close button in the redesigned dialpad, so the
+    // overflow transition is intentionally a no-op.
+    if (overflowMenuButton == null || overflowMenuButton.getVisibility() == View.GONE) {
+      return;
+    }
     overflowMenuButton = dialpadView.getOverflowMenuButton();
     if (transitionIn) {
       AnimUtils.fadeIn(overflowMenuButton, AnimUtils.DEFAULT_DURATION);
@@ -1873,6 +1886,8 @@ public class DialpadFragment extends Fragment
     void onDialpadShown();
 
     void onCallPlacedFromDialpad();
+
+    void onDialpadClosed();
   }
 
   /** Callback for async lookup of the last number dialed. */

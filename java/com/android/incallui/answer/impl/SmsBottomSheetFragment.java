@@ -20,15 +20,16 @@ package com.android.incallui.answer.impl;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ import com.android.dialer.common.FragmentUtils;
 import com.android.dialer.common.LogUtil;
 import com.android.incallui.incalluilock.InCallUiLock;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
@@ -64,17 +66,41 @@ public class SmsBottomSheetFragment extends BottomSheetDialogFragment {
   @Override
   public View onCreateView(
           LayoutInflater layoutInflater, @Nullable ViewGroup viewGroup, @Nullable Bundle bundle) {
-    LinearLayout layout = new LinearLayout(getContext());
+    Context context = getContext();
+    LinearLayout layout = new LinearLayout(context);
     layout.setOrientation(LinearLayout.VERTICAL);
+    layout.setBackground(context.getDrawable(R.drawable.quick_response_sheet_bg));
+    layout.setPadding(0, dp(context, 12), 0, dp(context, 24));
+    layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+
+    View handle = new View(context);
+    LinearLayout.LayoutParams handleParams =
+        new LinearLayout.LayoutParams(dp(context, 32), dp(context, 4));
+    handleParams.gravity = Gravity.CENTER_HORIZONTAL;
+    handleParams.bottomMargin = dp(context, 12);
+    handle.setLayoutParams(handleParams);
+    handle.setBackground(context.getDrawable(R.drawable.quick_response_handle));
+    layout.addView(handle);
+
+    TextView title = new TextView(context);
+    title.setText(R.string.qr_sheet_title);
+    title.setTextColor(context.getColor(R.color.qr_on_surface));
+    title.setTextSize(22);
+    title.setPadding(dp(context, 24), dp(context, 4), dp(context, 24), dp(context, 12));
+    layout.addView(title);
+
     List<CharSequence> items = getArguments().getCharSequenceArrayList(ARG_OPTIONS);
     if (items != null) {
       for (CharSequence item : items) {
-        layout.addView(newTextViewItem(item));
+        layout.addView(newItem(context, item));
       }
     }
-    layout.addView(newTextViewItem(null));
-    layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+    layout.addView(newItem(context, null));
     return layout;
+  }
+
+  private static int dp(Context context, int value) {
+    return (int) DpUtil.dpToPx(context, value);
   }
 
   @Override
@@ -88,6 +114,16 @@ public class SmsBottomSheetFragment extends BottomSheetDialogFragment {
     LogUtil.i("SmsBottomSheetFragment.onCreateDialog", null);
     Dialog dialog = super.onCreateDialog(savedInstanceState);
     dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+    // Let our rounded surface show by clearing the default sheet background.
+    dialog.setOnShowListener(
+        d -> {
+          View sheet =
+              ((BottomSheetDialog) d)
+                  .findViewById(com.google.android.material.R.id.design_bottom_sheet);
+          if (sheet != null) {
+            sheet.setBackgroundColor(Color.TRANSPARENT);
+          }
+        });
 
     inCallUiLock =
         FragmentUtils.getParentUnsafe(SmsBottomSheetFragment.this, SmsSheetHolder.class)
@@ -95,33 +131,48 @@ public class SmsBottomSheetFragment extends BottomSheetDialogFragment {
     return dialog;
   }
 
-  private TextView newTextViewItem(@Nullable final CharSequence text) {
-    int[] attrs = new int[] {android.R.attr.selectableItemBackground};
-    Context context = new ContextThemeWrapper(getContext(), getTheme());
-    TypedArray typedArray = context.obtainStyledAttributes(attrs);
-    Drawable background = typedArray.getDrawable(0);
-    // noinspection ResourceType
-    typedArray.recycle();
+  private View newItem(Context context, @Nullable final CharSequence text) {
+    LinearLayout row = new LinearLayout(context);
+    row.setOrientation(LinearLayout.HORIZONTAL);
+    row.setGravity(Gravity.CENTER_VERTICAL);
+    row.setMinimumHeight(dp(context, 56));
+    int padH = dp(context, 24);
+    int padV = dp(context, 12);
+    row.setPadding(padH, padV, padH, padV);
+    row.setBackground(context.getDrawable(R.drawable.quick_response_item_bg));
+    LinearLayout.LayoutParams rowParams =
+        new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+    int marginH = dp(context, 12);
+    rowParams.setMargins(marginH, 0, marginH, 0);
+    row.setLayoutParams(rowParams);
+
+    ImageView icon = new ImageView(context);
+    icon.setImageResource(
+        text == null
+            ? R.drawable.quantum_ic_edit_vd_theme_24
+            : R.drawable.quantum_ic_message_vd_theme_24);
+    icon.setImageTintList(ColorStateList.valueOf(context.getColor(R.color.qr_icon)));
+    LinearLayout.LayoutParams iconParams =
+        new LinearLayout.LayoutParams(dp(context, 24), dp(context, 24));
+    iconParams.setMarginEnd(dp(context, 20));
+    icon.setLayoutParams(iconParams);
+    row.addView(icon);
 
     TextView textView = new TextView(context);
     textView.setText(text == null ? getString(R.string.call_incoming_message_custom) : text);
-    int padding = (int) DpUtil.dpToPx(context, 16);
-    textView.setPadding(padding, padding, padding, padding);
-    textView.setBackground(background);
-    textView.setTextColor(context.getColor(R.color.blue_grey_100));
-    textView.setTextAppearance(R.style.TextAppearance_AppCompat_Widget_PopupMenu_Large);
+    textView.setTextColor(context.getColor(R.color.qr_on_surface));
+    textView.setTextSize(16);
+    textView.setLayoutParams(
+        new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f));
+    row.addView(textView);
 
-    LayoutParams params =
-        new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-    textView.setLayoutParams(params);
-
-    textView.setOnClickListener(
+    row.setOnClickListener(
             v -> {
               FragmentUtils.getParentUnsafe(SmsBottomSheetFragment.this, SmsSheetHolder.class)
                   .smsSelected(text);
               dismiss();
             });
-    return textView;
+    return row;
   }
 
   @Override

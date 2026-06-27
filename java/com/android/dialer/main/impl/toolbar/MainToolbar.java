@@ -18,6 +18,9 @@
 package com.android.dialer.main.impl.toolbar;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Process;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,8 +36,10 @@ import androidx.appcompat.widget.Toolbar;
 import com.android.dialer.R;
 import com.android.dialer.common.Assert;
 import com.android.dialer.common.LogUtil;
+import com.android.dialer.glide.GlideApp;
 import com.android.dialer.util.ViewUtil;
 
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 /** Toolbar for {@link com.android.dialer.main.impl.MainActivity}. */
@@ -60,10 +65,60 @@ public final class MainToolbar extends Toolbar implements PopupMenu.OnMenuItemCl
     overflowMenu = new MainToolbarMenu(getContext(), optionsMenuButton);
     overflowMenu.inflate(R.menu.main_menu);
     overflowMenu.setOnMenuItemClickListener(this);
-    optionsMenuButton.setOnClickListener(v -> overflowMenu.show());
-    optionsMenuButton.setOnTouchListener(overflowMenu.getDragToOpenListener());
+    // The avatar opens Settings directly. The overflow menu object is retained so callers such as
+    // showClearFrequents()/maybeShowSimulator() keep working, but it is no longer shown on tap.
+    optionsMenuButton.setOnClickListener(
+        v -> {
+          if (listener != null) {
+            listener.onProfileButtonClicked();
+          }
+        });
+    loadProfilePhoto(optionsMenuButton);
 
     searchBar = findViewById(R.id.search_view_container);
+    searchBar.setEndButton(optionsMenuButton);
+  }
+
+  /**
+   * Loads the device user's icon (the same avatar shown at the top of Settings) into the search bar
+   * button, cropped to a circle. The icon is owned by the framework {@code UserManager}; the getter
+   * is a hidden API, so it is reached reflectively (this is a privileged, platform-signed system app
+   * and is therefore exempt from hidden API restrictions at runtime). Falls back to the placeholder
+   * when no user icon is set or the lookup fails.
+   */
+  private void loadProfilePhoto(ImageButton optionsMenuButton) {
+    // Reading the user icon touches disk, so resolve it off the main thread, then bind on it.
+    new Thread(
+            () -> {
+              Bitmap icon = getUserIcon();
+              if (icon == null) {
+                return; // Placeholder set in XML stays.
+              }
+              optionsMenuButton.post(
+                  () ->
+                      GlideApp.with(getContext())
+                          .load(icon)
+                          .circleCrop()
+                          .placeholder(R.drawable.recents_profile_placeholder)
+                          .error(R.drawable.recents_profile_placeholder)
+                          .into(optionsMenuButton));
+            },
+            "MainToolbar-userIcon")
+        .start();
+  }
+
+  /** Returns the current user's Settings icon via the hidden {@code UserManager#getUserIcon}. */
+  private Bitmap getUserIcon() {
+    try {
+      UserManager userManager = getContext().getSystemService(UserManager.class);
+      // PER_USER_RANGE is 100000; uid / PER_USER_RANGE yields the calling user id.
+      int userId = Process.myUid() / 100000;
+      Method getUserIcon = UserManager.class.getMethod("getUserIcon", int.class);
+      return (Bitmap) getUserIcon.invoke(userManager, userId);
+    } catch (ReflectiveOperationException | SecurityException e) {
+      LogUtil.e("MainToolbar.getUserIcon", "unable to load user icon", e);
+      return null;
+    }
   }
 
   @Override

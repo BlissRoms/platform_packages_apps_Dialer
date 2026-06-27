@@ -16,9 +16,6 @@
 
 package com.android.dialer.main.impl.toolbar;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -45,11 +42,6 @@ import java.util.Optional;
 final class SearchBarView extends FrameLayout {
 
   private static final int ANIMATION_DURATION = 200;
-  private static final float EXPAND_MARGIN_FRACTION_START = 0.8f;
-
-  private final float margin;
-  private final float animationEndHeight;
-  private final float animationStartHeight;
 
   private SearchBarListener listener;
   private EditText searchBox;
@@ -62,14 +54,10 @@ final class SearchBarView extends FrameLayout {
   private View searchBoxCollapsed;
   private View searchBoxExpanded;
   private View clearButton;
+  private View endButton;
 
   public SearchBarView(@NonNull Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
-    margin = getContext().getResources().getDimension(R.dimen.search_bar_margin);
-    animationEndHeight =
-        getContext().getResources().getDimension(R.dimen.expanded_search_bar_height);
-    animationStartHeight =
-        getContext().getResources().getDimension(R.dimen.collapsed_search_bar_height);
   }
 
   @Override
@@ -83,6 +71,7 @@ final class SearchBarView extends FrameLayout {
 
     setOnClickListener(v -> listener.onSearchBarClicked());
     findViewById(R.id.voice_search_button).setOnClickListener(v -> voiceSearchClicked());
+    findViewById(R.id.search_voice_button).setOnClickListener(v -> voiceSearchClicked());
     findViewById(R.id.search_back_button).setOnClickListener(v -> onSearchBackButtonClicked());
     clearButton.setOnClickListener(v -> onSearchClearButtonClicked());
     searchBox.addTextChangedListener(new SearchBoxTextWatcher());
@@ -123,31 +112,17 @@ final class SearchBarView extends FrameLayout {
     int duration = animate ? ANIMATION_DURATION : 0;
     searchBoxExpanded.setVisibility(VISIBLE);
     AnimUtils.crossFadeViews(searchBoxExpanded, searchBoxCollapsed, duration);
-    ValueAnimator animator = ValueAnimator.ofFloat(EXPAND_MARGIN_FRACTION_START, 0f);
-    animator.addUpdateListener(animation -> setMargins((Float) animation.getAnimatedValue()));
-    animator.setDuration(duration);
-    animator.addListener(
-        new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationStart(Animator animation) {
-            super.onAnimationStart(animation);
-            DialerUtils.showInputMethod(searchBox);
-            isExpanded = true;
-          }
-
-          @Override
-          public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
-            text.ifPresent(s -> searchBox.setText(s));
-            // Don't request focus unless we're actually showing the search box, otherwise
-            // physical/bluetooth keyboards will type into this box when the dialpad is open.
-            if (requestFocus) {
-              searchBox.requestFocus();
-            }
-            setBackgroundResource(R.drawable.search_bar_background);
-          }
-        });
-    animator.start();
+    if (endButton != null) {
+      endButton.setVisibility(GONE);
+    }
+    isExpanded = true;
+    DialerUtils.showInputMethod(searchBox);
+    text.ifPresent(s -> searchBox.setText(s));
+    // Don't request focus unless we're actually showing the search box, otherwise
+    // physical/bluetooth keyboards will type into this box when the dialpad is open.
+    if (requestFocus) {
+      searchBox.requestFocus();
+    }
   }
 
   /** Collapse the search bar and clear it's text. */
@@ -158,44 +133,17 @@ final class SearchBarView extends FrameLayout {
 
     int duration = animate ? ANIMATION_DURATION : 0;
     AnimUtils.crossFadeViews(searchBoxCollapsed, searchBoxExpanded, duration);
-    ValueAnimator animator = ValueAnimator.ofFloat(0f, EXPAND_MARGIN_FRACTION_START);
-    animator.addUpdateListener(animation -> setMargins((Float) animation.getAnimatedValue()));
-    animator.setDuration(duration);
-
-    animator.addListener(
-        new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationStart(Animator animation) {
-            super.onAnimationStart(animation);
-            DialerUtils.hideInputMethod(searchBox);
-            isExpanded = false;
-          }
-
-          @Override
-          public void onAnimationEnd(Animator animation) {
-            super.onAnimationEnd(animation);
-            searchBox.setText("");
-            searchBoxExpanded.setVisibility(INVISIBLE);
-            setBackgroundResource(R.drawable.search_bar_background_rounded_corners);
-          }
-        });
-    animator.start();
+    if (endButton != null) {
+      endButton.setVisibility(VISIBLE);
+    }
+    isExpanded = false;
+    DialerUtils.hideInputMethod(searchBox);
+    searchBox.setText("");
   }
 
-  /**
-   * Assigns margins to the search box as a fraction of its maximum margin size
-   *
-   * @param fraction How large the margins should be as a fraction of their full size
-   */
-  private void setMargins(float fraction) {
-    int margin = (int) (this.margin * fraction);
-    MarginLayoutParams params = (MarginLayoutParams) getLayoutParams();
-    params.topMargin = margin;
-    params.bottomMargin = margin;
-    params.leftMargin = margin;
-    params.rightMargin = margin;
-    searchBoxExpanded.getLayoutParams().height =
-        (int) (animationEndHeight - (animationEndHeight - animationStartHeight) * fraction);
+  /** Sets the sibling end button (profile avatar) that is hidden while the search bar is expanded. */
+  /* package-private */ void setEndButton(@Nullable View endButton) {
+    this.endButton = endButton;
   }
 
   /* package-private */ void setSearchBarListener(@NonNull SearchBarListener listener) {

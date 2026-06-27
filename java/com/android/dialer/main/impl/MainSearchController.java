@@ -187,6 +187,8 @@ public class MainSearchController implements SearchBarListener {
     }
     transaction.commit();
 
+    setSearchContainerVisible(false);
+
     notifyListenersOnSearchOpen();
   }
 
@@ -220,6 +222,8 @@ public class MainSearchController implements SearchBarListener {
       LogUtil.e("MainSearchController.hideDialpad", "Dialpad fragment is already slide down.");
       return;
     }
+
+    setSearchContainerVisible(true);
 
     fab.show();
     toolbar.slideDown(animate, fragmentContainer);
@@ -255,6 +259,17 @@ public class MainSearchController implements SearchBarListener {
 
   private void showBottomNav() {
     bottomNav.setVisibility(View.VISIBLE);
+  }
+
+  /**
+   * Toggles the search fragment container. It is hidden while the dialpad is up so the call log
+   * behind it stays visible, matching the redesigned dialpad-over-recents layout.
+   */
+  private void setSearchContainerVisible(boolean visible) {
+    View container = activity.findViewById(R.id.search_fragment_container);
+    if (container != null) {
+      container.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
   }
 
   /** Should be called when {@link DialpadListener#onDialpadShown()} is called. */
@@ -310,6 +325,11 @@ public class MainSearchController implements SearchBarListener {
     }
   }
 
+  /** Dismisses the dialpad (via the dialpad close button) and returns to the call log. */
+  public void closeDialpad() {
+    closeSearch(/* animate= */ true);
+  }
+
   /** Calls {@link #hideDialpad(boolean)}, removes the search fragment and clears the dialpad. */
   private void closeSearch(boolean animate) {
     LogUtil.enterBlock("MainSearchController.closeSearch");
@@ -334,6 +354,7 @@ public class MainSearchController implements SearchBarListener {
       fab.show();
     }
     showBottomNav();
+    setSearchContainerVisible(true);
     updateStatusBarColor(android.R.attr.statusBarColor);
     toolbar.collapse(animate);
     activity.getSupportFragmentManager().beginTransaction().hide(searchFragment).commit();
@@ -397,6 +418,7 @@ public class MainSearchController implements SearchBarListener {
     LogUtil.enterBlock("MainSearchController.openSearch");
 
     fab.hide();
+    setSearchContainerVisible(true);
     toolbar.expand(/* animate=*/ true, query, /* requestFocus */ true);
     toolbar.showKeyboard();
     hideBottomNav();
@@ -442,6 +464,10 @@ public class MainSearchController implements SearchBarListener {
       searchFragment.setQuery(normalizedQuery, CallInitiationType.Type.DIALPAD);
     }
     dialpadFragment.process_quote_emergency_unquote(normalizedQuery);
+
+    // Show the search fragment if there is a query (T9 search results), otherwise hide it
+    // so the call log can be seen.
+    setSearchContainerVisible(!TextUtils.isEmpty(normalizedQuery));
   }
 
   @Override
@@ -469,6 +495,11 @@ public class MainSearchController implements SearchBarListener {
       activity.startActivity(new Intent(activity, HelplineActivity.class));
     }
     return false;
+  }
+
+  @Override
+  public void onProfileButtonClicked() {
+    activity.startActivity(new Intent(activity, DialerSettingsActivity.class));
   }
 
   @Override

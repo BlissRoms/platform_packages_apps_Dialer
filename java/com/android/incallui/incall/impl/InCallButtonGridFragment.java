@@ -18,8 +18,11 @@
 package com.android.incallui.incall.impl;
 
 import android.os.Bundle;
+import android.transition.TransitionManager;
 import android.util.ArraySet;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -39,9 +42,18 @@ public class InCallButtonGridFragment extends Fragment {
 
   private static final int BUTTON_COUNT = 6;
   private static final int BUTTONS_PER_ROW = 3;
+  /** Number of real controls shown in the collapsed sheet; the rest live in the expandable row. */
+  private static final int FIRST_ROW_COUNT = 3;
 
   private final CheckableLabeledButton[] buttons = new CheckableLabeledButton[BUTTON_COUNT];
   private OnButtonGridCreatedListener buttonGridListener;
+
+  private View sheet;
+  private View handle;
+  private View moreButton;
+  private View secondaryRow;
+  private boolean expanded;
+  private boolean hasSecondaryRow;
 
   public static Fragment newInstance() {
     return new InCallButtonGridFragment();
@@ -67,7 +79,70 @@ public class InCallButtonGridFragment extends Fragment {
     buttons[4] = ((CheckableLabeledButton) view.findViewById(R.id.incall_fifth_button));
     buttons[5] = ((CheckableLabeledButton) view.findViewById(R.id.incall_sixth_button));
 
+    sheet = view.findViewById(R.id.incall_button_sheet);
+    handle = view.findViewById(R.id.incall_button_sheet_handle);
+    moreButton = view.findViewById(R.id.incall_more_button);
+    secondaryRow = view.findViewById(R.id.incall_button_row_two);
+    handle.setOnClickListener(v -> setSheetExpanded(!expanded));
+    moreButton.setOnClickListener(v -> setSheetExpanded(!expanded));
+
+    GestureDetector gestureDetector = new GestureDetector(getContext(), new SwipeListener());
+    sheet.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
+
     return view;
+  }
+
+  private void setSheetExpanded(boolean expand) {
+    if (!hasSecondaryRow) {
+      expand = false;
+    }
+    expanded = expand;
+    if (sheet != null) {
+      TransitionManager.beginDelayedTransition((ViewGroup) sheet);
+    }
+    if (secondaryRow != null) {
+      secondaryRow.setVisibility(expanded ? View.VISIBLE : View.GONE);
+    }
+  }
+
+  private void updateSheetAffordance() {
+    if (handle == null) {
+      return;
+    }
+    if (!hasSecondaryRow) {
+      expanded = false;
+    }
+    handle.setVisibility(hasSecondaryRow ? View.VISIBLE : View.GONE);
+    if (moreButton != null) {
+      moreButton.setVisibility(hasSecondaryRow ? View.VISIBLE : View.GONE);
+    }
+    if (secondaryRow != null) {
+      secondaryRow.setVisibility(expanded && hasSecondaryRow ? View.VISIBLE : View.GONE);
+    }
+  }
+
+  /** Detects vertical flings on the control sheet to expand or collapse it. */
+  private class SwipeListener extends GestureDetector.SimpleOnGestureListener {
+    private static final int FLING_THRESHOLD = 200;
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+      return true;
+    }
+
+    @Override
+    public boolean onFling(
+        MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+      if (velocityY < -FLING_THRESHOLD) {
+        setSheetExpanded(true);
+        return true;
+      }
+      if (velocityY > FLING_THRESHOLD) {
+        setSheetExpanded(false);
+        return true;
+      }
+      return false;
+    }
   }
 
   @Override
@@ -128,6 +203,9 @@ public class InCallButtonGridFragment extends Fragment {
       @InCallButtonIds int button = buttonsToPlace.get(i);
       buttonGridListener.getButtonController(button).setButton(buttons[i]);
     }
+
+    hasSecondaryRow = buttonsToPlace.size() > FIRST_ROW_COUNT;
+    updateSheetAffordance();
 
     return numVisibleButtons;
   }

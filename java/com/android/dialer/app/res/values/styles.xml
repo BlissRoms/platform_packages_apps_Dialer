@@ -95,4 +95,10 @@
     <item name="android:paddingStart">@dimen/button_horizontal_padding</item>
     <item name="android:textColor">@android:color/white</item>
   </style>
+
+  <!-- Rounded-square corner treatment for the Recents dialpad FAB. -->
+  <style name="RecentsFabShape">
+    <item name="cornerFamily">rounded</item>
+    <item name="cornerSize">14.84dp</item>
+  </style>
 </resources>

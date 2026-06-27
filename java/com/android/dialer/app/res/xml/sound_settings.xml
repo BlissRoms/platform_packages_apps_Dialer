@@ -77,20 +77,4 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:key="@string/call_recording_category_key"
-        android:title="@string/call_recording_category_title"
-        app:iconSpaceReserved="false">
-
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/call_recording_encoder_entries"
-            android:entryValues="@array/call_recording_encoder_values"
-            android:key="@string/call_recording_format_key"
-            android:summary="%s"
-            android:title="@string/call_recording_format"
-            app:iconSpaceReserved="false" />
-
-    </PreferenceCategory>
-
 </PreferenceScreen>

@@ -32,7 +32,8 @@
 
     <LinearLayout
         android:id="@+id/dialpad_key_icon_or_letters_layout"
-        style="@style/DialpadKeyInternalLayoutStyle">
+        style="@style/DialpadKeyInternalLayoutStyle"
+        android:visibility="gone">
 
       <!--
           A placeholder to make the horizontal center line of the voice mail icon lined up with

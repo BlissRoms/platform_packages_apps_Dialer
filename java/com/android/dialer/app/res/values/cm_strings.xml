@@ -48,4 +48,29 @@
 
     <string name="default_dialer_text">You must set Dialer as the default phone app to use it.</string>
     <string name="default_dialer_action">Set as default</string>
+
+    <string name="on_device_voicemail_category_key" translatable="false">on_device_voicemail_category</string>
+    <string name="on_device_voicemail_category_title">On-device voicemail</string>
+    <string name="on_device_voicemail_enabled_key" translatable="false">on_device_voicemail_enabled</string>
+    <string name="on_device_voicemail_enabled_title">Auto-answer unanswered calls</string>
+    <string name="on_device_voicemail_enabled_summary">Pick up after a delay and record a message on this device</string>
+    <string name="on_device_voicemail_timeout_key" translatable="false">on_device_voicemail_timeout</string>
+    <string name="on_device_voicemail_timeout_title">Ring time before answering</string>
+    <string name="on_device_voicemail_location_key" translatable="false">on_device_voicemail_location</string>
+    <string name="on_device_voicemail_location_title">Voicemail storage location</string>
+
+    <!-- Redesigned settings screen -->
+    <string name="settings_section_personalisation">Personalisation</string>
+    <string name="settings_section_call">Call settings</string>
+    <string name="settings_section_privacy">Privacy &amp; Security</string>
+    <string name="settings_section_help">Help</string>
+    <string name="settings_back_content_description">Back</string>
+    <string name="settings_phone_number_lookup_title">Phone number lookup</string>
+    <string name="settings_call_waiting_title">Call waiting</string>
+    <string name="settings_call_waiting_summary">Be notified of incoming calls while on a call</string>
+    <string name="settings_call_blocking_title">Call blocking</string>
+    <string name="settings_call_blocking_summary">Silence calls from blocked numbers</string>
+    <string name="settings_sounds_summary_default">Default</string>
+    <string name="settings_call_waiting_key" translatable="false">settings_call_waiting</string>
+    <string name="settings_call_blocking_key" translatable="false">settings_call_blocking</string>
 </resources>

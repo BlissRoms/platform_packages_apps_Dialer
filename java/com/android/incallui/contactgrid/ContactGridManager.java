@@ -313,7 +313,9 @@ public class ContactGridManager {
             .setIsBusiness(primaryInfo.photoType() == ContactPhotoType.BUSINESS)
             .setIsVoicemail(primaryCallState.isVoiceMailNumber())
             .setIsSpam(primaryInfo.isSpam())
-            .setIsConference(primaryCallState.isConference());
+            .setIsConference(primaryCallState.isConference())
+            // Call-screen avatars are masked into a clover shape, so load them square.
+            .setIsCircular(false);
 
     // Contact has a name, that is a number.
     if (primaryInfo.nameIsNumber() && primaryInfo.number() != null) {

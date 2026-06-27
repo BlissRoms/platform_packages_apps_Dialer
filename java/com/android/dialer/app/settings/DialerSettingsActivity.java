@@ -72,19 +72,17 @@ public class DialerSettingsActivity extends BaseActivity implements
       }
     }
 
-    // If savedInstanceState is non-null, then the activity is being
-    // recreated and super.onCreate() has already recreated the fragment.
+    // If savedInstanceState is non-null, the activity is being recreated and the fragment is
+    // already restored.
     if (savedInstanceState == null) {
-      if (initialFragment == null) {
-        initialFragment = PrefsFragment.class.getName();
-      }
       Fragment fragment;
-      try {
-        fragment = getSupportFragmentManager()
-                .getFragmentFactory()
-                .instantiate(getClassLoader(), initialFragment);
-      } catch (Exception ignored) {
-        fragment = new PrefsFragment();
+      if (initialFragment == null) {
+        // Default entry point: the redesigned card-based settings root.
+        fragment = new SettingsRedesignFragment();
+      } else {
+        // Deep link (header: scheme): host the requested preference fragment under our header.
+        fragment = SettingsSubScreenFragment.newInstance(
+                initialFragment, getString(R.string.dialer_settings_label), null);
       }
 
       getSupportFragmentManager().beginTransaction()
@@ -92,27 +90,30 @@ public class DialerSettingsActivity extends BaseActivity implements
               .commit();
     }
 
-    getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-      if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-        setTitle(R.string.dialer_settings_label);
-      }
-    });
+  }
 
-    setupInsets(findViewById(R.id.main_layout));
+  /**
+   * Opens a legacy preference sub-screen hosted under a custom header. The host avoids the system
+   * ActionBar entirely so there is no header flash when navigating back to the redesigned root.
+   */
+  public void openSubFragment(
+      @NonNull String fragmentClass, CharSequence title, @Nullable Bundle args) {
+    getSupportFragmentManager().beginTransaction()
+            .setCustomAnimations(
+                    R.anim.settings_slide_in_right,
+                    R.anim.settings_slide_out_left,
+                    R.anim.settings_slide_in_left,
+                    R.anim.settings_slide_out_right)
+            .replace(R.id.content_frame,
+                    SettingsSubScreenFragment.newInstance(fragmentClass, title, args))
+            .addToBackStack(null)
+            .commit();
   }
 
   @Override
   public boolean onPreferenceStartFragment(@NonNull PreferenceFragmentCompat caller,
                                            @NonNull Preference pref) {
-    Fragment fragment = getSupportFragmentManager()
-            .getFragmentFactory()
-            .instantiate(getClassLoader(), pref.getFragment());
-    fragment.setArguments(pref.getExtras());
-    getSupportFragmentManager().beginTransaction()
-            .replace(R.id.content_frame, fragment, "")
-            .addToBackStack(null)
-            .commit();
-    setTitle(pref.getTitle());
+    openSubFragment(pref.getFragment(), pref.getTitle(), pref.getExtras());
     return true;
   }
 

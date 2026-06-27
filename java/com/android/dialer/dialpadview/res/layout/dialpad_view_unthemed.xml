@@ -27,7 +27,8 @@
     android:clickable="true"
     android:elevation="?attr/dialpad_elevation"
     android:layoutDirection="ltr"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="18dp">
 
   <!-- Text field where call rate is displayed for ILD calls. -->
   <LinearLayout
@@ -89,7 +90,7 @@
         android:src="@drawable/quantum_ic_close_vd_theme_24"
         android:tintMode="src_in"
         android:visibility="gone"
-        app:tint="@color/dialer_theme_color_light" />
+        app:tint="@color/dialpad_digit_color" />
 
     <ImageButton
         android:id="@+id/dialpad_overflow"
@@ -104,7 +105,7 @@
         android:src="@drawable/quantum_ic_more_vert_vd_theme_24"
         android:tintMode="src_in"
         android:visibility="gone"
-        app:tint="@color/dialer_theme_color_light"
+        app:tint="@color/dialpad_digit_color"
         tools:visibility="visible"/>
 
       <FrameLayout android:layout_width="0dp"
@@ -152,13 +153,13 @@
         android:src="@drawable/quantum_ic_backspace_vd_theme_24"
         android:state_enabled="false"
         android:tintMode="src_in"
-        app:tint="@color/dialer_theme_color_light" />
+        app:tint="@color/dialpad_digit_color" />
   </LinearLayout>
 
   <View
       android:layout_width="match_parent"
       android:layout_height="1dp"
-      android:background="@android:color/transparent"/>
+      android:background="@color/dialpad_divider_color"/>
 
   <Space
       android:layout_width="match_parent"

@@ -240,7 +240,7 @@
   <string name="voicemailCallLogDateTimeFormatWithDuration"><xliff:g example="Jul 25, 2014 at 2:49PM" id="dateAndTime">%1$s</xliff:g> \u2022 <xliff:g example="01:22" id="duration">%2$s</xliff:g></string>
 
   <!-- Message displayed when there is no application available to handle voice search. [CHAR LIMIT=NONE] -->
-  <string name="voice_search_not_available">Voice search not available</string>
+  <string name="voice_search_not_available">Speech recognition service not found</string>
 
   <!-- Hint displayed in dialer search box when there is no query that is currently typed.
        [CHAR LIMIT=30] -->
@@ -402,7 +402,27 @@
        [CHAR LIMIT=65] -->
   <string name="call_log_header_yesterday">Yesterday</string>
 
-  <!-- String used as a header in the call log above calls which occurred two days or more ago.
+  <!-- Filter chip label for blocked calls on the recents screen. [CHAR LIMIT=20] -->
+  <string name="recents_chip_spam">Blocked</string>
+
+  <!-- Filter chip label that opens the menu to choose call type filters. [CHAR LIMIT=20] -->
+  <string name="recents_chip_customize">Customize</string>
+
+  <!-- Customize menu option: show only incoming calls. [CHAR LIMIT=30] -->
+  <string name="recents_filter_incoming">Incoming</string>
+
+  <!-- Customize menu option: show only outgoing calls. [CHAR LIMIT=30] -->
+  <string name="recents_filter_outgoing">Outgoing</string>
+
+  <!-- Toast shown when tapping the Spam filter chip, which is not yet wired to spam data.
+       [CHAR LIMIT=NONE] -->
+  <string name="recents_chip_spam_unavailable">Spam filtering isn\'t available yet</string>
+
+  <!-- String used as a header in the call log above calls which occurred earlier this week
+       (between two and six days ago). [CHAR LIMIT=65] -->
+  <string name="call_log_header_this_week">This Week</string>
+
+  <!-- String used as a header in the call log above calls which occurred a week or more ago.
        [CHAR LIMIT=65] -->
   <string name="call_log_header_other">Older</string>
 

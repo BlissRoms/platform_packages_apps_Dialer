@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="incall_button_background_color">@android:color/system_neutral1_50</color>
+    <color name="incall_button_background_color">@android:color/system_accent1_700</color>
     <color name="incall_end_call_icon_color">@android:color/black</color>
+
+    <color name="incall_button_bg_idle">@android:color/system_neutral1_800</color>
+    <color name="incall_button_icon_idle">@android:color/system_neutral1_50</color>
+
+    <color name="incall_button_tray_background_color">#FF2D2D2D</color>
+    <color name="incall_end_call_pill_color">@color/dialer_end_call_button_color</color>
+    <color name="incall_end_call_pill_icon_color">#FFFFFFFF</color>
 </resources>

@@ -96,6 +96,12 @@
 
   <style name="Dialer.Settings.PreferenceTheme" parent="@style/PreferenceThemeOverlay">
     <item name="switchPreferenceCompatStyle">@style/Dialer.SwitchPreferenceCompat</item>
+    <item name="preferenceStyle">@style/Dialer.Preference.Card</item>
+    <item name="preferenceScreenStyle">@style/Dialer.Preference.Card</item>
+    <item name="dialogPreferenceStyle">@style/Dialer.Preference.Card.Dialog</item>
+    <item name="editTextPreferenceStyle">@style/Dialer.Preference.Card.Dialog</item>
+    <item name="preferenceCategoryStyle">@style/Dialer.Preference.Category</item>
+    <item name="preferenceFragmentCompatStyle">@style/Dialer.Settings.PreferenceFragment</item>
   </style>
 
 

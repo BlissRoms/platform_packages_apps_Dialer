@@ -27,6 +27,7 @@ import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardDismissCallback;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -137,6 +138,7 @@ public class AnswerFragment extends Fragment
 
   private View importanceBadge;
   private SwipeButtonView secondaryButton;
+  private View messagePill;
   private SwipeButtonView answerAndReleaseButton;
   private AffordanceHolderLayout affordanceHolderLayout;
   private LinearLayout chipContainer;
@@ -336,6 +338,12 @@ public class AnswerFragment extends Fragment
     secondaryBehavior.performAction(this);
   }
 
+  private void setMessagePillVisible(boolean visible) {
+    if (messagePill != null) {
+      messagePill.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+  }
+
   private void performAnswerAndReleaseButtonAction() {
     answerAndReleaseBehavior.performAction(this);
   }
@@ -386,14 +394,18 @@ public class AnswerFragment extends Fragment
       LogUtil.i("AnswerFragment.setTextResponses", "no text responses, hiding secondary button");
       this.textResponses = null;
       secondaryButton.setVisibility(View.INVISIBLE);
+      setMessagePillVisible(false);
     } else if (getActivity().isInMultiWindowMode()) {
       LogUtil.i("AnswerFragment.setTextResponses", "in multiwindow, hiding secondary button");
       this.textResponses = null;
       secondaryButton.setVisibility(View.INVISIBLE);
+      setMessagePillVisible(false);
     } else {
       LogUtil.i("AnswerFragment.setTextResponses", "textResponses.size: " + textResponses.size());
       this.textResponses = new ArrayList<>(textResponses);
-      secondaryButton.setVisibility(View.VISIBLE);
+      // The circular swipe button is replaced by the Message pill in the redesign.
+      secondaryButton.setVisibility(View.INVISIBLE);
+      setMessagePillVisible(true);
     }
   }
 
@@ -409,11 +421,8 @@ public class AnswerFragment extends Fragment
     secondaryButton.setFocusable(AccessibilityUtil.isAccessibilityEnabled(getContext()));
     secondaryButton.setAccessibilityDelegate(accessibilityDelegate);
 
-    if (isVideoUpgradeRequest()) {
-      secondaryButton.setVisibility(View.INVISIBLE);
-    } else if (isVideoCall()) {
-      secondaryButton.setVisibility(View.VISIBLE);
-    }
+    // The circular swipe button is replaced by the Message pill in the redesign; keep it hidden.
+    secondaryButton.setVisibility(View.INVISIBLE);
 
     answerAndReleaseBehavior = SecondaryBehavior.ANSWER_AND_RELEASE;
     answerAndReleaseBehavior.applyToView(answerAndReleaseButton);
@@ -551,10 +560,15 @@ public class AnswerFragment extends Fragment
       }
     } else if (shouldShowAvatar()) {
       // Needs Avatar
-      if (!(current instanceof AvatarFragment)) {
-        LogUtil.i("AnswerFragment.updateDataFragment", "Replacing avatar fragment");
-        // Needs replacement
-        newFragment = new AvatarFragment();
+      if (current != null) {
+        LogUtil.i("AnswerFragment.updateDataFragment", "Removing current fragment");
+        getChildFragmentManager().beginTransaction().remove(current).commitNow();
+      }
+      if (getView() != null) {
+        contactGridManager.setAvatarImageView(
+            (ImageView) getView().findViewById(R.id.contactgrid_avatar),
+            getResources().getDimensionPixelSize(R.dimen.incoming_avatar_size),
+            true /* showAnonymousAvatar */);
       }
     } else {
       // Needs empty
@@ -671,8 +685,16 @@ public class AnswerFragment extends Fragment
         });
     updateImportanceBadgeVisibility();
 
-    contactGridManager = new ContactGridManager(view, null, 0, false /* showAnonymousAvatar */);
+    contactGridManager =
+        new ContactGridManager(
+            view,
+            (ImageView) view.findViewById(R.id.contactgrid_avatar),
+            getResources().getDimensionPixelSize(R.dimen.incoming_avatar_size),
+            true /* showAnonymousAvatar */);
     boolean isInMultiWindowMode = getActivity().isInMultiWindowMode();
+
+    messagePill = view.findViewById(R.id.incoming_message_pill);
+    messagePill.setOnClickListener(v -> performSecondaryButtonAction());
     contactGridManager.onMultiWindowModeChanged(isInMultiWindowMode);
 
     Fragment answerMethod =
@@ -693,6 +715,12 @@ public class AnswerFragment extends Fragment
     initChips();
 
     int flags = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+    boolean isNight =
+        (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+            == Configuration.UI_MODE_NIGHT_YES;
+    if (!isNight) {
+      flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+    }
     if (!isInMultiWindowMode
         && (getActivity().checkSelfPermission(permission.STATUS_BAR)
             == PackageManager.PERMISSION_GRANTED)) {
@@ -1090,39 +1118,4 @@ public class AnswerFragment extends Fragment
     return primaryInfo.multimediaData();
   }
 
-  /** Shows the Avatar image if available. */
-  public static class AvatarFragment extends Fragment implements AvatarPresenter {
-
-    private ImageView avatarImageView;
-
-    @Nullable
-    @Override
-    public View onCreateView(
-        LayoutInflater layoutInflater, @Nullable ViewGroup viewGroup, @Nullable Bundle bundle) {
-      return layoutInflater.inflate(R.layout.fragment_avatar, viewGroup, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle bundle) {
-      super.onViewCreated(view, bundle);
-      avatarImageView = ((ImageView) view.findViewById(R.id.contactgrid_avatar));
-      FragmentUtils.getParentUnsafe(this, MultimediaFragment.Holder.class).updateAvatar(this);
-    }
-
-    @NonNull
-    @Override
-    public ImageView getAvatarImageView() {
-      return avatarImageView;
-    }
-
-    @Override
-    public int getAvatarSize() {
-      return getResources().getDimensionPixelSize(R.dimen.answer_avatar_size);
-    }
-
-    @Override
-    public boolean shouldShowAnonymousAvatar() {
-      return false;
-    }
-  }
 }

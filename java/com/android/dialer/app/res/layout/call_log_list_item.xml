@@ -31,17 +31,26 @@
     android:layout_gravity="start"
     android:layout_marginStart="@dimen/call_log_start_margin"
     android:layout_marginEnd="@dimen/call_log_outer_margin"
-    android:paddingTop="@dimen/call_log_day_group_padding_top"
+    android:paddingTop="2dp"
     android:paddingBottom="@dimen/call_log_day_group_padding_bottom"
+    android:textColor="@color/recents_day_header_text"
+    android:textSize="13sp"
+    android:textFontWeight="500"
     style="@style/Dialer.TextAppearance.OVERLINE.Ellipsize"/>
 
   <androidx.cardview.widget.CardView
     android:id="@+id/call_log_row"
+    android:layout_marginTop="1.5dp"
+    android:layout_marginBottom="1.5dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="0dp"
     style="@style/CallLogCardStyle">
 
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:minHeight="74dp"
+      android:background="@drawable/recents_row_card_bg"
       android:orientation="vertical">
 
       <!-- Primary area containing the contact badge and caller information -->
@@ -67,8 +76,8 @@
 
           <com.android.dialer.app.calllog.DialerQuickContactBadge
               android:id="@+id/quick_contact_photo"
-              android:layout_width="@dimen/contact_photo_size"
-              android:layout_height="@dimen/contact_photo_size"
+              android:layout_width="50dp"
+              android:layout_height="50dp"
               android:paddingTop="2dp"
               android:nextFocusRight="@id/primary_action_view"
               android:focusable="true"
@@ -77,8 +86,8 @@
           <ImageView
               android:id="@+id/quick_contact_checkbox"
               android:scaleType="fitCenter"
-              android:layout_width="@dimen/contact_photo_size"
-              android:layout_height="@dimen/contact_photo_size"
+              android:layout_width="50dp"
+              android:layout_height="50dp"
               android:visibility="gone"
               android:src="@drawable/ic_check_mark_48dp" />
 
@@ -99,6 +108,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/call_log_name_margin_bottom"
             android:layout_marginEnd="@dimen/call_log_icon_margin"
+            android:textColor="@color/recents_name_text"
+            android:textSize="18sp"
+            android:textFontWeight="500"
             style="@style/Dialer.TextAppearance.Primary.Ellipsize"/>
 
           <LinearLayout
@@ -129,6 +141,8 @@
               android:layout_height="wrap_content"
               android:layout_marginEnd="@dimen/call_log_icon_margin"
               android:layout_gravity="center_vertical"
+              android:textColor="@color/recents_subtitle_text"
+              android:textSize="13sp"
               style="Dialer.TextAppearance.Secondary.Ellipsize"/>
 
           </LinearLayout>
@@ -152,7 +166,7 @@
           android:background="?android:attr/selectableItemBackgroundBorderless"
           android:scaleType="center"
           android:visibility="gone"
-          app:tint="?colorIcon" />
+          app:tint="@color/recents_callback_icon" />
 
       </LinearLayout>
 

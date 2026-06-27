@@ -22,9 +22,14 @@
   <dimen name="incall_button_vertical_padding">8dp</dimen>
   <dimen name="incall_avatar_size">0dp</dimen>
   <dimen name="incall_labeled_button_size">48dp</dimen>
-  <dimen name="incall_labeled_button_icon_size">36dp</dimen>
+  <dimen name="incall_labeled_button_icon_size">28dp</dimen>
   <dimen name="tools_button_height">76dp</dimen>
   <dimen name="incall_window_margin_horizontal">24dp</dimen>
+
+  <!-- Swipe-up control sheet drag handle -->
+  <dimen name="incall_sheet_handle_width">32dp</dimen>
+  <dimen name="incall_sheet_handle_height">4dp</dimen>
+  <dimen name="incall_sheet_handle_margin">6dp</dimen>
 
   <bool name="incall_dialpad_allowed">false</bool>
   <integer name="incall_num_rows">0</integer>

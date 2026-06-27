@@ -38,7 +38,6 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.ActionMode;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -82,7 +81,6 @@ import com.android.dialer.promotion.Promotion.PromotionType;
 import com.android.dialer.promotion.PromotionComponent;
 import com.android.dialer.searchfragment.list.NewSearchFragment.SearchFragmentListener;
 import com.android.dialer.smartdial.util.SmartDialPrefix;
-import com.android.dialer.speeddial.SpeedDialFragment;
 import com.android.dialer.storage.StorageComponent;
 import com.android.dialer.telecom.TelecomUtil;
 import com.android.dialer.theme.base.Theme;
@@ -137,9 +135,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
   // Call Log
   private MainCallLogHost callLogHostInterface;
   private MainCallLogFragmentListener callLogFragmentListener;
-
-  // Speed Dial
-  private MainSpeedDialFragmentHost speedDialFragmentHost;
 
   /** Language the device was in last time {@link #onSaveInstanceState(Bundle)} was called. */
   private String savedLanguageCode;
@@ -228,6 +223,7 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
     activity.setSupportActionBar(activity.findViewById(R.id.toolbar));
 
     bottomNav = activity.findViewById(R.id.bottom_nav_bar);
+    bottomNav.setBlurSource(activity.findViewById(R.id.coordinator_layout));
     bottomNavTabListener =
         new MainBottomNavBarBottomNavTabListener(
             activity,
@@ -258,13 +254,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
     callLogAdapterOnActionModeStateChangedListener =
         new MainCallLogAdapterOnActionModeStateChangedListener();
     callLogHostInterface = new MainCallLogHost(searchController, fab);
-
-    speedDialFragmentHost =
-        new MainSpeedDialFragmentHost(
-            toolbar,
-            activity.findViewById(R.id.root_layout),
-            (ViewGroup) snackbarContainer,
-            activity.findViewById(R.id.fragment_container));
 
     lastTabController = new LastTabController(activity, bottomNav, showVoicemailTab);
 
@@ -498,8 +487,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
       return (T) callLogFragmentListener;
     } else if (callbackInterface.isInstance(searchController)) {
       return (T) searchController;
-    } else if (callbackInterface.isInstance(speedDialFragmentHost)) {
-      return (T) speedDialFragmentHost;
     } else {
       return null;
     }
@@ -585,6 +572,11 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
     public void onCallPlacedFromDialpad() {
       // TODO(calderwoodra): logging
       searchController.onCallPlacedFromSearch();
+    }
+
+    @Override
+    public void onDialpadClosed() {
+      searchController.closeDialpad();
     }
   }
 
@@ -711,7 +703,7 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
     private final Toolbar toolbar;
     private final MainBottomNavBarBottomNavTabListener bottomNavTabListener;
 
-    private @TabIndex int currentTab = TabIndex.SPEED_DIAL;
+    private @TabIndex int currentTab = TabIndex.CALL_LOG;
     private long timeSelected = -1;
     private boolean activityIsAlive;
 
@@ -828,11 +820,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
     }
 
     @Override
-    public void onSpeedDialSelected() {
-      setCurrentTab(TabIndex.SPEED_DIAL);
-    }
-
-    @Override
     public void onCallLogSelected() {
       setCurrentTab(TabIndex.CALL_LOG);
     }
@@ -894,42 +881,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
   }
 
   /**
-   * Handles the callbacks for {@link SpeedDialFragment}.
-   *
-   * @see SpeedDialFragment.HostInterface
-   */
-  private static final class MainSpeedDialFragmentHost implements SpeedDialFragment.HostInterface {
-
-    private final MainToolbar toolbar;
-    private final ViewGroup rootLayout;
-    private final ViewGroup coordinatorLayout;
-    private final ViewGroup fragmentContainer;
-
-    MainSpeedDialFragmentHost(
-        MainToolbar toolbar,
-        ViewGroup rootLayout,
-        ViewGroup coordinatorLayout,
-        ViewGroup fragmentContainer) {
-      this.toolbar = toolbar;
-      this.rootLayout = rootLayout;
-      this.coordinatorLayout = coordinatorLayout;
-      this.fragmentContainer = fragmentContainer;
-    }
-
-    @Override
-    public void setHasFrequents(boolean hasFrequents) {
-      toolbar.showClearFrequents(hasFrequents);
-    }
-
-    @Override
-    public void dragFavorite(boolean start) {
-      rootLayout.setClipChildren(!start);
-      coordinatorLayout.setClipChildren(!start);
-      fragmentContainer.setClipChildren(!start);
-    }
-  }
-
-  /**
    * Implementation of {@link OnBottomNavTabSelectedListener} that handles logic for showing each of
    * the main tabs and FAB.
    *
@@ -939,7 +890,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
   private static final class MainBottomNavBarBottomNavTabListener
       implements OnBottomNavTabSelectedListener {
 
-    private static final String SPEED_DIAL_TAG = "speed_dial";
     private static final String CALL_LOG_TAG = "call_log";
     private static final String CONTACTS_TAG = "contacts";
     private static final String VOICEMAIL_TAG = "voicemail";
@@ -960,20 +910,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
       this.fragmentManager = fragmentManager;
       this.fab = fab;
       this.bottomSheet = bottomSheet;
-    }
-
-    @Override
-    public void onSpeedDialSelected() {
-      LogUtil.enterBlock("MainBottomNavBarBottomNavTabListener.onSpeedDialSelected");
-      if (selectedTab == TabIndex.SPEED_DIAL) {
-        return;
-      }
-      selectedTab = TabIndex.SPEED_DIAL;
-
-      Fragment fragment = fragmentManager.findFragmentByTag(SPEED_DIAL_TAG);
-      showFragment(fragment == null ? SpeedDialFragment.newInstance() : fragment, SPEED_DIAL_TAG);
-
-      fab.show();
     }
 
     @Override
@@ -1068,14 +1004,12 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
         @Nullable Fragment fragment,
         String tag) {
       LogUtil.enterBlock("MainBottomNavBarBottomNavTabListener.showFragment");
-      Fragment speedDial = fragmentManager.findFragmentByTag(SPEED_DIAL_TAG);
       Fragment callLog = fragmentManager.findFragmentByTag(CALL_LOG_TAG);
       Fragment contacts = fragmentManager.findFragmentByTag(CONTACTS_TAG);
       Fragment voicemail = fragmentManager.findFragmentByTag(VOICEMAIL_TAG);
 
       FragmentTransaction transaction = fragmentManager.beginTransaction();
-      boolean fragmentShown = showIfEqualElseHide(transaction, fragment, speedDial);
-      fragmentShown |= showIfEqualElseHide(transaction, fragment, callLog);
+      boolean fragmentShown = showIfEqualElseHide(transaction, fragment, callLog);
       fragmentShown |= showIfEqualElseHide(transaction, fragment, contacts);
       fragmentShown |= showIfEqualElseHide(transaction, fragment, voicemail);
 
@@ -1124,7 +1058,7 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
     }
 
     /**
-     * Get the last tab shown to the user, or the speed dial tab if this is the first time the user
+     * Get the last tab shown to the user, or the call log tab if this is the first time the user
      * has opened the app.
      */
     @TabIndex
@@ -1132,11 +1066,18 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
       @TabIndex int tabIndex =
           StorageComponent.get(context)
               .unencryptedSharedPrefs()
-              .getInt(KEY_LAST_TAB, TabIndex.SPEED_DIAL);
+              .getInt(KEY_LAST_TAB, TabIndex.CALL_LOG);
 
-      // If the voicemail tab cannot be shown, default to showing speed dial
+      // Coerce stale/removed tab indices (e.g. old speed dial at 0) to the call log tab.
+      if (tabIndex != TabIndex.CALL_LOG
+          && tabIndex != TabIndex.CONTACTS
+          && tabIndex != TabIndex.VOICEMAIL) {
+        tabIndex = TabIndex.CALL_LOG;
+      }
+
+      // If the voicemail tab cannot be shown, default to showing the call log
       if (tabIndex == TabIndex.VOICEMAIL && !canShowVoicemailTab) {
-        tabIndex = TabIndex.SPEED_DIAL;
+        tabIndex = TabIndex.CALL_LOG;
       }
 
       return tabIndex;

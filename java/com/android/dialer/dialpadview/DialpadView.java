@@ -89,6 +89,7 @@ public class DialpadView extends LinearLayout {
   private TextView digitsHint;
   private ImageButton delete;
   private View overflowMenuButton;
+  private View backButton;
   private ViewGroup rateContainer;
   private TextView ildCountry;
   private TextView ildRate;
@@ -142,6 +143,7 @@ public class DialpadView extends LinearLayout {
     digitsHint = findViewById(R.id.digits_hint);
     delete = (ImageButton) findViewById(R.id.deleteButton);
     overflowMenuButton = findViewById(R.id.dialpad_overflow);
+    backButton = findViewById(R.id.dialpad_back);
     rateContainer = (ViewGroup) findViewById(R.id.rate_container);
     ildCountry = (TextView) rateContainer.findViewById(R.id.ild_country);
     ildRate = (TextView) rateContainer.findViewById(R.id.ild_rate);
@@ -195,7 +197,7 @@ public class DialpadView extends LinearLayout {
       }
 
       final RippleDrawable rippleBackground =
-          (RippleDrawable) getContext().getDrawable(R.drawable.btn_dialpad_key);
+          (RippleDrawable) getContext().getDrawable(R.drawable.btn_dialpad_key_pill);
       if (rippleColor != null) {
         rippleBackground.setColor(rippleColor);
       }
@@ -330,6 +332,10 @@ public class DialpadView extends LinearLayout {
 
   public View getOverflowMenuButton() {
     return overflowMenuButton;
+  }
+
+  public View getBackButton() {
+    return backButton;
   }
 
   /**

@@ -46,4 +46,33 @@
       app:iconSpaceReserved="false" >
   </PreferenceScreen>
 
+  <PreferenceCategory
+      android:key="@string/on_device_voicemail_category_key"
+      android:title="@string/on_device_voicemail_category_title"
+      app:iconSpaceReserved="false">
+
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="@string/on_device_voicemail_enabled_key"
+        android:summary="@string/on_device_voicemail_enabled_summary"
+        android:title="@string/on_device_voicemail_enabled_title" />
+
+    <ListPreference
+        android:defaultValue="15"
+        android:dependency="@string/on_device_voicemail_enabled_key"
+        android:entries="@array/on_device_voicemail_timeout_entries"
+        android:entryValues="@array/on_device_voicemail_timeout_values"
+        android:key="@string/on_device_voicemail_timeout_key"
+        android:summary="%s"
+        android:title="@string/on_device_voicemail_timeout_title"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="@string/on_device_voicemail_location_key"
+        android:title="@string/on_device_voicemail_location_title"
+        android:selectable="true"
+        app:iconSpaceReserved="false" />
+
+  </PreferenceCategory>
+
 </PreferenceScreen>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2026 The BlissRoms Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:gravity="bottom|center_horizontal"
+    android:orientation="vertical">
+
+  <TextView
+      android:id="@+id/swipe_horizontal_hint_text"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="24dp"
+      android:accessibilityLiveRegion="polite"
+      android:alpha="0"
+      android:textAppearance="@style/Dialer.Incall.TextAppearance"/>
+
+  <FrameLayout
+      android:id="@+id/swipe_horizontal_track"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/swipe_horizontal_track_height"
+      android:layout_marginStart="@dimen/swipe_horizontal_track_margin_horizontal"
+      android:layout_marginEnd="@dimen/swipe_horizontal_track_margin_horizontal"
+      android:layout_marginBottom="@dimen/swipe_horizontal_track_margin_bottom"
+      android:background="@drawable/swipe_track_background"
+      android:clipChildren="false"
+      android:clipToPadding="false">
+
+    <TextView
+        android:id="@+id/swipe_horizontal_decline_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center_vertical"
+        android:layout_marginStart="@dimen/swipe_horizontal_label_margin"
+        android:text="@string/call_incoming_decline"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textFontWeight="500"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/swipe_horizontal_answer_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="@dimen/swipe_horizontal_label_margin"
+        android:text="@string/call_incoming_answer"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textFontWeight="500"
+        android:textSize="18sp"/>
+
+    <ImageView
+        android:id="@+id/swipe_horizontal_puck"
+        android:layout_width="@dimen/swipe_horizontal_puck_width"
+        android:layout_height="@dimen/swipe_horizontal_puck_height"
+        android:layout_gravity="center"
+        android:background="@drawable/swipe_puck_background"
+        android:contentDescription="@string/call_incoming_answer"
+        android:elevation="@dimen/swipe_horizontal_puck_elevation"
+        android:scaleType="center"
+        android:src="@drawable/quantum_ic_call_vd_theme_24"
+        android:tint="@color/answer_swipe_puck_icon"/>
+
+  </FrameLayout>
+</LinearLayout>

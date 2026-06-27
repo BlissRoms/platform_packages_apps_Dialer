@@ -40,4 +40,29 @@
 
   <!-- Material next track off color-->
   <color name="track_off_color">@android:color/system_neutral2_500</color>
+
+  <!-- Recents redesign tokens (light). Dark variants live in values-night/colors.xml. -->
+  <color name="recents_fab_bg">@android:color/system_accent1_600</color>
+  <color name="recents_fab_icon">@android:color/system_accent1_0</color>
+  <color name="recents_search_bar_bg">#FFFFFF</color>
+  <color name="recents_searchbar_icon">#777777</color>
+  <color name="recents_day_header_text">#000000</color>
+  <color name="recents_card_bg">#FFFFFF</color>
+  <color name="recents_name_text">#000000</color>
+  <color name="recents_subtitle_text">#777777</color>
+  <color name="recents_callback_icon">#777777</color>
+  <color name="recents_nav_bar_bg">#CCFFFFFF</color>
+  <color name="recents_nav_glass_tint">#40FFFFFF</color>
+  <color name="recents_nav_selected_pill">@android:color/system_accent1_600</color>
+  <color name="recents_nav_selected_text">@android:color/system_accent1_0</color>
+  <color name="recents_nav_unselected_text">#878787</color>
+  <color name="recents_screen_bg">#F9F9F9</color>
+  <color name="recents_chip_selected_bg">@android:color/system_accent1_600</color>
+  <color name="recents_chip_selected_text">@android:color/system_accent1_0</color>
+  <color name="recents_chip_unselected_bg">#FFFFFF</color>
+  <color name="recents_chip_border">#F1F1F1</color>
+  <color name="recents_chip_unselected_text">#777777</color>
+
+  <!-- Redesigned settings screen (light). Dark variants live in values-night/colors.xml. -->
+  <color name="settings_row_divider">#EEEEEE</color>
 </resources>

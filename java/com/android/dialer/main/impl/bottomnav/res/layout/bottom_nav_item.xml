@@ -20,19 +20,21 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="80dp"
-    android:minHeight="56dp"
+    android:minHeight="0dp"
     android:gravity="center">
 
+  <!-- Icon + active-indicator + notification badge retained (ids referenced by
+       BottomNavItem.java) but the whole block is gone so it does not take vertical space above
+       the text pill: the redesigned bottom nav is a text-only pill. -->
   <FrameLayout
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:visibility="gone">
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone">
 
     <View
         android:id="@+id/active_indicator"
@@ -40,7 +42,7 @@
         android:layout_height="32dp"
         android:background="@drawable/pill"
         android:gravity="center"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/bottom_nav_item_image"
@@ -73,11 +75,17 @@
 
   <TextView
       android:id="@+id/bottom_nav_item_text"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="16dp"
-      android:gravity="center_horizontal"
-      android:textSize="12sp"
-      style="@style/Dialer.TextAppearance.OVERLINE"
-      android:textColor="?android:attr/textColorPrimary"/>
+      android:layout_marginTop="3dp"
+      android:layout_marginBottom="3dp"
+      android:gravity="center"
+      android:paddingTop="9dp"
+      android:paddingBottom="9dp"
+      android:paddingStart="32dp"
+      android:paddingEnd="32dp"
+      android:background="@drawable/recents_nav_pill_selector"
+      android:textSize="17sp"
+      android:textFontWeight="400"
+      android:textColor="@color/recents_nav_text_selector"/>
 </com.android.dialer.main.impl.bottomnav.BottomNavItem>
