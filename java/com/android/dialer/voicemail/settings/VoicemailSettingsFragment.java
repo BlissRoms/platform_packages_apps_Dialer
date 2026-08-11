@@ -194,9 +194,26 @@ public class VoicemailSettingsFragment extends PreferenceFragmentCompat
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
     String uriString = prefs.getString("on_device_voicemail_location_uri", null);
     if (uriString != null) {
-      locationPreference.setSummary(uriString);
+      String displayPath = uriString;
+      try {
+        android.net.Uri uri = android.net.Uri.parse(uriString);
+        if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
+          String docId = android.provider.DocumentsContract.getTreeDocumentId(uri);
+          String[] split = docId.split(":");
+          if (split.length >= 2) {
+            if ("primary".equalsIgnoreCase(split[0])) {
+              displayPath = android.os.Environment.getExternalStorageDirectory() + "/" + split[1];
+            } else {
+              displayPath = split[0] + "/" + split[1];
+            }
+          }
+        }
+      } catch (Exception e) {
+        // Ignore parsing errors, fallback to raw uriString
+      }
+      locationPreference.setSummary(displayPath);
     } else {
-      File dir = new File(getContext().getFilesDir(), "voicemails");
+      File dir = new File(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PODCASTS), "Voicemails");
       locationPreference.setSummary(dir.getAbsolutePath());
     }
   }
