@@ -75,6 +75,12 @@
   <!-- In-call screen: status label displayed briefly after a call ends [CHAR LIMIT=25] -->
   <string name="incall_call_ended">Call ended</string>
 
+  <!-- Displayed when a call is being answered by the on-device voicemail -->
+  <string name="on_device_voicemail_greeting">Playing voicemail greeting…</string>
+
+  <!-- Displayed when a call is being recorded by the on-device voicemail -->
+  <string name="on_device_voicemail_recording">Recording voicemail…</string>
+
   <!-- In-call screen: label shown at the top of the screen when a call is on hold by the remote
      party [CHAR LIMIT=25] -->
   <string name="incall_remotely_held">On hold</string>

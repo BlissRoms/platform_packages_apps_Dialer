@@ -1259,6 +1259,12 @@ public class InCallActivity extends TransactionSafeFragmentActivity
       return new ShouldShowUiResult(true, call);
     }
 
+    call = CallList.getInstance().getFirstCall();
+    if (call != null && call.isOnDeviceVoicemail()) {
+      LogUtil.i("InCallActivity.getShouldShowAnswerUi", "found on-device voicemail call");
+      return new ShouldShowUiResult(true, call);
+    }
+
     // Check if we're showing the answer screen and the call is disconnected. If this condition is
     // true then we won't switch from the answer UI to the in call UI. This prevents flicker when
     // the user rejects an incoming call.

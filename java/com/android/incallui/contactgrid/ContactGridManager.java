@@ -27,6 +27,8 @@ import android.text.TextDirectionHeuristics;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.Space;
@@ -82,6 +84,7 @@ public class ContactGridManager {
   private final ViewAnimator bottomTextSwitcher;
   private final BidiTextView bottomTextView;
   private final Chronometer bottomTimerView;
+  private final TextView voicemailGreetingTextView;
   private final Space topRowSpace;
   private int avatarSize;
   private boolean hideAvatar;
@@ -116,6 +119,7 @@ public class ContactGridManager {
     bottomTextSwitcher = view.findViewById(R.id.contactgrid_bottom_text_switcher);
     bottomTextView = view.findViewById(R.id.contactgrid_bottom_text);
     bottomTimerView = view.findViewById(R.id.contactgrid_bottom_timer);
+    voicemailGreetingTextView = view.findViewById(R.id.contactgrid_voicemail_greeting);
     topRowSpace = view.findViewById(R.id.contactgrid_top_row_space);
 
     contactGridLayout = (View) contactNameTextView.getParent();
@@ -215,12 +219,39 @@ public class ContactGridManager {
 
     if (!middleRowVisible) {
       avatarImageView.setVisibility(View.GONE);
+      if (voicemailGreetingTextView != null) {
+        voicemailGreetingTextView.setVisibility(View.GONE);
+        voicemailGreetingTextView.clearAnimation();
+      }
       return false;
+    }
+
+    if (primaryCallState != null && primaryCallState.isOnDeviceVoicemail()) {
+      avatarImageView.setVisibility(View.GONE);
+      if (voicemailGreetingTextView != null) {
+        voicemailGreetingTextView.setVisibility(View.VISIBLE);
+        if (voicemailGreetingTextView.getAnimation() == null) {
+          Animation pulse = AnimationUtils.loadAnimation(context, R.anim.voicemail_text_pulse);
+          voicemailGreetingTextView.startAnimation(pulse);
+        }
+        if (primaryCallState.isOnDeviceVoicemailRecording()) {
+          voicemailGreetingTextView.setText(R.string.on_device_voicemail_recording);
+        } else {
+          voicemailGreetingTextView.setText(R.string.on_device_voicemail_greeting);
+        }
+      }
+      return false;
+    }
+
+    if (voicemailGreetingTextView != null) {
+      voicemailGreetingTextView.setVisibility(View.GONE);
+      voicemailGreetingTextView.clearAnimation();
     }
 
     boolean hasPhoto =
         (primaryInfo.photo() != null || primaryInfo.photoUri() != null)
             && primaryInfo.photoType() == ContactPhotoType.CONTACT;
+            
     if (!hasPhoto && !showAnonymousAvatar) {
       avatarImageView.setVisibility(View.GONE);
       return false;
@@ -299,9 +330,13 @@ public class ContactGridManager {
     }
 
     if (avatarImageView != null) {
+      boolean shouldShowAvatar = updateAvatarVisibility();
       if (hideAvatar) {
         avatarImageView.setVisibility(View.GONE);
-      } else if (avatarSize > 0 && updateAvatarVisibility()) {
+        if (voicemailGreetingTextView != null) {
+          voicemailGreetingTextView.setVisibility(View.GONE);
+        }
+      } else if (avatarSize > 0 && shouldShowAvatar) {
         loadPhotoWithGlide();
       }
     }

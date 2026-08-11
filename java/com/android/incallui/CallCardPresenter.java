@@ -446,6 +446,8 @@ public class CallCardPresenter
                   .setSupportsCallOnHold(supports2ndCallOnHold())
                   .setSwapToSecondaryButtonState(getSwapToSecondaryButtonState())
                   .setIsAssistedDialed(primary.isAssistedDialed())
+                  .setIsOnDeviceVoicemail(primary.isOnDeviceVoicemail())
+                  .setIsOnDeviceVoicemailRecording(primary.isOnDeviceVoicemailRecording())
                   .setCustomLabel(null)
                   .setAssistedDialingExtras(primary.getAssistedDialingExtras())
                   .build());

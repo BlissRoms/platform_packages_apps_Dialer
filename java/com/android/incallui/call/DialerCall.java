@@ -129,6 +129,34 @@ public class DialerCall implements VideoTechListener {
   private final List<DialerCallListener> listeners = new CopyOnWriteArrayList<>();
   private final List<CannedTextResponsesLoadedListener> cannedTextResponsesLoadedListeners =
       new CopyOnWriteArrayList<>();
+
+  private boolean mIsOnDeviceVoicemail;
+  private boolean mIsOnDeviceVoicemailRecording;
+
+  public boolean isOnDeviceVoicemail() {
+    return mIsOnDeviceVoicemail;
+  }
+
+  public void setIsOnDeviceVoicemail(boolean isOnDeviceVoicemail) {
+    if (mIsOnDeviceVoicemail != isOnDeviceVoicemail) {
+      mIsOnDeviceVoicemail = isOnDeviceVoicemail;
+      if (!isOnDeviceVoicemail) {
+        mIsOnDeviceVoicemailRecording = false;
+      }
+      update();
+    }
+  }
+
+  public boolean isOnDeviceVoicemailRecording() {
+    return mIsOnDeviceVoicemailRecording;
+  }
+
+  public void setIsOnDeviceVoicemailRecording(boolean recording) {
+    if (mIsOnDeviceVoicemailRecording != recording) {
+      mIsOnDeviceVoicemailRecording = recording;
+      update();
+    }
+  }
   private final VideoTechManager videoTechManager;
   private boolean isEmergencyCall;
   private Uri handle;

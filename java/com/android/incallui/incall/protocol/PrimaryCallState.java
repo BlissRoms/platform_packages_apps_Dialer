@@ -110,6 +110,10 @@ public abstract class PrimaryCallState {
 
   public abstract boolean isAssistedDialed();
 
+  public abstract boolean isOnDeviceVoicemail();
+
+  public abstract boolean isOnDeviceVoicemailRecording();
+
   @Nullable
   public abstract String customLabel();
 
@@ -136,6 +140,8 @@ public abstract class PrimaryCallState {
         .setSupportsCallOnHold(true)
         .setSwapToSecondaryButtonState(ButtonState.NOT_SUPPORT)
         .setIsAssistedDialed(false)
+        .setIsOnDeviceVoicemail(false)
+        .setIsOnDeviceVoicemailRecording(false)
         .setPrimaryColor(0);
   }
 
@@ -193,6 +199,10 @@ public abstract class PrimaryCallState {
         @ButtonState int swapToSecondaryButtonState);
 
     public abstract Builder setIsAssistedDialed(boolean isAssistedDialed);
+
+    public abstract Builder setIsOnDeviceVoicemail(boolean isOnDeviceVoicemail);
+
+    public abstract Builder setIsOnDeviceVoicemailRecording(boolean isOnDeviceVoicemailRecording);
 
     public abstract Builder setCustomLabel(String customLabel);
 

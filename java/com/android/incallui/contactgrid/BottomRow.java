@@ -76,7 +76,7 @@ public class BottomRow {
 
   public static Info getInfo(Context context, PrimaryCallState state, PrimaryInfo primaryInfo) {
     CharSequence label;
-    boolean isTimerVisible = state.state() == DialerCallState.ACTIVE;
+    boolean isTimerVisible = state.state() == DialerCallState.ACTIVE && (!state.isOnDeviceVoicemail() || state.isOnDeviceVoicemailRecording());
     boolean isForwardIconVisible = state.isForwardedNumber();
     boolean isWorkIconVisible = state.isWorkCall();
     boolean isHdIconVisible = state.isHdAudioCall() && !isForwardIconVisible;
@@ -99,6 +99,8 @@ public class BottomRow {
       if (TextUtils.isEmpty(label)) {
         label = context.getString(R.string.incall_call_ended);
       }
+    } else if (state.isOnDeviceVoicemail()) {
+      label = null;
     } else {
       label = getLabelForPhoneNumber(primaryInfo);
       shouldPopulateAccessibilityEvent = primaryInfo.nameIsNumber();

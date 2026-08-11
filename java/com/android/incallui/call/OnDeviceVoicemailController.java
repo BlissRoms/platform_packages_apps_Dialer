@@ -118,6 +118,7 @@ public class OnDeviceVoicemailController implements CallList.Listener {
         "OnDeviceVoicemailController.answerIfStillRinging",
         "ring timeout reached, answering call; telephonyAudioSupported=%b",
         supported);
+    call.setIsOnDeviceVoicemail(true);
     call.answer();
     // Give the call a moment to move to ACTIVE before injecting greeting audio.
     OnDeviceVoicemailSession newSession = new OnDeviceVoicemailSession(context, call);
@@ -126,12 +127,6 @@ public class OnDeviceVoicemailController implements CallList.Listener {
         () -> {
           if (session == newSession) {
             newSession.start();
-            // The machine is handling the call; keep the full-screen UI out of the way to avoid
-            // accidental touches (e.g. while the phone is in a pocket).
-            InCallActivity activity = InCallPresenter.getInstance().getActivity();
-            if (activity != null) {
-              activity.moveTaskToBack(true);
-            }
           }
         },
         1500L);
@@ -167,6 +162,11 @@ public class OnDeviceVoicemailController implements CallList.Listener {
         && scheduledCall.getState() != DialerCallState.INCOMING
         && scheduledCall.getState() != DialerCallState.CALL_WAITING) {
       cancelScheduled();
+    }
+
+    if (session != null && !session.getCall().isOnDeviceVoicemail()) {
+      session.stop();
+      session = null;
     }
   }
 

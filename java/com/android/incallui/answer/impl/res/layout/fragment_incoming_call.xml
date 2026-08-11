@@ -129,6 +129,17 @@
           android:importantForAccessibility="no"
           android:scaleType="centerCrop"/>
 
+      <TextView
+          android:id="@+id/contactgrid_voicemail_greeting"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          android:text="@string/on_device_voicemail_greeting"
+          android:textSize="20sp"
+          android:textColor="?android:attr/textColorPrimary"
+          android:gravity="center"
+          android:visibility="gone"/>
+
       <!-- TODO(a bug): textColorPrimary or textColorPrimaryInverse? -->
       <TextView
           android:id="@+id/incall_important_call_badge"

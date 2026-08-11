@@ -119,6 +119,9 @@ public class AnswerScreenPresenter
   }
 
   private void onAnswerCallback(boolean answerVideoAsAudio) {
+    if (call.isOnDeviceVoicemail()) {
+      call.setIsOnDeviceVoicemail(false);
+    }
 
     if (answerScreen.isVideoUpgradeRequest()) {
       if (answerVideoAsAudio) {
@@ -137,8 +140,15 @@ public class AnswerScreenPresenter
 
   @Override
   public void onReject() {
+    boolean wasOnDeviceVoicemail = false;
+    if (call != null && call.isOnDeviceVoicemail()) {
+      wasOnDeviceVoicemail = true;
+      // Removed call.setIsOnDeviceVoicemail(false) to prevent brief flash of InCallUI
+    }
     if (answerScreen.isVideoUpgradeRequest()) {
       call.getVideoTech().declineVideoRequest();
+    } else if (wasOnDeviceVoicemail) {
+      call.disconnect();
     } else {
       call.reject(false /* rejectWithMessage */, null);
     }
