@@ -27,19 +27,22 @@
 
   <include
       android:id="@+id/call_log_tab"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       layout="@layout/bottom_nav_item"/>
 
   <include
       android:id="@+id/contacts_tab"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       layout="@layout/bottom_nav_item"/>
 
   <include
       android:id="@+id/voicemail_tab"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       layout="@layout/bottom_nav_item"/>
 </com.android.dialer.main.impl.bottomnav.BottomNavBar>

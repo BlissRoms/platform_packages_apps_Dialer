@@ -281,22 +281,7 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
    *     for the carrier.
    */
   private static boolean canVoicemailTabBeShown(Context context) {
-    PhoneAccountHandle defaultUserSelectedAccount =
-        TelecomUtil.getDefaultOutgoingPhoneAccount(context, PhoneAccount.SCHEME_VOICEMAIL);
-
-    if (!isVoicemailAvailable(context, defaultUserSelectedAccount)) {
-      LogUtil.i("OldMainActivityPeer.canVoicemailTabBeShown", "Voicemail is not available");
-      return false;
-    }
-
-    if (VoicemailComponent.get(context)
-        .getVoicemailClient()
-        .isVoicemailEnabled(context, defaultUserSelectedAccount)) {
-      LogUtil.i("OldMainActivityPeer.canVoicemailTabBeShown", "Voicemail is enabled");
-      return true;
-    }
-    LogUtil.i("OldMainActivityPeer.canVoicemailTabBeShown", "returning false");
-    return false;
+    return true;
   }
 
   /**
@@ -778,12 +763,8 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
               hasActiveVoicemailProvider,
               numberOfActiveVoicemailSources));
 
-      if (hasActiveVoicemailProvider) {
-        bottomNavBar.showVoicemail(true);
-        callLogQueryHandler.fetchVoicemailUnreadCount();
-      } else {
-        bottomNavBar.showVoicemail(false);
-      }
+      bottomNavBar.showVoicemail(true);
+      callLogQueryHandler.fetchVoicemailUnreadCount();
 
       StorageComponent.get(context)
           .unencryptedSharedPrefs()

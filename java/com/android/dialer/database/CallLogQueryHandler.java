@@ -168,8 +168,9 @@ public class CallLogQueryHandler extends NoNullCursorAsyncQueryHandler {
       where.append(" AND (").append(Calls.TYPE).append(" = ?)");
       selectionArgs.add(Integer.toString(callType));
     } else {
-      where.append(" AND NOT ");
-      where.append("(" + Calls.TYPE + " = " + Calls.VOICEMAIL_TYPE + ")");
+      // Filter out voicemails since they have their own dedicated tab
+      where.append(" AND (").append(Calls.TYPE).append(" != ?)");
+      selectionArgs.add(Integer.toString(Calls.VOICEMAIL_TYPE));
     }
 
     if (newerThan > 0) {

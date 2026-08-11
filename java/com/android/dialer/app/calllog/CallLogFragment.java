@@ -140,6 +140,9 @@ public class CallLogFragment extends Fragment
   private boolean menuVisible = true;
   // Default to all calls.
   private int callTypeFilter = CallLogQueryHandler.CALL_TYPE_ALL;
+
+  private VoicemailPlaybackPresenter voicemailPlaybackPresenter;
+
   // Log limit - if no limit is specified, then the default in {@link CallLogQueryHandler}
   // will be used.
   private int logLimit = NO_LOG_LIMIT;
@@ -229,6 +232,10 @@ public class CallLogFragment extends Fragment
   public void onCreate(Bundle state) {
     LogUtil.enterBlock("CallLogFragment.onCreate");
     super.onCreate(state);
+    
+    voicemailPlaybackPresenter = VoicemailPlaybackPresenter.getInstance(
+        (androidx.appcompat.app.AppCompatActivity) getActivity(), state);
+        
     refreshDataRequired = true;
     if (state != null) {
       callTypeFilter = state.getInt(KEY_FILTER_TYPE, callTypeFilter);
@@ -351,7 +358,7 @@ public class CallLogFragment extends Fragment
                     getContext()
                         .getContentResolver()
                         .delete(
-                            CallLog.Calls.CONTENT_URI,
+                            CallLog.Calls.CONTENT_URI_WITH_VOICEMAIL,
                             CallLog.Calls._ID + " IN (" + concatCallIds(viewHolder.callIds) + ")" /* where */,
                             null /* selectionArgs */);
                 }
@@ -516,7 +523,7 @@ public class CallLogFragment extends Fragment
 
   @Nullable
   protected VoicemailPlaybackPresenter getVoicemailPlaybackPresenter() {
-    return null;
+    return voicemailPlaybackPresenter;
   }
 
   private void updateSelectAllState(Bundle savedInstanceState) {

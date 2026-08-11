@@ -47,13 +47,15 @@ public class CallLogActivity extends TransactionSafeActivity implements
   private static final int TAB_INDEX_ALL = 0;
   private static final int TAB_INDEX_MISSED = 1;
   private static final int TAB_INDEX_STATS = 2;
-  private static final int TAB_INDEX_COUNT = 3;
+  private static final int TAB_INDEX_VOICEMAIL = 3;
+  private static final int TAB_INDEX_COUNT = 4;
   private ViewPager viewPager;
   private ViewPagerTabs viewPagerTabs;
   private ViewPagerAdapter viewPagerAdapter;
   private CallLogFragment allCallsFragment;
   private CallLogFragment missedCallsFragment;
   private CallStatsFragment statsFragment;
+  private VisualVoicemailCallLogFragment voicemailFragment;
   private String[] tabTitles;
   private boolean isResumed;
   private int selectedPageIndex;
@@ -85,6 +87,7 @@ public class CallLogActivity extends TransactionSafeActivity implements
     tabTitles[0] = getString(R.string.call_log_all_title);
     tabTitles[1] = getString(R.string.call_log_missed_title);
     tabTitles[2] = getString(R.string.call_log_stats_title);
+    tabTitles[3] = getString(R.string.voicemail);
 
     viewPager = findViewById(R.id.call_log_pager);
 
@@ -209,6 +212,11 @@ public class CallLogActivity extends TransactionSafeActivity implements
         break;
       case TAB_INDEX_STATS:
         break;
+      case TAB_INDEX_VOICEMAIL:
+        if (voicemailFragment != null) {
+          voicemailFragment.markMissedCallsAsReadAndRemoveNotifications();
+        }
+        break;
       default:
         throw Assert.createIllegalStateFailException("Invalid position: " + position);
     }
@@ -236,6 +244,8 @@ public class CallLogActivity extends TransactionSafeActivity implements
           return new CallLogFragment(Calls.MISSED_TYPE, true /* isCallLogActivity */);
         case TAB_INDEX_STATS:
           return new CallStatsFragment();
+        case TAB_INDEX_VOICEMAIL:
+          return new VisualVoicemailCallLogFragment();
         default:
           throw new IllegalStateException("No fragment at position " + position);
       }
@@ -253,6 +263,9 @@ public class CallLogActivity extends TransactionSafeActivity implements
           break;
         case TAB_INDEX_STATS:
           statsFragment = (CallStatsFragment) fragment;
+          break;
+        case TAB_INDEX_VOICEMAIL:
+          voicemailFragment = (VisualVoicemailCallLogFragment) fragment;
           break;
         default:
           throw Assert.createIllegalStateFailException("Invalid position: " + position);

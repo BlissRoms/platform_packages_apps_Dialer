@@ -24,4 +24,5 @@
 
   <!-- Notification badge indicating that there are more than 9 notifications for the user [CHAR LIMIT=3] -->
   <string name="bottom_nav_count_9_plus">9+</string>
+  <string name="bottom_nav_calls">Calls</string>
 </resources>

@@ -32,8 +32,8 @@ final class AnnotatedCallLogCursorLoader extends CursorLoader {
         context,
         AnnotatedCallLog.CONTENT_URI,
         /* projection = */ null,
-        /* selection = */ AnnotatedCallLog.CALL_TYPE + " != ?",
-        /* selectionArgs = */ new String[] {Integer.toString(Calls.VOICEMAIL_TYPE)},
+        /* selection = */ null,
+        /* selectionArgs = */ null,
         /* sortOrder = */ AnnotatedCallLog.TIMESTAMP + " DESC");
   }
 }

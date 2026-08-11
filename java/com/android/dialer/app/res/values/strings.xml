@@ -263,7 +263,7 @@
 
   <!-- Title for the call log tab containing the list of all voicemails and calls
        [CHAR LIMIT=30] -->
-  <string name="call_log_all_title">All</string>
+  <string name="call_log_all_title">Calls</string>
 
   <!-- Title for the call log tab containing the list of all missed calls only
        [CHAR LIMIT=30] -->

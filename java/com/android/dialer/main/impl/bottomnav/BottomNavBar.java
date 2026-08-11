@@ -176,7 +176,7 @@ public final class BottomNavBar extends LinearLayout {
     contacts = findViewById(R.id.contacts_tab);
     voicemail = findViewById(R.id.voicemail_tab);
 
-    callLog.setup(R.string.call_log_all_title, R.drawable.quantum_ic_access_time_vd_theme_24,
+    callLog.setup(R.string.bottom_nav_calls, R.drawable.quantum_ic_access_time_vd_theme_24,
             R.drawable.quantum_ic_clock_filled_vd_theme_24);
     contacts.setup(R.string.tab_all_contacts, R.drawable.quantum_ic_people_outline_vd_theme_24,
             R.drawable.quantum_ic_people_vd_theme_24);

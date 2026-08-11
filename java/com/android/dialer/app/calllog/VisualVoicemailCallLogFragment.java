@@ -125,7 +125,7 @@ public class VisualVoicemailCallLogFragment extends CallLogFragment {
     View view = inflater.inflate(R.layout.call_log_fragment, container, false);
     setupView(view);
     EmptyContentView emptyContentView = view.findViewById(R.id.empty_list_view);
-    emptyContentView.setImage(R.drawable.quantum_ic_voicemail_vd_theme_24);
+    emptyContentView.setImage(R.drawable.oneplus_empty_call_log_illustration);
     return view;
   }
 
