@@ -82,7 +82,8 @@ public class TwoButtonMethod extends AnswerMethod
   @Override
   public View onCreateView(
       LayoutInflater layoutInflater, @Nullable ViewGroup viewGroup, @Nullable Bundle bundle) {
-    View view = layoutInflater.inflate(R.layout.two_button_method, viewGroup, false);
+    View view =
+        videoAwareInflater(layoutInflater).inflate(R.layout.two_button_method, viewGroup, false);
 
     hintTextView = (TextView) view.findViewById(R.id.two_button_hint_text);
     updateHintText();

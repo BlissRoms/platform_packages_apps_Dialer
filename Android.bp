@@ -227,6 +227,8 @@ android_app {
         "androidx.preference_preference",
         "androidx.recyclerview_recyclerview",
         "androidx.slidingpanelayout_slidingpanelayout",
+        "androidx.window_window",
+        "androidx.window_window-java",
         "apache-commons-compress",
         "com.google.android.material_material",
         "dagger2",

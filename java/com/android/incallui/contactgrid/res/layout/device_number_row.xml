@@ -29,11 +29,9 @@
       android:layout_height="wrap_content"
       android:layout_marginBottom="16dp"
       android:padding="16dp"
-      android:background="@android:color/white"
-      android:elevation="2dp"
+      android:background="@drawable/dialer_card_single"
       android:gravity="start"
       android:orientation="vertical"
-      android:textColor="#DD000000"
-      android:textSize="16sp"
+      android:textAppearance="@style/TextAppearance.Dialer.Body.Title"
       android:visibility="gone"/>
 </merge>

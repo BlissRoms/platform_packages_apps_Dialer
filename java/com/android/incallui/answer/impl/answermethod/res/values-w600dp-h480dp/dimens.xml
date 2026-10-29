@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <dimen name="swipe_horizontal_track_height">102dp</dimen>
+  <dimen name="swipe_horizontal_puck_width">128dp</dimen>
+  <dimen name="swipe_horizontal_puck_height">68dp</dimen>
+  <dimen name="swipe_horizontal_label_margin">32dp</dimen>
+  <dimen name="swipe_horizontal_track_max_width">500dp</dimen>
+</resources>

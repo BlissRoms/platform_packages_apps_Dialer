@@ -60,7 +60,7 @@
         android:layout_marginTop="@dimen/two_button_label_padding"
         android:importantForAccessibility="no"
         android:text="@string/call_incoming_decline"
-        android:textColor="#ffffffff"
+        android:textColor="?attr/dialerColorTextPrimary"
         android:textSize="@dimen/two_button_label_size"/>
 
     </LinearLayout>
@@ -89,7 +89,7 @@
         android:layout_marginTop="@dimen/two_button_label_padding"
         android:importantForAccessibility="no"
         android:text="@string/call_incoming_answer"
-        android:textColor="#ffffffff"
+        android:textColor="?attr/dialerColorTextPrimary"
         android:textSize="@dimen/two_button_label_size"/>
 
     </LinearLayout>

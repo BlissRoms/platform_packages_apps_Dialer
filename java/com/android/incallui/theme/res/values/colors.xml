@@ -16,9 +16,7 @@
   -->
 
 <resources>
-  <color name="conference_call_manager_caller_name_text_color">#4d4d4d</color>
   <!-- Used with some smaller texts in manage conference screen. -->
-  <color name="conference_call_manager_secondary_text_color">#999999</color>
 
   <!-- Background color for status bar. For portrait this will be ignored. -->
   <color name="statusbar_background_color">?android:attr/colorPrimary</color>
@@ -51,11 +49,7 @@
     <item>#841F10</item>
   </array>
 
-  <color name="incall_background_gradient_top">#FFFFFFFF</color>
-  <color name="incall_background_gradient_middle">#FFFFFFFF</color>
-  <color name="incall_background_gradient_bottom">#FFFFFFFF</color>
 
-  <color name="incall_background_multiwindow">#FFFFFFFF</color>
 
   <color name="incall_background_gradient_spam_top">#E5A30B0B</color>
   <color name="incall_background_gradient_spam_middle">#D6C01111</color>
@@ -65,9 +59,6 @@
 
 
   <!-- DayNight text + window colors for the in-call screen -->
-  <color name="incall_text_primary">#FF1C1B1F</color>
-  <color name="incall_text_secondary">#FF777777</color>
-  <color name="incall_window_background">#FFFFFFFF</color>
 
   <!-- Light background in light mode, so request dark (light) status/nav bar icons. -->
   <bool name="incall_light_system_bars">true</bool>

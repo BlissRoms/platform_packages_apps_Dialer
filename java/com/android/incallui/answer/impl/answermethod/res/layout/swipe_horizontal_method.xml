@@ -49,9 +49,7 @@
         android:layout_gravity="start|center_vertical"
         android:layout_marginStart="@dimen/swipe_horizontal_label_margin"
         android:text="@string/call_incoming_decline"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textFontWeight="500"
-        android:textSize="18sp"/>
+        android:textAppearance="@style/TextAppearance.Dialer.Body.Title"/>
 
     <TextView
         android:id="@+id/swipe_horizontal_answer_label"
@@ -60,9 +58,7 @@
         android:layout_gravity="end|center_vertical"
         android:layout_marginEnd="@dimen/swipe_horizontal_label_margin"
         android:text="@string/call_incoming_answer"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textFontWeight="500"
-        android:textSize="18sp"/>
+        android:textAppearance="@style/TextAppearance.Dialer.Body.Title"/>
 
     <ImageView
         android:id="@+id/swipe_horizontal_puck"

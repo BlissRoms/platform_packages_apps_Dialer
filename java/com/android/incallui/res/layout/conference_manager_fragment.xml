@@ -20,13 +20,18 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/manageConferencePanel"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:background="?attr/dialerColorCanvas"
+  android:padding="@dimen/dialer_space_page_inset">
   <!-- List of conference participants. -->
   <ListView
     android:id="@+id/participantList"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:divider="@null"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialer_card_single"
+    android:clipToOutline="true"
+    android:divider="?attr/dialerColorCanvas"
+    android:dividerHeight="@dimen/conference_participant_row_gap"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:listSelector="@null"/>

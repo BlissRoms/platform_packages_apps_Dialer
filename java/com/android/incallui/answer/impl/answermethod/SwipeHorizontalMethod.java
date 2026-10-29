@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -30,11 +31,14 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.dialer.R;
 import com.android.dialer.common.LogUtil;
+import com.android.dialer.util.DialerUtils;
 
 /**
  * Answer method that shows a horizontally draggable puck inside a pill track. Swiping the puck to
@@ -55,6 +59,9 @@ public class SwipeHorizontalMethod extends AnswerMethod {
   private TextView declineLabel;
   private TextView answerLabel;
   private TextView hintTextView;
+  @ColorInt private int idleColor;
+  @ColorInt private int answerColor;
+  @ColorInt private int declineColor;
 
   private CharSequence hintText;
   private boolean incomingWillDisconnect;
@@ -89,11 +96,15 @@ public class SwipeHorizontalMethod extends AnswerMethod {
   @SuppressLint("ClickableViewAccessibility")
   public View onCreateView(
       LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle bundle) {
-    View view = inflater.inflate(R.layout.swipe_horizontal_method, container, false);
+    View view =
+        videoAwareInflater(inflater).inflate(R.layout.swipe_horizontal_method, container, false);
     puck = view.findViewById(R.id.swipe_horizontal_puck);
     declineLabel = view.findViewById(R.id.swipe_horizontal_decline_label);
     answerLabel = view.findViewById(R.id.swipe_horizontal_answer_label);
     hintTextView = view.findViewById(R.id.swipe_horizontal_hint_text);
+    idleColor = DialerUtils.resolveColor(requireContext(), R.attr.dialerColorAccent);
+    answerColor = DialerUtils.resolveColor(requireContext(), R.attr.dialerColorSuccess);
+    declineColor = DialerUtils.resolveColor(requireContext(), R.attr.dialerColorDestructive);
     updateHintText();
 
     puck.setOnTouchListener((v, event) -> handleTouch(event));
@@ -213,6 +224,11 @@ public class SwipeHorizontalMethod extends AnswerMethod {
     // Fade out the label on the opposite side of travel.
     answerLabel.setAlpha(1f - Math.max(0f, -clamped));
     declineLabel.setAlpha(1f - Math.max(0f, clamped));
+    int puckColor =
+        clamped >= 0
+            ? ColorUtils.blendARGB(idleColor, answerColor, clamped)
+            : ColorUtils.blendARGB(idleColor, declineColor, -clamped);
+    puck.setBackgroundTintList(ColorStateList.valueOf(puckColor));
   }
 
   private static float clamp(float value, float min, float max) {

@@ -18,20 +18,27 @@
 <resources>
 
   <style name="Dialer.Incall.TextAppearance" parent="android:TextAppearance.Material">
-    <item name="android:textColor">?android:attr/textColorSecondary</item>
-    <item name="android:textSize">18sp</item>
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textColor">?attr/dialerColorTextSecondary</item>
+    <item name="android:textSize">@dimen/incall_caller_detail_text_size</item>
   </style>
 
   <style name="Dialer.Incall.TextAppearance.Large">
-    <item name="android:textColor">?android:attr/textColorPrimary</item>
-    <item name="android:textSize">42sp</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
+    <item name="android:textSize">@dimen/incall_caller_name_text_size</item>
     <item name="android:textFontWeight">500</item>
-    <item name="android:fontFamily">@*android:string/config_bodyFontFamily</item>
+    <item name="android:letterSpacing">-0.02</item>
   </style>
 
   <style name="Dialer.Incall.TextAppearance.Label">
-    <item name="android:textColor">?android:attr/textColorPrimary</item>
-    <item name="android:textSize">12sp</item>
+    <item name="android:textColor">?attr/dialerColorTextSecondary</item>
+    <item name="android:textSize">13sp</item>
+  </style>
+
+  <style name="Dialer.Incall.TextAppearance.Timer">
+    <item name="android:textColor">?attr/dialerColorTextSecondary</item>
+    <item name="android:textSize">17sp</item>
+    <item name="android:textFontWeight">600</item>
   </style>
 
   <style name="BottomRowIcon">

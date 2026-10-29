@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="incall_background_gradient_top">#FF111111</color>
-    <color name="incall_background_gradient_middle">#FF111111</color>
-    <color name="incall_background_gradient_bottom">#FF111111</color>
-    <color name="incall_background_multiwindow">#FF111111</color>
-
-    <color name="incall_text_primary">#FFFFFFFF</color>
-    <color name="incall_text_secondary">#FFBCBCBC</color>
-    <color name="incall_window_background">#FF111111</color>
-
     <bool name="incall_light_system_bars">false</bool>
     <!-- There is a nearby, more-convenient universe in which the following neutral colors are
          automatically adapted and do not need to be specified separately in this -night variant.

@@ -68,6 +68,7 @@ import com.android.dialer.preferredsim.PreferredAccountRecorder;
 import com.android.dialer.preferredsim.PreferredAccountWorker;
 import com.android.dialer.preferredsim.PreferredAccountWorker.Result;
 import com.android.dialer.preferredsim.PreferredSimComponent;
+import com.android.dialer.util.DialerUtils;
 import com.android.dialer.util.ViewUtil;
 import com.android.incallui.answer.bindings.AnswerBindings;
 import com.android.incallui.answer.protocol.AnswerScreen;
@@ -241,10 +242,11 @@ public class InCallActivity extends TransactionSafeFragmentActivity
 
     inCallOrientationEventListener = new InCallOrientationEventListener(this);
 
-    getWindow()
-        .getDecorView()
-        .setSystemUiVisibility(
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+    View decorView = getWindow().getDecorView();
+    decorView.setSystemUiVisibility(
+        decorView.getSystemUiVisibility()
+            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
     pseudoBlackScreenOverlay = findViewById(R.id.psuedo_black_screen_overlay);
     sendBroadcast(CallPendingActivity.getFinishBroadcast());
@@ -873,7 +875,11 @@ public class InCallActivity extends TransactionSafeFragmentActivity
     @ColorInt int bottom;
     @ColorInt int gray = 0x66000000;
 
-    if (isInMultiWindowMode()) {
+    if (!themeColorManager.isSpam()) {
+      top = DialerUtils.resolveColor(this, R.attr.dialerColorCanvas);
+      middle = top;
+      bottom = top;
+    } else if (isInMultiWindowMode()) {
       top = themeColorManager.getBackgroundColorSolid();
       middle = themeColorManager.getBackgroundColorSolid();
       bottom = themeColorManager.getBackgroundColorSolid();

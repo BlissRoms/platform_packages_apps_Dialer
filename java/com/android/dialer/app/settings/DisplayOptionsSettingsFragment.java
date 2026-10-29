@@ -60,6 +60,15 @@ public class DisplayOptionsSettingsFragment extends DialerPreferenceFragment {
           requireActivity().recreate();
           return true;
         });
+
+    SwitchPreferenceCompat hideInCallLabels =
+        findPreference(getString(R.string.dialer_hide_incall_labels_key));
+    hideInCallLabels.setChecked(themePreferences.isInCallLabelsHidden());
+    hideInCallLabels.setOnPreferenceChangeListener(
+        (preference, newValue) -> {
+          themePreferences.setInCallLabelsHidden((Boolean) newValue);
+          return true;
+        });
   }
 
   private boolean isContactOrderChangeable() {

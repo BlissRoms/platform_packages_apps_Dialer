@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <dimen name="incall_caller_name_text_size">42sp</dimen>
+  <dimen name="incall_caller_detail_text_size">25sp</dimen>
+  <dimen name="incall_end_call_pill_height">88dp</dimen>
+  <dimen name="incall_end_call_pill_icon_padding">20dp</dimen>
+</resources>

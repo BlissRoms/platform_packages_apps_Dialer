@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The Android Open Source Project
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <RelativeLayout
+      android:id="@+id/incall_ui_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:clipChildren="false"
+      android:clipToPadding="false"
+      android:fitsSystemWindows="true">
+
+    <FrameLayout
+        android:id="@id/incall_on_hold_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/incall_on_hold_banner"
+        android:paddingStart="@dimen/dialer_space_page_inset"
+        android:paddingEnd="@dimen/dialer_space_page_inset"
+        android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@id/incall_contact_grid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+      <include
+          layout="@layout/incall_contactgrid_top_row"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/incall_window_margin_horizontal"
+          android:layout_marginEnd="@dimen/incall_window_margin_horizontal"
+          android:layout_marginBottom="7dp"/>
+
+      <!-- We have to keep deprecated singleLine to allow long text being truncated with ellipses.
+                 a bug -->
+      <com.android.incallui.autoresizetext.AutoResizeTextView
+          android:id="@id/contactgrid_contact_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="16dp"
+          android:layout_marginStart="@dimen/incall_window_margin_horizontal"
+          android:layout_marginEnd="@dimen/incall_window_margin_horizontal"
+          android:singleLine="true"
+          android:textAppearance="@style/Dialer.Incall.TextAppearance.Large"
+          app:autoResizeText_minTextSize="28sp"
+          tools:ignore="Deprecated"
+          tools:text="Jake Peralta"/>
+
+      <include
+          layout="@layout/incall_contactgrid_bottom_row"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/incall_window_margin_horizontal"
+          android:layout_marginEnd="@dimen/incall_window_margin_horizontal"/>
+
+      <com.android.incallui.contactgrid.CloverImageView
+          android:id="@id/contactgrid_avatar"
+          android:layout_width="@dimen/incall_avatar_size"
+          android:layout_height="@dimen/incall_avatar_size"
+          android:layout_marginTop="32dp"
+          android:elevation="2dp"
+          android:scaleType="centerCrop"/>
+
+      <TextView
+          android:id="@+id/contactgrid_voicemail_greeting"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          android:text="@string/on_device_voicemail_greeting"
+          android:textSize="20sp"
+          android:textColor="?android:attr/textColorPrimary"
+          android:gravity="center"
+          android:visibility="gone"/>
+
+      <FrameLayout
+          android:id="@+id/incall_location_holder"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"/>
+
+      <include
+          layout="@layout/device_number_row"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/incall_wide_column_gap">
+
+    <LinearLayout
+        android:id="@+id/incall_bottom_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/dialer_space_page_inset"
+        android:background="@drawable/incall_controls_panel"
+        android:orientation="vertical"
+        android:padding="@dimen/incall_controls_card_padding">
+
+      <com.android.dialer.widget.LockableViewPager
+          android:id="@+id/incall_pager"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="120dp"/>
+
+      <com.android.incallui.incall.impl.InCallPaginator
+          android:id="@+id/incall_paginator"
+          android:layout_width="@dimen/paginator_width"
+          android:layout_height="@dimen/paginator_height"
+          android:layout_gravity="center_horizontal"
+          android:visibility="gone"/>
+
+      <LinearLayout
+          android:id="@+id/incall_end_call_row"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/incall_button_row_gap"
+          android:gravity="center"
+          android:orientation="horizontal">
+
+        <Space
+            android:id="@+id/incall_more_button_balance"
+            android:layout_width="@dimen/incall_more_button_size"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/dialer_space_control_gap"/>
+
+        <ImageButton
+            android:id="@+id/incall_end_call"
+            style="@style/Incall.Button.End"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/incall_end_call_pill_height"
+            android:layout_weight="1"
+            android:padding="@dimen/incall_end_call_pill_icon_padding"
+            android:background="@drawable/incall_end_call_pill_background"
+            android:elevation="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/quantum_ic_call_end_vd_theme_24"
+            android:tint="@color/incall_end_call_pill_icon_color"
+            android:contentDescription="@string/incall_content_description_end_call"/>
+
+        <ImageButton
+            android:id="@+id/incall_more_button"
+            android:layout_width="@dimen/incall_more_button_size"
+            android:layout_height="@dimen/incall_more_button_size"
+            android:layout_marginStart="@dimen/dialer_space_control_gap"
+            android:background="@drawable/incall_more_button_background"
+            android:contentDescription="@string/incall_label_more_options"
+            android:scaleType="center"
+            android:src="@drawable/ic_incall_more_horiz"
+            android:tint="?attr/dialerColorTextPrimary"
+            android:visibility="invisible"/>
+      </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/incall_dialpad_container"
+        style="@style/DialpadContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        tools:background="@android:color/white"
+        tools:visibility="gone"/>
+    </FrameLayout>
+    </LinearLayout>
+  </RelativeLayout>
+
+</FrameLayout>

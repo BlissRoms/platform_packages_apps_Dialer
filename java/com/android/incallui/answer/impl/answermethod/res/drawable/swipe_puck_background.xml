@@ -17,5 +17,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
   <solid android:color="@color/answer_swipe_puck_background"/>
-  <corners android:radius="@dimen/swipe_horizontal_puck_corner"/>
+  <corners android:radius="9999dp"/>
 </shape>

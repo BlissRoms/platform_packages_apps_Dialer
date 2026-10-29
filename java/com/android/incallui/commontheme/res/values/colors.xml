@@ -28,8 +28,5 @@
   <!-- Idle (unchecked) circle button fill and icon: Material You neutral surface -->
 
   <!-- In-call control tray (the rounded card holding the call buttons) -->
-  <color name="incall_button_tray_background_color">#FFFFFFFF</color>
   <!-- Wide hang-up pill: red -->
-  <color name="incall_end_call_pill_color">@color/dialer_end_call_button_color</color>
-  <color name="incall_end_call_pill_icon_color">#FFFFFFFF</color>
 </resources>

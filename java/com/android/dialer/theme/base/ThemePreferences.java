@@ -18,12 +18,14 @@ public final class ThemePreferences {
   private final SharedPreferences prefs;
   private final String themeModeKey;
   private final String wallpaperColorKey;
+  private final String hideInCallLabelsKey;
 
   public ThemePreferences(Context context) {
     Context storageContext = context.createDeviceProtectedStorageContext();
     prefs = PreferenceManager.getDefaultSharedPreferences(storageContext);
     themeModeKey = context.getString(R.string.dialer_theme_mode_key);
     wallpaperColorKey = context.getString(R.string.dialer_wallpaper_color_key);
+    hideInCallLabelsKey = context.getString(R.string.dialer_hide_incall_labels_key);
   }
 
   public ThemeMode getThemeMode() {
@@ -40,6 +42,14 @@ public final class ThemePreferences {
 
   public void setWallpaperColorEnabled(boolean enabled) {
     prefs.edit().putBoolean(wallpaperColorKey, enabled).apply();
+  }
+
+  public boolean isInCallLabelsHidden() {
+    return prefs.getBoolean(hideInCallLabelsKey, false);
+  }
+
+  public void setInCallLabelsHidden(boolean hidden) {
+    prefs.edit().putBoolean(hideInCallLabelsKey, hidden).apply();
   }
 
   public boolean isThemeModeKey(@Nullable String key) {

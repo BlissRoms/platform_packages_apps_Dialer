@@ -34,4 +34,11 @@
     <item name="android:layout_marginStart">@dimen/videocall_preview_margin_start</item>
     <item name="android:background">@android:color/black</item>
   </style>
+
+  <style name="ThemeOverlay.InCall.Video" parent="">
+    <item name="dialerColorTextPrimary">@color/dialer_dark_primary_text_color</item>
+    <item name="dialerColorTextSecondary">@color/dialer_dark_secondary_text_color</item>
+    <item name="android:textColorPrimary">@color/dialer_dark_primary_text_color</item>
+    <item name="android:textColorSecondary">@color/dialer_dark_secondary_text_color</item>
+  </style>
 </resources>

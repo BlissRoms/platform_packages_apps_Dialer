@@ -24,12 +24,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Insets;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.telecom.CallAudioState;
 import android.telephony.TelephonyManager;
 import android.transition.TransitionManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
@@ -39,6 +41,7 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -75,6 +78,7 @@ import com.android.incallui.incall.protocol.PrimaryCallState;
 import com.android.incallui.incall.protocol.PrimaryCallState.ButtonState;
 import com.android.incallui.incall.protocol.PrimaryInfo;
 import com.android.incallui.incall.protocol.SecondaryInfo;
+import com.android.incallui.posture.TabletopPosture;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +93,10 @@ public class InCallFragment extends Fragment
 
   private final List<ButtonController> buttonControllers = new ArrayList<>();
   private View endCallButton;
+  private View moreButton;
+  private LinearLayout contactGrid;
+  private TabletopPosture tabletopPosture;
+  @Nullable private Rect tabletopHinge;
   private InCallPaginator paginator;
   private LockableViewPager pager;
   private InCallPagerAdapter adapter;
@@ -198,6 +206,19 @@ public class InCallFragment extends Fragment
 
     endCallButton = view.findViewById(R.id.incall_end_call);
     endCallButton.setOnClickListener(this);
+    moreButton = view.findViewById(R.id.incall_more_button);
+    contactGrid = view.findViewById(R.id.incall_contact_grid);
+    tabletopPosture = new TabletopPosture(requireActivity(), this::onTabletopHingeChanged);
+    ((View) contactGrid.getParent())
+        .addOnLayoutChangeListener(
+            (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) ->
+                applyTabletopHinge());
+    moreButton.setOnClickListener(
+        v -> {
+          if (inCallButtonGridFragment != null) {
+            bindMoreButtonState(inCallButtonGridFragment.toggleExtras());
+          }
+        });
 
     if (ContextCompat.checkSelfPermission(getContext(), permission.READ_PHONE_STATE)
         != PackageManager.PERMISSION_GRANTED) {
@@ -229,6 +250,43 @@ public class InCallFragment extends Fragment
           public void onViewDetachedFromWindow(View v) {}
         });
     return view;
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    tabletopPosture.start();
+  }
+
+  @Override
+  public void onStop() {
+    tabletopPosture.stop();
+    super.onStop();
+  }
+
+  private void onTabletopHingeChanged(@Nullable Rect hingeBounds) {
+    tabletopHinge = hingeBounds;
+    applyTabletopHinge();
+  }
+
+  private void applyTabletopHinge() {
+    ViewGroup.LayoutParams params = contactGrid.getLayoutParams();
+    int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+    if (tabletopHinge != null) {
+      int[] parentLocation = new int[2];
+      ((View) contactGrid.getParent()).getLocationInWindow(parentLocation);
+      height = Math.max(0, tabletopHinge.top - parentLocation[1] - contactGrid.getTop());
+    }
+    if (params.height == height) {
+      return;
+    }
+    params.height = height;
+    if (params instanceof LinearLayout.LayoutParams) {
+      ((LinearLayout.LayoutParams) params).gravity =
+          tabletopHinge == null ? Gravity.CENTER_VERTICAL : Gravity.TOP;
+    }
+    contactGrid.setLayoutParams(params);
+    contactGrid.setGravity(tabletopHinge == null ? Gravity.CENTER_HORIZONTAL : Gravity.CENTER);
   }
 
   @Override
@@ -332,7 +390,9 @@ public class InCallFragment extends Fragment
     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
     Fragment oldBanner = getChildFragmentManager().findFragmentById(R.id.incall_on_hold_banner);
     if (secondaryInfo.shouldShow()) {
-      transaction.replace(R.id.incall_on_hold_banner, OnHoldFragment.newInstance(secondaryInfo));
+      OnHoldFragment banner = OnHoldFragment.newInstance(secondaryInfo);
+      banner.setPadTopInset(false);
+      transaction.replace(R.id.incall_on_hold_banner, banner);
     } else {
       if (oldBanner != null) {
         transaction.remove(oldBanner);
@@ -547,6 +607,24 @@ public class InCallFragment extends Fragment
 
   @Override
   public void onAudioRouteSelectorDismiss() {}
+
+  @Override
+  public void onMoreAvailabilityChanged(boolean available) {
+    if (moreButton == null) {
+      return;
+    }
+    moreButton.setVisibility(available ? View.VISIBLE : View.INVISIBLE);
+    if (!available) {
+      bindMoreButtonState(false);
+    }
+  }
+
+  private void bindMoreButtonState(boolean expanded) {
+    moreButton.setActivated(expanded);
+    moreButton.setContentDescription(
+        getString(
+            expanded ? R.string.incall_label_fewer_options : R.string.incall_label_more_options));
+  }
 
   @NonNull
   @Override

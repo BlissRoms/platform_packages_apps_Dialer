@@ -20,11 +20,10 @@ package com.android.incallui.incall.impl;
 import android.os.Bundle;
 import android.transition.TransitionManager;
 import android.util.ArraySet;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.MarginLayoutParams;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -40,20 +39,48 @@ import java.util.Set;
 /** Fragment for the in call buttons (mute, speaker, ect.). */
 public class InCallButtonGridFragment extends Fragment {
 
-  private static final int BUTTON_COUNT = 6;
-  private static final int BUTTONS_PER_ROW = 3;
-  /** Number of real controls shown in the collapsed sheet; the rest live in the expandable row. */
-  private static final int FIRST_ROW_COUNT = 3;
+  private static final int[][] PRIMARY_SLOTS = {
+    {InCallButtonIds.BUTTON_MERGE, InCallButtonIds.BUTTON_ADD_CALL},
+    {InCallButtonIds.BUTTON_UPGRADE_TO_VIDEO, InCallButtonIds.BUTTON_SWAP},
+    {InCallButtonIds.BUTTON_DIALPAD},
+    {InCallButtonIds.BUTTON_MUTE},
+    {InCallButtonIds.BUTTON_AUDIO},
+    {InCallButtonIds.BUTTON_RECORD_CALL, InCallButtonIds.BUTTON_HOLD},
+  };
+  private static final int WIDE_SLOT_COUNT = 2;
+  private static final int EXTRAS_PER_ROW = 4;
+  private static final int[] PRIMARY_BUTTON_IDS = {
+    R.id.incall_first_button,
+    R.id.incall_second_button,
+    R.id.incall_third_button,
+    R.id.incall_fourth_button,
+    R.id.incall_fifth_button,
+    R.id.incall_sixth_button,
+  };
+  private static final int[] EXTRA_BUTTON_IDS = {
+    R.id.incall_extra_button_1,
+    R.id.incall_extra_button_2,
+    R.id.incall_extra_button_3,
+    R.id.incall_extra_button_4,
+    R.id.incall_extra_button_5,
+    R.id.incall_extra_button_6,
+    R.id.incall_extra_button_7,
+    R.id.incall_extra_button_8,
+  };
 
-  private final CheckableLabeledButton[] buttons = new CheckableLabeledButton[BUTTON_COUNT];
+  private final CheckableLabeledButton[] primaryButtons =
+      new CheckableLabeledButton[PRIMARY_BUTTON_IDS.length];
+  private final CheckableLabeledButton[] extraButtons =
+      new CheckableLabeledButton[EXTRA_BUTTON_IDS.length];
   private OnButtonGridCreatedListener buttonGridListener;
 
-  private View sheet;
-  private View handle;
-  private View moreButton;
-  private View secondaryRow;
-  private boolean expanded;
-  private boolean hasSecondaryRow;
+  private ViewGroup sheet;
+  private View extraContainer;
+  private View extraRowTwo;
+  private View primaryRowOne;
+  private View primaryRowTwo;
+  private boolean extrasExpanded;
+  private boolean hasExtras;
 
   public static Fragment newInstance() {
     return new InCallButtonGridFragment();
@@ -71,78 +98,33 @@ public class InCallButtonGridFragment extends Fragment {
   public View onCreateView(
       LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle bundle) {
     View view = inflater.inflate(R.layout.incall_button_grid, parent, false);
-
-    buttons[0] = ((CheckableLabeledButton) view.findViewById(R.id.incall_first_button));
-    buttons[1] = ((CheckableLabeledButton) view.findViewById(R.id.incall_second_button));
-    buttons[2] = ((CheckableLabeledButton) view.findViewById(R.id.incall_third_button));
-    buttons[3] = ((CheckableLabeledButton) view.findViewById(R.id.incall_fourth_button));
-    buttons[4] = ((CheckableLabeledButton) view.findViewById(R.id.incall_fifth_button));
-    buttons[5] = ((CheckableLabeledButton) view.findViewById(R.id.incall_sixth_button));
-
+    for (int i = 0; i < PRIMARY_BUTTON_IDS.length; i++) {
+      primaryButtons[i] = view.findViewById(PRIMARY_BUTTON_IDS[i]);
+    }
+    for (int i = 0; i < EXTRA_BUTTON_IDS.length; i++) {
+      extraButtons[i] = view.findViewById(EXTRA_BUTTON_IDS[i]);
+    }
     sheet = view.findViewById(R.id.incall_button_sheet);
-    handle = view.findViewById(R.id.incall_button_sheet_handle);
-    moreButton = view.findViewById(R.id.incall_more_button);
-    secondaryRow = view.findViewById(R.id.incall_button_row_two);
-    handle.setOnClickListener(v -> setSheetExpanded(!expanded));
-    moreButton.setOnClickListener(v -> setSheetExpanded(!expanded));
-
-    GestureDetector gestureDetector = new GestureDetector(getContext(), new SwipeListener());
-    sheet.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
-
+    extraContainer = view.findViewById(R.id.incall_extra_buttons);
+    extraRowTwo = view.findViewById(R.id.incall_extra_row_two);
+    primaryRowOne = view.findViewById(R.id.incall_button_row_one);
+    primaryRowTwo = view.findViewById(R.id.incall_button_row_two);
+    extrasExpanded = false;
     return view;
   }
 
-  private void setSheetExpanded(boolean expand) {
-    if (!hasSecondaryRow) {
-      expand = false;
-    }
-    expanded = expand;
-    if (sheet != null) {
-      TransitionManager.beginDelayedTransition((ViewGroup) sheet);
-    }
-    if (secondaryRow != null) {
-      secondaryRow.setVisibility(expanded ? View.VISIBLE : View.GONE);
-    }
+  public boolean toggleExtras() {
+    setExtrasExpanded(!extrasExpanded);
+    return extrasExpanded;
   }
 
-  private void updateSheetAffordance() {
-    if (handle == null) {
+  private void setExtrasExpanded(boolean expand) {
+    extrasExpanded = expand && hasExtras;
+    if (sheet == null) {
       return;
     }
-    if (!hasSecondaryRow) {
-      expanded = false;
-    }
-    handle.setVisibility(hasSecondaryRow ? View.VISIBLE : View.GONE);
-    if (moreButton != null) {
-      moreButton.setVisibility(hasSecondaryRow ? View.VISIBLE : View.GONE);
-    }
-    if (secondaryRow != null) {
-      secondaryRow.setVisibility(expanded && hasSecondaryRow ? View.VISIBLE : View.GONE);
-    }
-  }
-
-  /** Detects vertical flings on the control sheet to expand or collapse it. */
-  private class SwipeListener extends GestureDetector.SimpleOnGestureListener {
-    private static final int FLING_THRESHOLD = 200;
-
-    @Override
-    public boolean onDown(MotionEvent e) {
-      return true;
-    }
-
-    @Override
-    public boolean onFling(
-        MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-      if (velocityY < -FLING_THRESHOLD) {
-        setSheetExpanded(true);
-        return true;
-      }
-      if (velocityY > FLING_THRESHOLD) {
-        setSheetExpanded(false);
-        return true;
-      }
-      return false;
-    }
+    TransitionManager.beginDelayedTransition(sheet);
+    extraContainer.setVisibility(extrasExpanded ? View.VISIBLE : View.GONE);
   }
 
   @Override
@@ -158,11 +140,15 @@ public class InCallButtonGridFragment extends Fragment {
   }
 
   public void onInCallScreenDialpadVisibilityChange(boolean isShowing) {
-    for (CheckableLabeledButton button : buttons) {
-      button.setImportantForAccessibility(
-          isShowing
-              ? View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
-              : View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+    int importance =
+        isShowing
+            ? View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+            : View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
+    for (CheckableLabeledButton button : primaryButtons) {
+      button.setImportantForAccessibility(importance);
+    }
+    for (CheckableLabeledButton button : extraButtons) {
+      button.setImportantForAccessibility(importance);
     }
   }
 
@@ -186,28 +172,81 @@ public class InCallButtonGridFragment extends Fragment {
       controller.setButton(null);
     }
 
+    Set<Integer> placedButtons = new ArraySet<>();
+    int firstPrimarySlot = firstPrimarySlot();
+    for (int slot = 0; slot < PRIMARY_SLOTS.length; slot++) {
+      Integer button =
+          slot < firstPrimarySlot
+              ? null
+              : firstAvailable(PRIMARY_SLOTS[slot], allowedButtons, placedButtons);
+      if (button == null) {
+        primaryButtons[slot].setVisibility(View.GONE);
+        continue;
+      }
+      placedButtons.add(button);
+      buttonGridListener.getButtonController(button).setButton(primaryButtons[slot]);
+    }
+    primaryRowOne.setVisibility(rowVisibility(0, WIDE_SLOT_COUNT));
+    primaryRowTwo.setVisibility(rowVisibility(WIDE_SLOT_COUNT, PRIMARY_SLOTS.length));
+    MarginLayoutParams rowTwoParams = (MarginLayoutParams) primaryRowTwo.getLayoutParams();
+    rowTwoParams.topMargin =
+        primaryRowOne.getVisibility() == View.VISIBLE
+            ? getResources().getDimensionPixelSize(R.dimen.incall_button_row_gap)
+            : 0;
+    primaryRowTwo.setLayoutParams(rowTwoParams);
+
+    Set<Integer> remainingButtons = new ArraySet<>(allowedButtons);
+    remainingButtons.removeAll(placedButtons);
     if (buttonChooser == null) {
       buttonChooser =
           ButtonChooserFactory.newButtonChooser(voiceNetworkType, false /* isWiFi */, phoneType);
     }
-
-    int numVisibleButtons = getResources().getInteger(R.integer.incall_num_rows) * BUTTONS_PER_ROW;
-    List<Integer> buttonsToPlace =
-        buttonChooser.getButtonPlacement(numVisibleButtons, allowedButtons, disabledButtons);
-
-    for (int i = 0; i < BUTTON_COUNT; ++i) {
-      if (i >= buttonsToPlace.size()) {
-        buttons[i].setVisibility(View.INVISIBLE);
-        continue;
+    List<Integer> extras =
+        buttonChooser.getButtonPlacement(
+            EXTRA_BUTTON_IDS.length, remainingButtons, disabledButtons);
+    for (int i = 0; i < extraButtons.length; i++) {
+      if (i < extras.size()) {
+        buttonGridListener.getButtonController(extras.get(i)).setButton(extraButtons[i]);
+      } else {
+        extraButtons[i].setVisibility(View.INVISIBLE);
       }
-      @InCallButtonIds int button = buttonsToPlace.get(i);
-      buttonGridListener.getButtonController(button).setButton(buttons[i]);
     }
+    extraRowTwo.setVisibility(extras.size() > EXTRAS_PER_ROW ? View.VISIBLE : View.GONE);
 
-    hasSecondaryRow = buttonsToPlace.size() > FIRST_ROW_COUNT;
-    updateSheetAffordance();
+    hasExtras = !extras.isEmpty();
+    if (!hasExtras) {
+      setExtrasExpanded(false);
+    }
+    buttonGridListener.onMoreAvailabilityChanged(hasExtras);
+    return placedButtons.size() + extras.size();
+  }
 
-    return numVisibleButtons;
+  private int firstPrimarySlot() {
+    int rows = getResources().getInteger(R.integer.incall_num_rows);
+    if (rows >= 2) {
+      return 0;
+    }
+    return rows == 1 ? WIDE_SLOT_COUNT : PRIMARY_SLOTS.length;
+  }
+
+  @Nullable
+  private static Integer firstAvailable(
+      int[] candidates, Set<Integer> allowedButtons, Set<Integer> placedButtons) {
+    for (int candidate : candidates) {
+      if (allowedButtons.contains(candidate) && !placedButtons.contains(candidate)) {
+        return candidate;
+      }
+    }
+    return null;
+  }
+
+  private int rowVisibility(int fromSlot, int toSlot) {
+    for (int slot = fromSlot; slot < toSlot; slot++) {
+      if (primaryButtons[slot].getVisibility() != View.GONE) {
+        return View.VISIBLE;
+      }
+    }
+    return View.GONE;
   }
 
   /** Interface to let the listener know the status of the button grid. */
@@ -216,5 +255,7 @@ public class InCallButtonGridFragment extends Fragment {
     void onButtonGridDestroyed();
 
     ButtonController getButtonController(@InCallButtonIds int id);
+
+    void onMoreAvailabilityChanged(boolean available);
   }
 }

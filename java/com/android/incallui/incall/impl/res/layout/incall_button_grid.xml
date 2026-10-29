@@ -21,18 +21,103 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
-  android:paddingBottom="@dimen/incall_button_vertical_padding"
   tools:showIn="@layout/frag_incall_voice">
 
-    <View
-      android:id="@+id/incall_button_sheet_handle"
-      android:layout_width="@dimen/incall_sheet_handle_width"
-      android:layout_height="@dimen/incall_sheet_handle_height"
-      android:layout_gravity="center_horizontal"
-      android:layout_marginTop="@dimen/incall_sheet_handle_margin"
-      android:layout_marginBottom="@dimen/incall_sheet_handle_margin"
-      android:background="@drawable/incall_sheet_handle"
-      android:contentDescription="@string/incall_sheet_show_more"/>
+  <LinearLayout
+    android:id="@+id/incall_extra_buttons"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/incall_button_row_gap"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <LinearLayout
+      android:id="@+id/incall_extra_row_one"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_extra_button_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
+        tools:layout_height="@dimen/tools_button_height"/>
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_extra_button_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
+        tools:layout_height="@dimen/tools_button_height"/>
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_extra_button_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
+        tools:layout_height="@dimen/tools_button_height"/>
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_extra_button_4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
+        tools:layout_height="@dimen/tools_button_height"/>
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/incall_extra_row_two"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/incall_button_row_gap"
+      android:orientation="horizontal">
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_extra_button_5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
+        tools:layout_height="@dimen/tools_button_height"/>
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_extra_button_6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
+        tools:layout_height="@dimen/tools_button_height"/>
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_extra_button_7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
+        tools:layout_height="@dimen/tools_button_height"/>
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_extra_button_8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
+        tools:layout_height="@dimen/tools_button_height"/>
+    </LinearLayout>
+  </LinearLayout>
 
     <LinearLayout
       android:id="@+id/incall_button_row_one"
@@ -47,7 +132,7 @@
         android:layout_weight="1"
         android:enabled="false"
         android:gravity="center"
-        app:incall_labelText="@string/incall_label_mute"
+        app:incall_labelText="@string/incall_label_add_call"
         tools:layout_height="@dimen/tools_button_height"/>
 
       <com.android.incallui.incall.impl.CheckableLabeledButton
@@ -57,11 +142,39 @@
         android:layout_weight="1"
         android:enabled="false"
         android:gravity="center"
+        app:incall_labelText="@string/incall_label_videocall"
+        tools:layout_height="@dimen/tools_button_height"/>
+    </LinearLayout>
+
+    <LinearLayout
+      android:id="@+id/incall_button_row_two"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/incall_button_row_gap"
+      android:orientation="horizontal">
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_third_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
         app:incall_labelText="@string/incall_label_dialpad"
         tools:layout_height="@dimen/tools_button_height"/>
 
       <com.android.incallui.incall.impl.CheckableLabeledButton
-        android:id="@+id/incall_third_button"
+        android:id="@+id/incall_fourth_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:gravity="center"
+        app:incall_labelText="@string/incall_label_mute"
+        tools:layout_height="@dimen/tools_button_height"/>
+
+      <com.android.incallui.incall.impl.CheckableLabeledButton
+        android:id="@+id/incall_fifth_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -71,54 +184,12 @@
         tools:layout_height="@dimen/tools_button_height"/>
 
       <com.android.incallui.incall.impl.CheckableLabeledButton
-        android:id="@+id/incall_more_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        app:incall_icon="@drawable/quantum_ic_more_vert_vd_theme_24"
-        app:incall_labelText="@string/incall_label_more"
-        tools:layout_height="@dimen/tools_button_height"/>
-    </LinearLayout>
-
-    <LinearLayout
-      android:id="@+id/incall_button_row_two"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/incall_button_vertical_padding"
-      android:orientation="horizontal"
-      android:visibility="gone">
-
-      <com.android.incallui.incall.impl.CheckableLabeledButton
-        android:id="@+id/incall_fourth_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        app:incall_labelText="@string/incall_label_add_call"
-        tools:layout_height="@dimen/tools_button_height"/>
-
-      <com.android.incallui.incall.impl.CheckableLabeledButton
-        android:id="@+id/incall_fifth_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        app:incall_labelText="@string/incall_label_hold"
-        tools:layout_height="@dimen/tools_button_height"/>
-
-      <com.android.incallui.incall.impl.CheckableLabeledButton
         android:id="@+id/incall_sixth_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:enabled="false"
         android:gravity="center"
-        app:incall_labelText="@string/incall_label_videocall"
         tools:layout_height="@dimen/tools_button_height"/>
-
-      <Space
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>

@@ -40,6 +40,7 @@ public class ThemeColorManager {
   @ColorInt private int backgroundColorMiddle;
   @ColorInt private int backgroundColorBottom;
   @ColorInt private int backgroundColorSolid;
+  private boolean spam;
 
   public ThemeColorManager(MaterialColorMapUtils colorMap) {
     this.colorMap = colorMap;
@@ -64,14 +65,15 @@ public class ThemeColorManager {
       backgroundColorSolid = context.getColor(R.color.incall_background_multiwindow_spam);
     } else {
       palette = colorMap.calculatePrimaryAndSecondaryColor(NO_HIGHLIGHT_COLOR);
-      backgroundColorTop = context.getColor(R.color.incall_background_gradient_top);
-      backgroundColorMiddle = context.getColor(R.color.incall_background_gradient_middle);
-      backgroundColorBottom = context.getColor(R.color.incall_background_gradient_bottom);
-      backgroundColorSolid = context.getColor(R.color.incall_background_multiwindow);
     }
+    spam = isSpam;
 
     primaryColor = palette.mPrimaryColor;
     secondaryColor = palette.mSecondaryColor;
+  }
+
+  public boolean isSpam() {
+    return spam;
   }
 
   @ColorInt

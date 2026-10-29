@@ -19,7 +19,10 @@
   <item>
     <shape android:shape="rectangle">
       <solid android:color="@color/answer_message_pill_background"/>
-      <corners android:radius="28dp"/>
+      <stroke
+          android:width="1dp"
+          android:color="?attr/dialerColorOutline"/>
+      <corners android:radius="9999dp"/>
     </shape>
   </item>
 </ripple>

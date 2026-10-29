@@ -56,6 +56,11 @@
     <string name="recents_favorites_add_description">Add a favorite</string>
     <string name="call_details_recent_activity">Recent activity</string>
     <string name="dialpad_close_button_content_description">Close dialpad</string>
+    <string name="display_options_incall_category">In-call screen</string>
+    <string name="display_options_hide_incall_labels_title">Hide button labels</string>
+    <string name="display_options_hide_incall_labels_summary">Show only icons on in-call buttons</string>
+    <string name="incall_label_more_options">More options</string>
+    <string name="incall_label_fewer_options">Fewer options</string>
     <string name="contact_profile_recent_activity">Recent activity</string>
     <string name="contact_profile_settings">Contact settings</string>
     <string name="contact_profile_block">Block number</string>

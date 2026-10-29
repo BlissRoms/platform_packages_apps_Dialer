@@ -3,7 +3,4 @@
     <color name="incall_end_call_icon_color">@android:color/black</color>
 
 
-    <color name="incall_button_tray_background_color">#FF2D2D2D</color>
-    <color name="incall_end_call_pill_color">@color/dialer_end_call_button_color</color>
-    <color name="incall_end_call_pill_icon_color">#FFFFFFFF</color>
 </resources>

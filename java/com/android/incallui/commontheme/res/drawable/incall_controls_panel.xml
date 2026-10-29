@@ -17,7 +17,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
   <solid android:color="@color/incall_button_tray_background_color"/>
-  <corners
-      android:topLeftRadius="@dimen/incall_button_tray_corner"
-      android:topRightRadius="@dimen/incall_button_tray_corner"/>
+  <corners android:radius="@dimen/dialer_radius_card"/>
 </shape>

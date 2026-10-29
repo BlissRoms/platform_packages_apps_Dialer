@@ -19,10 +19,13 @@ package com.android.incallui.answer.impl.answermethod;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.android.dialer.R;
 import com.android.dialer.common.FragmentUtils;
 
 /** A fragment that can be used to answer/reject calls. */
@@ -34,6 +37,18 @@ public abstract class AnswerMethod extends Fragment {
 
   public void setContactPhoto(@Nullable Drawable contactPhoto) {
     // default implementation does nothing. Only some AnswerMethods show a photo
+  }
+
+  public static LayoutInflater videoThemedInflater(LayoutInflater inflater) {
+    return inflater.cloneInContext(
+        new ContextThemeWrapper(inflater.getContext(), R.style.ThemeOverlay_InCall_Video));
+  }
+
+  protected LayoutInflater videoAwareInflater(LayoutInflater inflater) {
+    AnswerMethodHolder holder = getParent();
+    return holder.isVideoCall() || holder.isVideoUpgradeRequest()
+        ? videoThemedInflater(inflater)
+        : inflater;
   }
 
   protected AnswerMethodHolder getParent() {

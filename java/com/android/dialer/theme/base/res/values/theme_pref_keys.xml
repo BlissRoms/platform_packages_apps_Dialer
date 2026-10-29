@@ -6,6 +6,7 @@
 <resources>
   <string name="dialer_theme_mode_key" translatable="false">dialer_theme_mode</string>
   <string name="dialer_wallpaper_color_key" translatable="false">dialer_wallpaper_color</string>
+  <string name="dialer_hide_incall_labels_key" translatable="false">dialer_hide_incall_labels</string>
   <string name="dialer_theme_mode_automatic" translatable="false">automatic</string>
   <string name="dialer_theme_mode_light" translatable="false">light</string>
   <string name="dialer_theme_mode_dark" translatable="false">dark</string>

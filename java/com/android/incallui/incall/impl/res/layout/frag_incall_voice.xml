@@ -29,10 +29,17 @@
       android:clipToPadding="false"
       android:fitsSystemWindows="true">
 
+    <FrameLayout
+        android:id="@id/incall_on_hold_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"/>
+
     <LinearLayout
         android:id="@id/incall_contact_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/incall_on_hold_banner"
         android:layout_marginTop="12dp"
         android:gravity="center_horizontal"
         android:orientation="vertical">
@@ -102,10 +109,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dialer_space_page_inset"
+        android:layout_marginEnd="@dimen/dialer_space_page_inset"
+        android:layout_marginBottom="@dimen/dialer_space_page_inset"
         android:background="@drawable/incall_controls_panel"
         android:orientation="vertical"
-        android:paddingStart="@dimen/incall_button_tray_margin_horizontal"
-        android:paddingEnd="@dimen/incall_button_tray_margin_horizontal">
+        android:padding="@dimen/incall_controls_card_padding">
 
       <com.android.dialer.widget.LockableViewPager
           android:id="@+id/incall_pager"
@@ -120,17 +129,46 @@
           android:layout_gravity="center_horizontal"
           android:visibility="gone"/>
 
-      <ImageButton
-          android:id="@+id/incall_end_call"
-          style="@style/Incall.Button.End"
+      <LinearLayout
+          android:id="@+id/incall_end_call_row"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/incall_end_call_pill_height"
-          android:layout_gravity="center_horizontal"
-          android:layout_marginTop="12dp"
-          android:layout_marginBottom="16dp"
-          android:background="@drawable/incall_end_call_pill_background"
-          android:tint="@color/incall_end_call_pill_icon_color"
-          android:contentDescription="@string/incall_content_description_end_call"/>
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/incall_button_row_gap"
+          android:gravity="center"
+          android:orientation="horizontal">
+
+        <Space
+            android:id="@+id/incall_more_button_balance"
+            android:layout_width="@dimen/incall_more_button_size"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/dialer_space_control_gap"/>
+
+        <ImageButton
+            android:id="@+id/incall_end_call"
+            style="@style/Incall.Button.End"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/incall_end_call_pill_height"
+            android:layout_weight="1"
+            android:padding="@dimen/incall_end_call_pill_icon_padding"
+            android:background="@drawable/incall_end_call_pill_background"
+            android:elevation="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/quantum_ic_call_end_vd_theme_24"
+            android:tint="@color/incall_end_call_pill_icon_color"
+            android:contentDescription="@string/incall_content_description_end_call"/>
+
+        <ImageButton
+            android:id="@+id/incall_more_button"
+            android:layout_width="@dimen/incall_more_button_size"
+            android:layout_height="@dimen/incall_more_button_size"
+            android:layout_marginStart="@dimen/dialer_space_control_gap"
+            android:background="@drawable/incall_more_button_background"
+            android:contentDescription="@string/incall_label_more_options"
+            android:scaleType="center"
+            android:src="@drawable/ic_incall_more_horiz"
+            android:tint="?attr/dialerColorTextPrimary"
+            android:visibility="invisible"/>
+      </LinearLayout>
     </LinearLayout>
 
     <FrameLayout
@@ -145,9 +183,4 @@
         tools:visibility="gone"/>
   </RelativeLayout>
 
-  <FrameLayout
-      android:id="@id/incall_on_hold_banner"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="top"/>
 </FrameLayout>

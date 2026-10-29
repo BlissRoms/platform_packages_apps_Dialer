@@ -19,9 +19,7 @@ package com.android.incallui.incall.impl;
 
 import android.animation.AnimatorInflater;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
@@ -35,12 +33,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.android.dialer.R;
+import com.android.dialer.theme.base.ThemePreferences;
 
 /** A button to show on the incall screen */
 public class CheckableLabeledButton extends LinearLayout implements Checkable {
@@ -86,18 +84,14 @@ public class CheckableLabeledButton extends LinearLayout implements Checkable {
     typedArray.recycle();
 
     int paddingSize = getResources().getDimensionPixelOffset(R.dimen.incall_button_padding);
-    setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
-
-    int iconSize = getResources().getDimensionPixelSize(R.dimen.incall_labeled_button_size);
-    int imageSize = getResources().getDimensionPixelSize(R.dimen.incall_labeled_button_icon_size);
-    int iconPadding = (iconSize - imageSize) / 2;
+    setPadding(paddingSize, 0, paddingSize, 0);
 
     iconView = new ImageView(context, null, android.R.style.Widget_Material_Button_Colored);
     LayoutParams iconParams = generateDefaultLayoutParams();
-    iconParams.width = iconSize;
-    iconParams.height = iconSize;
+    iconParams.width = LayoutParams.MATCH_PARENT;
+    iconParams.height = getResources().getDimensionPixelSize(R.dimen.incall_button_pill_height);
     iconView.setLayoutParams(iconParams);
-    iconView.setPadding(iconPadding, iconPadding, iconPadding, iconPadding);
+    iconView.setScaleType(ImageView.ScaleType.CENTER);
     iconView.setImageDrawable(icon);
     iconView.setImageTintMode(Mode.SRC_IN);
     iconView.setImageTintList(
@@ -125,6 +119,8 @@ public class CheckableLabeledButton extends LinearLayout implements Checkable {
     labelView.setEllipsize(TruncateAt.END);
     labelView.setGravity(Gravity.CENTER);
     labelView.setDuplicateParentStateEnabled(true);
+    labelView.setVisibility(
+        new ThemePreferences(context).isInCallLabelsHidden() ? GONE : VISIBLE);
     addView(labelView);
 
     setFocusable(true);
@@ -138,13 +134,6 @@ public class CheckableLabeledButton extends LinearLayout implements Checkable {
     super.refreshDrawableState();
     iconView.setAlpha(isEnabled() ? 1f : DISABLED_STATE_OPACITY);
     labelView.setAlpha(isEnabled() ? 1f : DISABLED_STATE_OPACITY);
-  }
-
-  public void setCheckedColor(@ColorInt int color) {
-    iconView.setImageTintList(
-        new ColorStateList(
-            new int[][] {new int[] {android.R.attr.state_checked}, new int[] {}},
-            new int[] {color, Color.WHITE}));
   }
 
   public Drawable getIconDrawable() {

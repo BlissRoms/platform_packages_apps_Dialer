@@ -663,7 +663,11 @@ public class AnswerFragment extends Fragment
     buttonAcceptClicked = false;
     buttonRejectClicked = false;
 
-    View view = inflater.inflate(R.layout.fragment_incoming_call, container, false);
+    LayoutInflater themedInflater =
+        isVideoCall() || isVideoUpgradeRequest()
+            ? AnswerMethod.videoThemedInflater(inflater)
+            : inflater;
+    View view = themedInflater.inflate(R.layout.fragment_incoming_call, container, false);
     secondaryButton = (SwipeButtonView) view.findViewById(R.id.incoming_secondary_button);
     answerAndReleaseButton = (SwipeButtonView) view.findViewById(R.id.incoming_secondary_button2);
 

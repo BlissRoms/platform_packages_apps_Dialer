@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <dimen name="incall_button_pill_height">84dp</dimen>
+  <dimen name="incall_button_row_gap">27dp</dimen>
+  <dimen name="incall_wide_column_gap">40dp</dimen>
+</resources>
