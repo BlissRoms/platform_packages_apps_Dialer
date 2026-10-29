@@ -18,4 +18,5 @@
   <attr name="dialerColorDestructive" format="color" />
   <attr name="dialerColorDestructiveText" format="color" />
   <attr name="dialerColorSuccess" format="color" />
+  <attr name="dialerColorOnSuccess" format="color" />
 </resources>

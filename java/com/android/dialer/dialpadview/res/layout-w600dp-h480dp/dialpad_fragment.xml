@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<view
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    class="com.android.dialer.dialpadview.DialpadFragment$DialpadSlidingRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialpad_side_pane_bg">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+
+    <View
+        android:id="@+id/spacer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"/>
+
+    <include
+        layout="@layout/dialpad_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ListView
+        android:id="@+id/dialpadChooser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/colorBackgroundFloating"
+        android:visibility="gone"/>
+  </LinearLayout>
+
+  <Space
+      android:id="@+id/dialpad_floating_action_button_margin_bottom"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/dialpad_dial_button_margin_bottom"
+      android:layout_alignParentBottom="true"/>
+
+  <ImageButton
+      android:id="@+id/dialpad_floating_action_button"
+      android:layout_width="@dimen/dialpad_dial_button_size"
+      android:layout_height="@dimen/dialpad_dial_button_size"
+      android:layout_above="@id/dialpad_floating_action_button_margin_bottom"
+      android:layout_centerHorizontal="true"
+      android:background="@drawable/dialpad_dial_button_bg"
+      android:contentDescription="@string/description_dial_button"
+      android:padding="@dimen/dialpad_dial_button_padding"
+      android:scaleType="fitCenter"
+      android:src="@drawable/ic_dialpad_call_handset"
+      android:tint="@color/dialpad_dial_button_icon_color"
+      android:visibility="invisible"/>
+</view>

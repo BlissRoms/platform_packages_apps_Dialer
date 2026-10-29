@@ -20,7 +20,6 @@ package com.android.dialer.dialpadview;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.RippleDrawable;
@@ -135,8 +134,7 @@ public class DialpadView extends LinearLayout {
     // The orientation obtained at this point should be used as the only truth for DialpadView as we
     // observed inconsistency between configurations obtained here and in
     // OnPreDrawListenerForKeyLayoutAdjust under rare circumstances.
-    isLandscapeMode =
-        (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
+    isLandscapeMode = getResources().getBoolean(R.bool.dialpad_keys_horizontal);
 
     setupKeypad();
     digits = (EditText) findViewById(R.id.digits);

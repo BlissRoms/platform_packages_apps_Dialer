@@ -38,6 +38,7 @@
     <item name="dialerColorDestructive">@color/dialer_brand_destructive</item>
     <item name="dialerColorDestructiveText">@color/dialer_brand_destructive_text</item>
     <item name="dialerColorSuccess">@color/dialer_brand_success</item>
+    <item name="dialerColorOnSuccess">@android:color/white</item>
     <item name="android:windowNoTitle">true</item>
     <item name="android:backgroundDimEnabled">false</item>
     <item name="android:windowBackground">@android:color/transparent</item>

@@ -79,7 +79,6 @@ public class MainSearchController implements SearchBarListener {
 
   private static final String KEY_IS_FAB_HIDDEN = "is_fab_hidden";
   private static final String KEY_IS_TOOLBAR_EXPANDED = "is_toolbar_expanded";
-  private static final String KEY_IS_TOOLBAR_SLIDE_UP = "is_toolbar_slide_up";
 
   private static final String DIALPAD_FRAGMENT_TAG = "dialpad_fragment_tag";
   private static final String SEARCH_FRAGMENT_TAG = "search_fragment_tag";
@@ -158,9 +157,7 @@ public class MainSearchController implements SearchBarListener {
       return;
     }
 
-    fab.hide();
-    toolbar.slideUp(animate, fragmentContainer);
-    toolbar.expand(animate, Optional.empty(), /* requestFocus */ false);
+    showDialpadChrome(animate);
 
     activity.setTitle(R.string.dialpad_activity_title);
 
@@ -225,9 +222,7 @@ public class MainSearchController implements SearchBarListener {
 
     setSearchContainerVisible(true);
 
-    fab.show();
-    toolbar.slideDown(animate, fragmentContainer);
-    toolbar.transferQueryFromDialpad(dialpadFragment.getQuery());
+    hideDialpadChrome(animate, dialpadFragment.getQuery());
     activity.setTitle(R.string.main_activity_label);
 
     dialpadFragment.setAnimate(animate);
@@ -239,6 +234,9 @@ public class MainSearchController implements SearchBarListener {
 
           @Override
           public void onAnimationEnd(Animation animation) {
+            if (isSidePane()) {
+              setDialpadPaneVisible(false);
+            }
             if (activity.isSafeToCommitTransactions()
                 && !(activity.isFinishing() || activity.isDestroyed())) {
               activity.getSupportFragmentManager()
@@ -251,6 +249,62 @@ public class MainSearchController implements SearchBarListener {
           @Override
           public void onAnimationRepeat(Animation animation) {}
         });
+  }
+
+  private void showDialpadChrome(boolean animate) {
+    if (isSidePane()) {
+      toolbar.collapse(animate);
+      showBottomNav();
+      setDialpadPaneVisible(true);
+      setFabClosesDialpad(true);
+      return;
+    }
+    fab.hide();
+    toolbar.slideUp(animate, fragmentContainer);
+    toolbar.expand(animate, Optional.empty(), /* requestFocus */ false);
+  }
+
+  private void hideDialpadChrome(boolean animate, String query) {
+    if (!isSidePane()) {
+      fab.show();
+      toolbar.slideDown(animate, fragmentContainer);
+      toolbar.transferQueryFromDialpad(query);
+      return;
+    }
+    setFabClosesDialpad(false);
+    if (!TextUtils.isEmpty(query)) {
+      toolbar.expand(animate, Optional.empty(), /* requestFocus */ false);
+      toolbar.transferQueryFromDialpad(query);
+      hideBottomNav();
+    }
+  }
+
+  private boolean isSidePane() {
+    return activity.getResources().getBoolean(R.bool.dialpad_side_pane);
+  }
+
+  private void setDialpadPaneVisible(boolean visible) {
+    activity
+        .findViewById(R.id.dialpad_fragment_container)
+        .setVisibility(visible ? View.VISIBLE : View.GONE);
+  }
+
+  private void setFabClosesDialpad(boolean closes) {
+    fab.setImageResource(
+        closes ? R.drawable.quantum_ic_close_vd_theme_24 : R.drawable.quantum_ic_dialpad_vd_theme_24);
+    fab.setContentDescription(
+        activity.getString(
+            closes
+                ? R.string.dialpad_close_button_content_description
+                : R.string.dialpad_button_content_description));
+  }
+
+  public void toggleDialpad() {
+    if (isSidePane() && isDialpadVisible()) {
+      closeSearch(/* animate= */ true);
+    } else {
+      showDialpad(/* animate= */ true);
+    }
   }
 
   private void hideBottomNav() {
@@ -276,7 +330,9 @@ public class MainSearchController implements SearchBarListener {
   public void onDialpadShown() {
     LogUtil.enterBlock("MainSearchController.onDialpadShown");
     dialpadFragment.slideUp(true);
-    hideBottomNav();
+    if (!isSidePane()) {
+      hideBottomNav();
+    }
   }
 
   /**
@@ -387,8 +443,16 @@ public class MainSearchController implements SearchBarListener {
         && dialpadFragment.isDialpadSlideUp();
   }
 
+  private boolean isDialpadShown() {
+    return dialpadFragment != null && dialpadFragment.isAdded() && !dialpadFragment.isHidden();
+  }
+
   private boolean isSearchVisible() {
     return searchFragment != null && searchFragment.isAdded() && !searchFragment.isHidden();
+  }
+
+  public boolean hidesBottomNav() {
+    return isSearchVisible() && !(isSidePane() && isDialpadShown());
   }
 
   /** Returns true if the search UI is visible. */
@@ -411,7 +475,15 @@ public class MainSearchController implements SearchBarListener {
   @Override
   public void onSearchBarClicked() {
     LogUtil.enterBlock("MainSearchController.onSearchBarClicked");
-    openSearch(Optional.empty());
+    Optional<String> query = Optional.empty();
+    if (isSidePane() && isDialpadVisible()) {
+      String dialpadQuery = dialpadFragment.getQuery();
+      if (!TextUtils.isEmpty(dialpadQuery)) {
+        query = Optional.of(dialpadQuery);
+      }
+      hideDialpad(/* animate= */ true);
+    }
+    openSearch(query);
   }
 
   private void openSearch(Optional<String> query) {
@@ -557,21 +629,18 @@ public class MainSearchController implements SearchBarListener {
   public void onSaveInstanceState(Bundle bundle) {
     bundle.putBoolean(KEY_IS_FAB_HIDDEN, !fab.isShown());
     bundle.putBoolean(KEY_IS_TOOLBAR_EXPANDED, toolbar.isExpanded());
-    bundle.putBoolean(KEY_IS_TOOLBAR_SLIDE_UP, toolbar.isSlideUp());
   }
 
   public void onRestoreInstanceState(Bundle savedInstanceState) {
+    if (isDialpadShown()) {
+      showDialpadChrome(/* animate= */ false);
+      return;
+    }
     if (savedInstanceState.getBoolean(KEY_IS_FAB_HIDDEN, false)) {
       fab.hide();
     }
-    boolean isSlideUp = savedInstanceState.getBoolean(KEY_IS_TOOLBAR_SLIDE_UP, false);
-    if (isSlideUp) {
-      toolbar.slideUp(false, fragmentContainer);
-    }
     if (savedInstanceState.getBoolean(KEY_IS_TOOLBAR_EXPANDED, false)) {
-      // If the toolbar is slide up, that means the dialpad is showing. Thus we don't want to
-      // request focus or we'll break physical/bluetooth keyboards typing.
-      toolbar.expand(/* animate */ false, Optional.empty(), /* requestFocus */ !isSlideUp);
+      toolbar.expand(/* animate */ false, Optional.empty(), /* requestFocus */ true);
     }
   }
 

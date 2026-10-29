@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <bool name="dialpad_slides_from_side">true</bool>
+  <bool name="dialpad_keys_horizontal">true</bool>
+</resources>

@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="@color/rounded_dialpad_bg_color" />
     <corners
-        android:topLeftRadius="28dp"
-        android:topRightRadius="28dp" />
+        android:topLeftRadius="@dimen/dialer_radius_card"
+        android:topRightRadius="@dimen/dialer_radius_card" />
 </shape>

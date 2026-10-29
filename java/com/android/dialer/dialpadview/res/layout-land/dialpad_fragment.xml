@@ -65,18 +65,18 @@
       <Space
           android:id="@+id/dialpad_floating_action_button_margin_bottom"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/floating_action_button_margin_bottom"
+          android:layout_height="@dimen/dialpad_dial_button_margin_bottom"
           android:layout_alignParentBottom="true"/>
 
       <ImageButton
           android:id="@+id/dialpad_floating_action_button"
-          android:layout_width="@dimen/dialpad_dial_button_width"
-          android:layout_height="@dimen/dialpad_dial_button_height"
+          android:layout_width="@dimen/dialpad_dial_button_size"
+          android:layout_height="@dimen/dialpad_dial_button_size"
           android:layout_above="@id/dialpad_floating_action_button_margin_bottom"
           android:layout_centerHorizontal="true"
           android:background="@drawable/dialpad_dial_button_bg"
           android:contentDescription="@string/description_dial_button"
-          android:padding="17dp"
+          android:padding="@dimen/dialpad_dial_button_padding"
           android:scaleType="fitCenter"
           android:src="@drawable/ic_dialpad_call_handset"
           android:tint="@color/dialpad_dial_button_icon_color"

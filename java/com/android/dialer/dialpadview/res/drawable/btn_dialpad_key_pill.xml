@@ -17,25 +17,25 @@
     android:color="?android:attr/colorControlHighlight">
   <item android:id="@android:id/mask">
     <inset
-        android:insetLeft="6dp"
-        android:insetTop="6dp"
-        android:insetRight="6dp"
-        android:insetBottom="6dp">
+        android:insetLeft="@dimen/dialpad_key_inset"
+        android:insetTop="@dimen/dialpad_key_inset"
+        android:insetRight="@dimen/dialpad_key_inset"
+        android:insetBottom="@dimen/dialpad_key_inset">
       <shape android:shape="rectangle">
         <solid android:color="@android:color/white"/>
-        <corners android:radius="32dp"/>
+        <corners android:radius="9999dp"/>
       </shape>
     </inset>
   </item>
   <item>
     <inset
-        android:insetLeft="6dp"
-        android:insetTop="6dp"
-        android:insetRight="6dp"
-        android:insetBottom="6dp">
+        android:insetLeft="@dimen/dialpad_key_inset"
+        android:insetTop="@dimen/dialpad_key_inset"
+        android:insetRight="@dimen/dialpad_key_inset"
+        android:insetBottom="@dimen/dialpad_key_inset">
       <shape android:shape="rectangle">
         <solid android:color="@color/dialpad_key_fill_color"/>
-        <corners android:radius="32dp"/>
+        <corners android:radius="9999dp"/>
       </shape>
     </inset>
   </item>

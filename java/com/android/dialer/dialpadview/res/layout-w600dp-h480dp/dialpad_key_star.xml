@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The Android Open Source Project
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<!-- A layout representing key "*" in the dialpad -->
+<com.android.dialer.dialpadview.DialpadKeyButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/star"
+    style="@style/DialpadKeyButtonStyle">
+
+  <LinearLayout
+      android:id="@+id/dialpad_key_layout"
+      style="@style/DialpadKeyInternalLayoutStyle">
+
+    <com.android.dialer.dialpadview.DialpadTextView
+        android:id="@+id/dialpad_key_number"
+        style="@style/DialpadKeyStarStyle"/>
+  </LinearLayout>
+</com.android.dialer.dialpadview.DialpadKeyButton>

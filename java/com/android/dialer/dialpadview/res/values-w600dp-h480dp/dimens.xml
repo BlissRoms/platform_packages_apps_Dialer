@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <dimen name="dialpad_symbol_margin_bottom">0dp</dimen>
+  <dimen name="dialpad_bottom_space_height">135dp</dimen>
+  <dimen name="dialpad_key_height">69dp</dimen>
+  <dimen name="dialpad_dial_button_size">88dp</dimen>
+  <dimen name="dialpad_dial_button_padding">20dp</dimen>
+  <dimen name="dialpad_dial_button_margin_bottom">30dp</dimen>
+  <dimen name="dialpad_digits_row_height">92dp</dimen>
+</resources>

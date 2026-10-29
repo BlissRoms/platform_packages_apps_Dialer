@@ -211,7 +211,7 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
     FloatingActionButton fab = activity.findViewById(R.id.fab);
     fab.setOnClickListener(
         v -> {
-          searchController.showDialpad(true);
+          searchController.toggleDialpad();
           if (callLogAdapterOnActionModeStateChangedListener.isEnabled) {
             LogUtil.i("OldMainActivityPeer.onFabClicked", "closing multiselect");
             callLogAdapterOnActionModeStateChangedListener.actionMode.finish();
@@ -392,7 +392,7 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
     Database.get(activity).getDatabaseHelper(activity).startSmartDialUpdateThread(forceUpdate);
     showPostCallPrompt();
 
-    if (searchController.isInSearch()
+    if (searchController.hidesBottomNav()
         || callLogAdapterOnActionModeStateChangedListener.isActionModeStateEnabled()) {
       bottomNav.setVisibility(View.GONE);
     } else {

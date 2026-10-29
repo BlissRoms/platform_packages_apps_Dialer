@@ -55,4 +55,5 @@
     <string name="recents_favorites_add">Add</string>
     <string name="recents_favorites_add_description">Add a favorite</string>
     <string name="call_details_recent_activity">Recent activity</string>
+    <string name="dialpad_close_button_content_description">Close dialpad</string>
 </resources>

@@ -25,7 +25,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -199,7 +198,7 @@ public class DialpadFragment extends Fragment
   private boolean animate = false;
 
   private boolean isLayoutRtl;
-  private boolean isLandscape;
+  private boolean slidesFromSide;
 
   private PhoneAccountHandle selectedAccount;
 
@@ -515,8 +514,7 @@ public class DialpadFragment extends Fragment
   public void onAttach(Context context) {
     super.onAttach(context);
     isLayoutRtl = ViewUtil.isRtl();
-    isLandscape =
-        getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    slidesFromSide = getResources().getBoolean(R.bool.dialpad_slides_from_side);
   }
 
   private String getCurrentCountryIso() {
@@ -1616,7 +1614,7 @@ public class DialpadFragment extends Fragment
     Assert.checkArgument(isDialpadSlideUp);
     isDialpadSlideUp = false;
     int animation;
-    if (isLandscape) {
+    if (slidesFromSide) {
       animation = isLayoutRtl ? R.anim.dialpad_slide_out_left : R.anim.dialpad_slide_out_right;
     } else {
       animation = R.anim.dialpad_slide_out_bottom;
@@ -1634,7 +1632,7 @@ public class DialpadFragment extends Fragment
     Assert.checkArgument(!isDialpadSlideUp);
     isDialpadSlideUp = true;
     int animation;
-    if (isLandscape) {
+    if (slidesFromSide) {
       animation = isLayoutRtl ? R.anim.dialpad_slide_in_left : R.anim.dialpad_slide_in_right;
     } else {
       animation = R.anim.dialpad_slide_in_bottom;

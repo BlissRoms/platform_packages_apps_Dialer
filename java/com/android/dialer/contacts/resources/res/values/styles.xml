@@ -94,6 +94,7 @@ background and text color. See also android:style/Widget.Holo.TextView.ListSepar
     <item name="dialerColorDestructive">@color/dialer_brand_destructive</item>
     <item name="dialerColorDestructiveText">@color/dialer_brand_destructive_text</item>
     <item name="dialerColorSuccess">@color/dialer_brand_success</item>
+    <item name="dialerColorOnSuccess">@android:color/white</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">match_parent</item>
 
