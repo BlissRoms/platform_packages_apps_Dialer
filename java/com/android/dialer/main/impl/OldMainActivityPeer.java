@@ -223,7 +223,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
     activity.setSupportActionBar(activity.findViewById(R.id.toolbar));
 
     bottomNav = activity.findViewById(R.id.bottom_nav_bar);
-    bottomNav.setBlurSource(activity.findViewById(R.id.coordinator_layout));
     bottomNavTabListener =
         new MainBottomNavBarBottomNavTabListener(
             activity,

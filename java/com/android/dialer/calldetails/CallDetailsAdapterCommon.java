@@ -18,6 +18,8 @@
 package com.android.dialer.calldetails;
 
 import android.content.Context;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +41,8 @@ import com.android.dialer.calllogutils.CallbackActionHelper.CallbackAction;
 import com.android.dialer.callrecord.CallRecordingDataStore;
 import com.android.dialer.common.Assert;
 import com.android.dialer.glidephotomanager.PhotoInfo;
+import com.android.dialer.theme.base.CardPosition;
+import com.android.dialer.util.UriUtils;
 
 /**
  * Contains common logic shared between {@link OldCallDetailsAdapter} and {@link
@@ -119,9 +123,13 @@ abstract class CallDetailsAdapterCommon extends RecyclerView.Adapter<RecyclerVie
     if (position == 0) { // Header
       bindCallDetailsHeaderViewHolder((CallDetailsHeaderViewHolder) holder, position);
     } else if (position == getItemCount() - 1) {
-      ((CallDetailsFooterViewHolder) holder).setPhoneNumber(getNumber());
+      CallDetailsFooterViewHolder footer = (CallDetailsFooterViewHolder) holder;
+      footer.setPhoneNumber(getNumber());
+      footer.setCanAddContact(isUnsavedNumber());
     } else {
       CallDetailsEntryViewHolder viewHolder = (CallDetailsEntryViewHolder) holder;
+      applyEntryCardPosition(
+          viewHolder, CardPosition.of(position > 1, position < getItemCount() - 2));
       CallDetailsEntry entry = callDetailsEntries.getEntries(position - 1);
       viewHolder.setCallDetails(
           getNumber(),
@@ -131,6 +139,22 @@ abstract class CallDetailsAdapterCommon extends RecyclerView.Adapter<RecyclerVie
           callTypeHelper,
           callRecordingDataStore);
     }
+  }
+
+  private boolean isUnsavedNumber() {
+    String lookupUri = getPhotoInfo().getLookupUri();
+    return TextUtils.isEmpty(lookupUri) || UriUtils.isEncodedContactUri(Uri.parse(lookupUri));
+  }
+
+  private static void applyEntryCardPosition(ViewHolder holder, CardPosition position) {
+    holder.itemView.setBackgroundResource(CardPosition.background(position));
+    ViewGroup.MarginLayoutParams params =
+        (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
+    params.bottomMargin =
+        position.hasRowBelow()
+            ? holder.itemView.getResources().getDimensionPixelSize(R.dimen.call_details_row_gap)
+            : 0;
+    holder.itemView.setLayoutParams(params);
   }
 
   @Override

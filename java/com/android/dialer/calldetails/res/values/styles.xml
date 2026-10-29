@@ -15,15 +15,21 @@
   ~ limitations under the License
   -->
 <resources>
-  <style name="CallDetailsActionItemStyle" parent="Dialer.TextAppearance.Secondary.Ellipsize">
+  <style name="CallDetailsActionItemStyle" parent="Dialer.TextAppearance.Primary.Ellipsize">
     <item name="android:clickable">true</item>
-    <item name="android:drawablePadding">28dp</item>
+    <item name="android:focusable">true</item>
+    <item name="android:drawablePadding">17dp</item>
     <item name="android:gravity">center_vertical</item>
-    <item name="android:paddingStart">28dp</item>
-    <item name="android:paddingEnd">28dp</item>
-    <item name="android:paddingTop">16dp</item>
-    <item name="android:paddingBottom">16dp</item>
-    <item name="android:background">?android:attr/selectableItemBackground</item>
+    <item name="android:minHeight">@dimen/call_details_action_height</item>
+    <item name="android:padding">20dp</item>
+    <item name="android:textSize">17sp</item>
+    <item name="android:background">@drawable/call_details_row_surface</item>
+    <item name="drawableTint">?attr/dialerColorTextSecondary</item>
+  </style>
+
+  <style name="CallDetailsActionItemStyle.Destructive">
+    <item name="android:textColor">?attr/dialerColorDestructiveText</item>
+    <item name="drawableTint">?attr/dialerColorDestructiveText</item>
   </style>
 
   <style name="RttTranscriptLink">

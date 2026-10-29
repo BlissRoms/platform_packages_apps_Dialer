@@ -79,68 +79,25 @@
       android:orientation="horizontal">
 
       <TextView
+        style="@style/Recents.Chip"
         android:id="@+id/chip_all"
-        android:layout_width="wrap_content"
-        android:layout_height="34dp"
-        android:layout_marginEnd="10dp"
-        android:gravity="center"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:background="@drawable/recents_chip_bg"
-        android:textColor="@color/recents_chip_text"
-        android:textSize="13sp"
-        android:textFontWeight="400"
-        android:clickable="true"
-        android:focusable="true"
         android:text="@string/call_log_all_title"/>
 
       <TextView
+        style="@style/Recents.Chip"
         android:id="@+id/chip_missed"
-        android:layout_width="wrap_content"
-        android:layout_height="34dp"
-        android:layout_marginEnd="10dp"
-        android:gravity="center"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:background="@drawable/recents_chip_bg"
-        android:textColor="@color/recents_chip_text"
-        android:textSize="13sp"
-        android:textFontWeight="400"
-        android:clickable="true"
-        android:focusable="true"
         android:text="@string/call_log_missed_title"/>
 
       <TextView
+        style="@style/Recents.Chip"
         android:id="@+id/chip_spam"
-        android:layout_width="wrap_content"
-        android:layout_height="34dp"
-        android:layout_marginEnd="10dp"
-        android:gravity="center"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:background="@drawable/recents_chip_bg"
-        android:textColor="@color/recents_chip_text"
-        android:textSize="13sp"
-        android:textFontWeight="400"
-        android:clickable="true"
-        android:focusable="true"
         android:text="@string/recents_chip_spam"/>
 
       <TextView
+        style="@style/Recents.Chip"
         android:id="@+id/chip_customize"
-        android:layout_width="wrap_content"
-        android:layout_height="34dp"
-        android:gravity="center"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:background="@drawable/recents_chip_bg"
         android:drawableStart="@drawable/recents_ic_gear"
         android:drawablePadding="6dp"
-        android:textColor="@color/recents_chip_text"
-        android:textSize="13sp"
-        android:textFontWeight="400"
-        android:clickable="true"
-        android:focusable="true"
         android:text="@string/recents_chip_customize"/>
     </LinearLayout>
   </HorizontalScrollView>

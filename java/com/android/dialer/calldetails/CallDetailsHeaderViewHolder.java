@@ -27,7 +27,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.QuickContactBadge;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -66,7 +65,7 @@ public class CallDetailsHeaderViewHolder extends RecyclerView.ViewHolder
   private final QuickContactBadge contactPhoto;
   private final Context context;
   private final TextView assistedDialingInternationalDirectDialCodeAndCountryCodeText;
-  private final RelativeLayout assistedDialingContainer;
+  private final View assistedDialingContainer;
 
   private final String number;
   private final String postDialDigits;

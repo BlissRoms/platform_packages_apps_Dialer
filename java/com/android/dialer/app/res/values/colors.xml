@@ -36,8 +36,6 @@
   <!-- Material next track off color-->
 
   <!-- Recents redesign tokens (light). Dark variants live in values-night/colors.xml. -->
-  <color name="recents_nav_bar_bg">#CCFFFFFF</color>
-  <color name="recents_nav_glass_tint">#40FFFFFF</color>
 
   <!-- Redesigned settings screen (light). Dark variants live in values-night/colors.xml. -->
 </resources>

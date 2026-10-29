@@ -30,12 +30,14 @@ import android.graphics.Canvas;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.CallLog;
 import android.provider.CallLog.Calls;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -54,6 +56,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -63,6 +66,7 @@ import com.android.dialer.R;
 import com.android.dialer.app.calllog.CallLogAdapter.CallFetcher;
 import com.android.dialer.app.calllog.CallLogAdapter.MultiSelectRemoveView;
 import com.android.dialer.app.calllog.calllogcache.CallLogCache;
+import com.android.dialer.app.calllog.favorites.FavoritesHeaderAdapter;
 import com.android.dialer.app.contactinfo.ContactInfoCache;
 import com.android.dialer.app.contactinfo.ContactInfoCache.OnContactInfoChangedListener;
 import com.android.dialer.app.contactinfo.ExpirableCacheHeadlessFragment;
@@ -71,6 +75,12 @@ import com.android.dialer.blocking.FilteredNumberAsyncQueryHandler;
 import com.android.dialer.common.Assert;
 import com.android.dialer.common.FragmentUtils;
 import com.android.dialer.common.LogUtil;
+import com.android.dialer.common.concurrent.DialerExecutorComponent;
+import com.android.dialer.common.concurrent.SupportUiListener;
+import com.android.dialer.speeddial.ContextMenu;
+import com.android.dialer.speeddial.FavoriteContactActions;
+import com.android.dialer.speeddial.loader.SpeedDialUiItem;
+import com.android.dialer.speeddial.loader.UiItemLoaderComponent;
 import com.android.dialer.theme.base.Theme;
 import com.android.dialer.theme.base.ThemeComponent;
 import com.android.dialer.database.CallLogQueryHandler;
@@ -81,6 +91,7 @@ import com.android.dialer.phonenumbercache.ContactInfoHelper;
 import com.android.dialer.util.PermissionsUtil;
 import com.android.dialer.widget.EmptyContentView;
 import com.android.dialer.widget.EmptyContentView.OnEmptyViewActionButtonClickedListener;
+import com.google.common.collect.ImmutableList;
 
 import java.util.Arrays;
 
@@ -176,6 +187,22 @@ public class CallLogFragment extends Fragment
   private TextView chipMissed;
   private TextView chipSpam;
   private TextView chipCustomize;
+
+  private final ActivityResultLauncher<Intent> pickFavoriteLauncher =
+      registerForActivityResult(
+          new ActivityResultContracts.StartActivityForResult(),
+          result -> {
+            Intent data = result.getData();
+            if (result.getResultCode() == Activity.RESULT_OK
+                && data != null
+                && data.getData() != null) {
+              starFavorite(data.getData());
+            }
+          });
+  @Nullable private FavoritesHeaderAdapter favoritesAdapter;
+  @Nullable private SupportUiListener<ImmutableList<SpeedDialUiItem>> favoritesLoaderListener;
+  @Nullable private FavoriteContactActions favoriteActions;
+  @Nullable private ContextMenu favoriteMenu;
 
   private final ActivityResultLauncher<String[]> permissionLauncher = registerForActivityResult(
           new ActivityResultContracts.RequestMultiplePermissions(),
@@ -337,7 +364,6 @@ public class CallLogFragment extends Fragment
 
   protected void setupView(View view) {
     recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-    recyclerView.setHasFixedSize(true);
     layoutManager = new LinearLayoutManager(getActivity());
     recyclerView.setLayoutManager(layoutManager);
     
@@ -348,12 +374,19 @@ public class CallLogFragment extends Fragment
         }
 
         @Override
+        public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            return viewHolder instanceof CallLogListItemViewHolder
+                    ? super.getSwipeDirs(recyclerView, viewHolder)
+                    : 0;
+        }
+
+        @Override
         public void onSwiped(RecyclerView.ViewHolder holder, int direction) {
             if (holder instanceof CallLogListItemViewHolder) {
                 CallLogListItemViewHolder viewHolder = ((CallLogListItemViewHolder) holder);
                 if (direction == ItemTouchHelper.LEFT) {
                     getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", viewHolder.number, null)));
-                    adapter.notifyItemChanged(holder.getAdapterPosition());
+                    adapter.notifyItemChanged(holder.getBindingAdapterPosition());
                 } else {
                     getContext()
                         .getContentResolver()
@@ -452,10 +485,11 @@ public class CallLogFragment extends Fragment
   }
 
   private void selectChip(TextView selected) {
-    chipAll.setSelected(selected == chipAll);
-    chipMissed.setSelected(selected == chipMissed);
-    chipSpam.setSelected(selected == chipSpam);
-    chipCustomize.setSelected(selected == chipCustomize);
+    for (TextView chip : new TextView[] {chipAll, chipMissed, chipSpam, chipCustomize}) {
+      boolean isSelected = chip == selected;
+      chip.setSelected(isSelected);
+      chip.setTypeface(Typeface.create(chip.getTypeface(), isSelected ? 500 : 400, false));
+    }
   }
 
   private void showCustomizeMenu(View anchor) {
@@ -482,6 +516,10 @@ public class CallLogFragment extends Fragment
     }
     callTypeFilter = filterType;
     scrollToTop = true;
+    updateEmptyMessage(callTypeFilter);
+    if (favoritesAdapter != null) {
+      favoritesAdapter.setShown(callTypeFilter == CallLogQueryHandler.CALL_TYPE_ALL);
+    }
     if (adapter != null) {
       fetchCalls();
     }
@@ -514,11 +552,23 @@ public class CallLogFragment extends Fragment
             getVoicemailPlaybackPresenter(),
             new FilteredNumberAsyncQueryHandler(requireActivity()),
             activityType);
-    recyclerView.setAdapter(adapter);
+    if (showFilterChips()) {
+      setUpFavorites();
+      recyclerView.setAdapter(
+          new ConcatAdapter(
+              new ConcatAdapter.Config.Builder()
+                  .setStableIdMode(ConcatAdapter.Config.StableIdMode.ISOLATED_STABLE_IDS)
+                  .build(),
+              favoritesAdapter,
+              adapter));
+    } else {
+      recyclerView.setAdapter(adapter);
+    }
     if (adapter.getOnScrollListener() != null) {
       recyclerView.addOnScrollListener(adapter.getOnScrollListener());
     }
     fetchCalls();
+    loadFavorites();
   }
 
   @Nullable
@@ -595,6 +645,7 @@ public class CallLogFragment extends Fragment
   @Override
   public void onPause() {
     LogUtil.enterBlock("CallLogFragment.onPause");
+    dismissFavoriteMenu();
     if (getUserVisibleHint()) {
       onNotVisible();
     }
@@ -682,6 +733,15 @@ public class CallLogFragment extends Fragment
       case CallLogQueryHandler.CALL_TYPE_ALL:
         messageId = R.string.call_log_all_empty;
         break;
+      case Calls.BLOCKED_TYPE:
+        messageId = R.string.call_log_blocked_empty;
+        break;
+      case Calls.INCOMING_TYPE:
+        messageId = R.string.call_log_incoming_empty;
+        break;
+      case Calls.OUTGOING_TYPE:
+        messageId = R.string.call_log_outgoing_empty;
+        break;
       default:
         throw new IllegalArgumentException(
             "Unexpected filter type in CallLogFragment: " + filterType);
@@ -712,6 +772,85 @@ public class CallLogFragment extends Fragment
   }
 
   /** Requests updates to the data to be shown. */
+  private void setUpFavorites() {
+    favoritesLoaderListener =
+        DialerExecutorComponent.get(requireContext())
+            .createUiListener(getChildFragmentManager(), "favorites_loader_listener");
+    favoritesAdapter = new FavoritesHeaderAdapter(new FavoritesListener());
+    favoritesAdapter.setShown(callTypeFilter == CallLogQueryHandler.CALL_TYPE_ALL);
+    favoritesAdapter.registerAdapterDataObserver(
+        new RecyclerView.AdapterDataObserver() {
+          @Override
+          public void onItemRangeInserted(int positionStart, int itemCount) {
+            if (layoutManager.findFirstVisibleItemPosition() <= itemCount) {
+              recyclerView.scrollToPosition(0);
+            }
+          }
+        });
+    favoriteActions =
+        new FavoriteContactActions(
+            requireActivity(), favoritesLoaderListener, favoritesAdapter::setFavorites);
+  }
+
+  private void dismissFavoriteMenu() {
+    if (favoriteMenu != null) {
+      favoriteMenu.hide();
+      favoriteMenu = null;
+    }
+  }
+
+  @Override
+  public void onHiddenChanged(boolean hidden) {
+    super.onHiddenChanged(hidden);
+    if (hidden) {
+      dismissFavoriteMenu();
+    } else if (getView() != null) {
+      refreshData();
+    }
+  }
+
+  private void loadFavorites() {
+    if (favoritesLoaderListener == null
+        || !PermissionsUtil.hasContactsReadPermissions(getContext())) {
+      return;
+    }
+    favoritesLoaderListener.listen(
+        requireContext(),
+        UiItemLoaderComponent.get(requireContext()).speedDialUiItemMutator().loadSpeedDialUiItems(),
+        favoritesAdapter::setFavorites,
+        throwable -> LogUtil.e("CallLogFragment.loadFavorites", "failed to load", throwable));
+  }
+
+  private void starFavorite(Uri phoneUri) {
+    if (favoritesLoaderListener == null) {
+      return;
+    }
+    favoritesLoaderListener.listen(
+        requireContext(),
+        UiItemLoaderComponent.get(requireContext()).speedDialUiItemMutator().starContact(phoneUri),
+        favoritesAdapter::setFavorites,
+        throwable -> LogUtil.e("CallLogFragment.starFavorite", "failed to star", throwable));
+  }
+
+  private final class FavoritesListener implements FavoritesHeaderAdapter.Listener {
+
+    @Override
+    public void onFavoriteClicked(SpeedDialUiItem speedDialUiItem) {
+      favoriteActions.call(speedDialUiItem, getChildFragmentManager());
+    }
+
+    @Override
+    public void onFavoriteLongClicked(View anchor, SpeedDialUiItem speedDialUiItem) {
+      dismissFavoriteMenu();
+      favoriteMenu = ContextMenu.show(requireActivity(), anchor, favoriteActions, speedDialUiItem);
+    }
+
+    @Override
+    public void onAddFavoriteClicked() {
+      pickFavoriteLauncher.launch(new Intent(Intent.ACTION_PICK, Phone.CONTENT_URI));
+    }
+  }
+
   private void refreshData() {
     // Prevent unnecessary refresh.
     if (refreshDataRequired) {
@@ -721,6 +860,7 @@ public class CallLogFragment extends Fragment
       adapter.setLoading(true);
 
       fetchCalls();
+      loadFavorites();
       callLogQueryHandler.fetchVoicemailStatus();
       callLogQueryHandler.fetchMissedCallsUnreadCount();
       refreshDataRequired = false;

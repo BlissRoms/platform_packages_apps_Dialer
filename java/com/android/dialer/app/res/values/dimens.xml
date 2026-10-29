@@ -23,7 +23,15 @@
   <dimen name="select_all_text_left_padding">18dp</dimen>
 
   <!-- Call Log -->
-  <dimen name="call_log_horizontal_margin">8dp</dimen>
+  <dimen name="call_log_horizontal_margin">@dimen/dialer_space_page_inset</dimen>
+  <dimen name="recents_avatar_size">50dp</dimen>
+  <dimen name="recents_row_gap">3dp</dimen>
+  <dimen name="recents_action_gap">2dp</dimen>
+  <dimen name="recents_action_height">56dp</dimen>
+  <dimen name="recents_favorite_photo_size">56dp</dimen>
+  <dimen name="recents_favorite_width">64dp</dimen>
+  <dimen name="recents_favorite_gap">17dp</dimen>
+  <dimen name="recents_day_group_gap">17dp</dimen>
   <dimen name="call_log_outer_margin">8dp</dimen>
   <dimen name="call_log_start_margin">8dp</dimen>
   <dimen name="call_log_name_margin_bottom">2dp</dimen>

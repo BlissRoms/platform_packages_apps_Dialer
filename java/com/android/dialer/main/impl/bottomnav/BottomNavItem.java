@@ -19,6 +19,7 @@ package com.android.dialer.main.impl.bottomnav;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.content.res.ColorStateList;
 import android.util.AttributeSet;
 import android.view.View;
@@ -77,8 +78,7 @@ final class BottomNavItem extends LinearLayout {
   public void setSelected(boolean selected) {
     super.setSelected(selected);
     text.setSelected(selected);
-    text.setTextColor(getContext().getColor(
-        selected ? R.color.recents_nav_selected_text : R.color.recents_nav_unselected_text));
+    text.setTypeface(Typeface.create(text.getTypeface(), selected ? 500 : 400, false));
   }
 
   private void setActiveIndicatorProgress(

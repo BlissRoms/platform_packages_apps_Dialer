@@ -31,7 +31,6 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -115,9 +114,9 @@ abstract class CallDetailsActivityCommon extends BaseActivity {
     setTheme(ThemeComponent.get(this).theme().getApplicationThemeRes());
     setContentView(R.layout.call_details_activity);
     setupInsets(findViewById(R.id.main_layout));
-    Toolbar toolbar = findViewById(R.id.toolbar);
-    toolbar.setTitle(R.string.call_details);
-    toolbar.setNavigationOnClickListener(v -> finish());
+    setTitle(R.string.call_details);
+    findViewById(R.id.header_title).setVisibility(View.GONE);
+    findViewById(R.id.header_back).setOnClickListener(v -> finish());
     checkRttTranscriptAvailabilityListener =
         DialerExecutorComponent.get(this)
             .createUiListener(getSupportFragmentManager(), "Query RTT transcript availability");

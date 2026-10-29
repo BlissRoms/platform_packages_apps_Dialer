@@ -138,6 +138,8 @@ public class PhoneCallDetails {
   public int voicemailId;
   public int previousGroup;
 
+  public int nextGroup;
+
   // The URI of the voicemail associated with this phone call, if this call went to voicemail.
   public String voicemailUri;
 

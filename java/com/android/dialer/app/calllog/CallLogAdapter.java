@@ -53,6 +53,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.contacts.common.ContactsUtils;
+import com.android.dialer.theme.base.CardPosition;
 import com.android.dialer.R;
 import com.android.dialer.app.calllog.CallLogFragment.CallLogFragmentListener;
 import com.android.dialer.app.calllog.CallLogGroupBuilder.GroupCreator;
@@ -457,7 +458,7 @@ public class CallLogAdapter extends GroupingListAdapter
     int lastExpandedPosition = currentlyExpandedPosition;
     // Show the actions for the clicked list item.
     viewHolder.showActions(true);
-    currentlyExpandedPosition = viewHolder.getAdapterPosition();
+    currentlyExpandedPosition = viewHolder.getBindingAdapterPosition();
     currentlyExpandedRowId = viewHolder.rowId;
 
     // If another item is expanded, notify it that it has changed. Its actions will be
@@ -640,7 +641,7 @@ public class CallLogAdapter extends GroupingListAdapter
 
   @Override
   public void onViewRecycled(ViewHolder viewHolder) {
-    if (viewHolder.getItemViewType() == VIEW_TYPE_CALLLOG) {
+    if (viewHolder instanceof CallLogListItemViewHolder) {
       CallLogListItemViewHolder views = (CallLogListItemViewHolder) viewHolder;
       updateCheckMarkedStatusOfEntry(views);
 
@@ -652,14 +653,14 @@ public class CallLogAdapter extends GroupingListAdapter
 
   @Override
   public void onViewAttachedToWindow(ViewHolder viewHolder) {
-    if (viewHolder.getItemViewType() == VIEW_TYPE_CALLLOG) {
+    if (viewHolder instanceof CallLogListItemViewHolder) {
       ((CallLogListItemViewHolder) viewHolder).isAttachedToWindow = true;
     }
   }
 
   @Override
   public void onViewDetachedFromWindow(ViewHolder viewHolder) {
-    if (viewHolder.getItemViewType() == VIEW_TYPE_CALLLOG) {
+    if (viewHolder instanceof CallLogListItemViewHolder) {
       ((CallLogListItemViewHolder) viewHolder).isAttachedToWindow = false;
     }
   }
@@ -716,7 +717,7 @@ public class CallLogAdapter extends GroupingListAdapter
       final long rowId,
       final PhoneCallDetails details,
       final CallDetailsEntries callDetailsEntries) {
-    LogUtil.d("CallLogAdapter.loadAndRender", "position: %d", viewHolder.getAdapterPosition());
+    LogUtil.d("CallLogAdapter.loadAndRender", "position: %d", viewHolder.getBindingAdapterPosition());
     // Reset block and spam information since this view could be reused which may contain
     // outdated data.
     viewHolder.isSpam = false;
@@ -770,6 +771,10 @@ public class CallLogAdapter extends GroupingListAdapter
           if (success) {
             mViewHolder.callbackAction = getCallbackAction(mViewHolder.rowId);
             int currentDayGroup = getDayGroup(mViewHolder.rowId);
+            mViewHolder.applyCardPosition(
+                CardPosition.of(
+                    currentDayGroup == mDetails.previousGroup,
+                    currentDayGroup == mDetails.nextGroup));
             if (currentDayGroup != mDetails.previousGroup) {
               mViewHolder.dayGroupHeaderVisibility = View.VISIBLE;
               mViewHolder.dayGroupHeaderText = getGroupDescription(currentDayGroup);
@@ -822,6 +827,7 @@ public class CallLogAdapter extends GroupingListAdapter
     // Stash away the Ids of the calls so that we can support deleting a row in the call log.
     views.callIds = getCallIds(cursor, count);
     details.previousGroup = getPreviousDayGroup(cursor);
+    details.nextGroup = getNextDayGroup(cursor, count);
 
     // Store values used when the actions ViewStub is inflated on expansion.
     views.number = number;
@@ -894,7 +900,7 @@ public class CallLogAdapter extends GroupingListAdapter
         && !isVoicemailNumber) {
       // Lookup contacts with this number
       // Only do remote lookup in first 5 rows.
-      int position = views.getAdapterPosition();
+      int position = views.getBindingAdapterPosition();
       info =
           contactInfoCache.getValue(
               details.number + details.postDialDigits,
@@ -928,7 +934,7 @@ public class CallLogAdapter extends GroupingListAdapter
     LogUtil.d(
         "CallLogAdapter.loadData",
         "position:%d, update geo info: %s, cequint caller id geo: %s, photo uri: %s <- %s",
-        views.getAdapterPosition(),
+        views.getBindingAdapterPosition(),
         details.geocode,
         info.geoDescription,
         details.photoUri,
@@ -994,7 +1000,7 @@ public class CallLogAdapter extends GroupingListAdapter
     if (currentlyExpandedRowId == views.rowId) {
       // In case ViewHolders were added/removed, update the expanded position if the rowIds
       // match so that we can restore the correct expanded state on rebind.
-      currentlyExpandedPosition = views.getAdapterPosition();
+      currentlyExpandedPosition = views.getBindingAdapterPosition();
       views.showActions(true);
     } else {
       views.showActions(false);
@@ -1059,9 +1065,7 @@ public class CallLogAdapter extends GroupingListAdapter
     hiddenItemUris.add(uri);
 
     collapseExpandedCard();
-    notifyItemChanged(viewHolder.getAdapterPosition());
-    // The next item might have to update its day group label
-    notifyItemChanged(viewHolder.getAdapterPosition() + 1);
+    notifyNeighbourhoodChanged(viewHolder.getBindingAdapterPosition());
   }
 
   private void collapseExpandedCard() {
@@ -1079,9 +1083,15 @@ public class CallLogAdapter extends GroupingListAdapter
   public void onVoicemailDeleteUndo(long rowId, int adapterPosition, Uri uri) {
     hiddenItemUris.remove(uri);
     hiddenRowIds.remove(rowId);
-    notifyItemChanged(adapterPosition);
-    // The next item might have to update its day group label
-    notifyItemChanged(adapterPosition + 1);
+    notifyNeighbourhoodChanged(adapterPosition);
+  }
+
+  private void notifyNeighbourhoodChanged(int position) {
+    int first = Math.max(0, position - 1);
+    int last = Math.min(getItemCount() - 1, position + 1);
+    if (last >= first) {
+      notifyItemRangeChanged(first, last - first + 1);
+    }
   }
 
   /** This callback signifies that a database deletion has completed. */
@@ -1108,6 +1118,23 @@ public class CallLogAdapter extends GroupingListAdapter
     int result = getDayGroup(cursor.getLong(CallLogQuery.ID));
     cursor.moveToPosition(startingPosition);
     return result;
+  }
+
+  private int getNextDayGroup(Cursor cursor, int groupSize) {
+    int startingPosition = cursor.getPosition();
+    cursor.moveToPosition(startingPosition + groupSize - 1);
+    moveToNextNonHiddenRow(cursor);
+    if (cursor.isAfterLast()) {
+      cursor.moveToPosition(startingPosition);
+      return CallLogGroupBuilder.DAY_GROUP_NONE;
+    }
+    int result = getDayGroup(cursor.getLong(CallLogQuery.ID));
+    cursor.moveToPosition(startingPosition);
+    return result;
+  }
+
+  private void moveToNextNonHiddenRow(Cursor cursor) {
+    while (cursor.moveToNext() && hiddenRowIds.contains(cursor.getLong(CallLogQuery.ID))) {}
   }
 
   private void moveToPreviousNonHiddenRow(Cursor cursor) {

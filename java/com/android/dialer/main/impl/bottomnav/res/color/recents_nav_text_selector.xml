@@ -17,5 +17,5 @@
 <!-- Bottom nav label color: white when selected, muted grey otherwise. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:state_selected="true" android:color="?attr/dialerColorOnAccent"/>
-  <item android:color="?attr/dialerColorTextSecondary"/>
+  <item android:color="?attr/dialerColorTextPrimary"/>
 </selector>

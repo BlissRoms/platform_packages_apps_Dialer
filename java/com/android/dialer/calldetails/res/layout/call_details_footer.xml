@@ -19,21 +19,39 @@
   android:id="@+id/footer_container"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  android:layout_marginStart="@dimen/dialer_space_page_inset"
+  android:layout_marginEnd="@dimen/dialer_space_page_inset"
+  android:layout_marginTop="@dimen/dialer_space_section_gap"
+  android:layout_marginBottom="@dimen/dialer_space_page_inset"
+  android:background="@drawable/dialer_card_clip_single"
+  android:clipToOutline="true"
+  android:divider="@drawable/call_details_row_gap"
+  android:showDividers="middle"
   android:orientation="vertical">
 
-  <View
+  <TextView
+      android:id="@+id/call_detail_action_create_contact"
+      style="@style/CallDetailsActionItemStyle"
       android:layout_width="match_parent"
-      android:layout_height="1dp"
-      android:layout_marginTop="@dimen/ec_divider_top_bottom_margin"
-      android:layout_marginBottom="@dimen/ec_divider_top_bottom_margin"
-      android:background="@color/dialer_divider_line_color"/>
+      android:layout_height="wrap_content"
+      android:text="@string/search_shortcut_create_new_contact"
+      android:visibility="gone"
+      app:drawableStartCompat="@drawable/quantum_ic_person_add_vd_theme_24" />
+
+  <TextView
+      android:id="@+id/call_detail_action_add_to_contact"
+      style="@style/CallDetailsActionItemStyle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/search_shortcut_add_to_contact"
+      android:visibility="gone"
+      app:drawableStartCompat="@drawable/quantum_ic_person_vd_theme_24" />
 
   <TextView
       android:id="@+id/call_detail_action_copy"
       style="@style/CallDetailsActionItemStyle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:tint="?colorIcon"
       android:text="@string/call_details_copy_number"
       app:drawableStartCompat="@drawable/quantum_ic_content_copy_vd_theme_24" />
 
@@ -42,10 +60,8 @@
       style="@style/CallDetailsActionItemStyle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:tint="?colorIcon"
       android:text="@string/call_details_edit_number"
-      app:drawableStartCompat="@drawable/quantum_ic_edit_vd_theme_24"
-      app:drawableTint="?colorIcon" />
+      app:drawableStartCompat="@drawable/quantum_ic_edit_vd_theme_24" />
 
   <TextView
       android:id="@+id/call_detail_action_report_caller_id"
@@ -53,17 +69,14 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/call_details_report_call_id"
-      android:tint="?colorIcon"
       android:visibility="gone"
       app:drawableStartCompat="@drawable/quantum_ic_report_vd_theme_24" />
 
   <TextView
       android:id="@+id/call_detail_action_delete"
-      style="@style/CallDetailsActionItemStyle"
+      style="@style/CallDetailsActionItemStyle.Destructive"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:tint="?colorIcon"
       android:text="@string/delete"
-      app:drawableTint="?colorIcon"
       app:drawableStartCompat="@drawable/quantum_ic_delete_vd_theme_24" />
 </LinearLayout>

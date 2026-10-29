@@ -20,6 +20,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dialer_space_page_inset"
+    android:layout_marginEnd="@dimen/dialer_space_page_inset"
     android:paddingTop="@dimen/call_entry_padding"
     android:paddingBottom="@dimen/call_entry_bottom_padding">
 

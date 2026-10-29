@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dialer_space_control_gap">
+
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:paddingTop="@dimen/recents_day_group_gap"
+      android:paddingBottom="@dimen/dialer_space_control_gap"
+      android:text="@string/favorites_header"
+      android:textColor="@color/recents_day_header_text"
+      android:textSize="13sp"
+      android:textFontWeight="500"
+      style="@style/Dialer.TextAppearance.OVERLINE.Ellipsize" />
+
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/favorites_carousel"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:clipToPadding="false"
+      android:overScrollMode="never"
+      android:scrollbars="none" />
+</LinearLayout>

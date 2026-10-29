@@ -21,19 +21,16 @@
   android:gravity="center_vertical"
   android:importantForAccessibility="1"
   android:orientation="vertical"
+  android:divider="@drawable/recents_row_gap"
+  android:showDividers="middle"
   android:visibility="visible">
 
   <com.android.dialer.app.voicemail.VoicemailPlaybackLayout
     android:id="@+id/voicemail_playback_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent"
+    android:background="?attr/dialerColorSurface"
     android:paddingBottom="5dp"/>
-
-  <View
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="@color/dialer_divider_line_color"/>
 
   <LinearLayout
     android:id="@+id/call_action"
@@ -164,11 +161,11 @@
     android:visibility="gone">
 
     <ImageView
-      style="@style/CallLogActionIconStyle"
+      style="@style/CallLogActionIconStyle.Destructive"
       android:src="@drawable/quantum_ic_block_vd_theme_24"/>
 
     <TextView
-      style="@style/CallLogActionTextStyle"
+      style="@style/CallLogActionTextStyle.Destructive"
       android:text="@string/call_log_action_block_number"/>
   </LinearLayout>
 

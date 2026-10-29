@@ -7,7 +7,6 @@ package com.android.dialer.app.settings;
 
 import android.view.ViewGroup;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -19,6 +18,7 @@ import androidx.preference.PreferenceViewHolder;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.dialer.R;
+import com.android.dialer.theme.base.CardPosition;
 
 public abstract class DialerPreferenceFragment extends PreferenceFragmentCompat {
 
@@ -41,10 +41,11 @@ public abstract class DialerPreferenceFragment extends PreferenceFragmentCompat 
         return;
       }
       CardPosition cardPosition = CardPosition.of(isCard(position - 1), isCard(position + 1));
-      holder.itemView.setBackgroundResource(backgroundFor(cardPosition));
+      holder.itemView.setBackgroundResource(CardPosition.background(cardPosition));
       ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
       if (params instanceof ViewGroup.MarginLayoutParams) {
-        boolean hasRowBelow = cardPosition == CardPosition.TOP || cardPosition == CardPosition.MIDDLE;
+        boolean hasRowBelow =
+            cardPosition == CardPosition.TOP || cardPosition == CardPosition.MIDDLE;
         ((ViewGroup.MarginLayoutParams) params).bottomMargin =
             hasRowBelow
                 ? holder.itemView.getResources().getDimensionPixelSize(R.dimen.settings_row_gap)
@@ -59,21 +60,6 @@ public abstract class DialerPreferenceFragment extends PreferenceFragmentCompat 
       }
       Preference preference = getItem(position);
       return preference != null && !(preference instanceof PreferenceCategory);
-    }
-
-    @DrawableRes
-    private static int backgroundFor(CardPosition cardPosition) {
-      switch (cardPosition) {
-        case TOP:
-          return R.drawable.settings_card_top;
-        case MIDDLE:
-          return R.drawable.settings_card_middle;
-        case BOTTOM:
-          return R.drawable.settings_card_bottom;
-        case SINGLE:
-        default:
-          return R.drawable.settings_card_single;
-      }
     }
   }
 }

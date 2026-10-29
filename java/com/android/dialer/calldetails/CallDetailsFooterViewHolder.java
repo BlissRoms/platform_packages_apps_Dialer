@@ -30,6 +30,7 @@ import com.android.dialer.clipboard.ClipboardUtils;
 import com.android.dialer.common.Assert;
 import com.android.dialer.util.CallUtil;
 import com.android.dialer.util.DialerUtils;
+import com.android.dialer.util.IntentUtil;
 
 /** ViewHolder for the footer in {@link OldCallDetailsActivity} or {@link CallDetailsActivity}. */
 final class CallDetailsFooterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
@@ -37,6 +38,8 @@ final class CallDetailsFooterViewHolder extends RecyclerView.ViewHolder implemen
   private final ReportCallIdListener reportCallIdListener;
   private final DeleteCallDetailsListener deleteCallDetailsListener;
   private final View copy;
+  private final View createContact;
+  private final View addToContact;
   private final View edit;
   private final View reportCallerId;
   private final View delete;
@@ -50,10 +53,14 @@ final class CallDetailsFooterViewHolder extends RecyclerView.ViewHolder implemen
     super(view);
     this.reportCallIdListener = reportCallIdListener;
     this.deleteCallDetailsListener = deleteCallDetailsListener;
+    createContact = view.findViewById(R.id.call_detail_action_create_contact);
+    addToContact = view.findViewById(R.id.call_detail_action_add_to_contact);
     copy = view.findViewById(R.id.call_detail_action_copy);
     edit = view.findViewById(R.id.call_detail_action_edit_before_call);
     reportCallerId = view.findViewById(R.id.call_detail_action_report_caller_id);
     delete = view.findViewById(R.id.call_detail_action_delete);
+    createContact.setOnClickListener(this);
+    addToContact.setOnClickListener(this);
     copy.setOnClickListener(this);
     edit.setOnClickListener(this);
     reportCallerId.setOnClickListener(this);
@@ -70,10 +77,21 @@ final class CallDetailsFooterViewHolder extends RecyclerView.ViewHolder implemen
     }
   }
 
+  public void setCanAddContact(boolean canAddContact) {
+    int visibility = canAddContact && !TextUtils.isEmpty(number) ? View.VISIBLE : View.GONE;
+    createContact.setVisibility(visibility);
+    addToContact.setVisibility(visibility);
+  }
+
   @Override
   public void onClick(View view) {
     Context context = view.getContext();
-    if (view == copy) {
+    if (view == createContact) {
+      DialerUtils.startActivityWithErrorToast(context, IntentUtil.getNewContactIntent(number));
+    } else if (view == addToContact) {
+      DialerUtils.startActivityWithErrorToast(
+          context, IntentUtil.getAddToExistingContactIntent(number));
+    } else if (view == copy) {
       ClipboardUtils.copyText(context, null, number, true);
     } else if (view == edit) {
       Intent dialIntent = new Intent(Intent.ACTION_DIAL, CallUtil.getCallUri(number));

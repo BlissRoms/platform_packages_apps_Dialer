@@ -47,4 +47,12 @@
     <string name="settings_voicemail_description">Notifications, greeting and storage</string>
     <string name="settings_helplines_description">Important numbers for your region</string>
     <string name="settings_other_description">Post call snackbar and proximity sensor</string>
+
+    <!-- Recents empty states -->
+    <string name="call_log_blocked_empty">No blocked calls</string>
+    <string name="call_log_incoming_empty">No incoming calls</string>
+    <string name="call_log_outgoing_empty">No outgoing calls</string>
+    <string name="recents_favorites_add">Add</string>
+    <string name="recents_favorites_add_description">Add a favorite</string>
+    <string name="call_details_recent_activity">Recent activity</string>
 </resources>

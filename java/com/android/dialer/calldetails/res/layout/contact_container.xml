@@ -15,102 +15,92 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License
   -->
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/call_details_top_margin"
-    android:paddingTop="@dimen/contact_container_padding_top_start"
-    android:paddingBottom="@dimen/contact_container_padding_bottom_end"
-    android:paddingStart="@dimen/contact_container_padding_top_start"
-    android:paddingEnd="@dimen/contact_container_padding_bottom_end"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/dialer_space_page_inset"
+    android:paddingEnd="@dimen/dialer_space_page_inset"
+    android:paddingTop="@dimen/dialer_space_page_inset"
+    android:paddingBottom="@dimen/dialer_space_section_gap">
 
   <QuickContactBadge
       android:id="@+id/quick_contact_photo"
       android:layout_width="@dimen/call_details_contact_photo_size"
       android:layout_height="@dimen/call_details_contact_photo_size"
-      android:padding="@dimen/call_details_contact_photo_padding"
-      android:focusable="true"
-      android:forceDarkAllowed="false" />
+      android:focusable="true" />
 
-  <LinearLayout
-      android:id="@+id/contact_information"
+  <com.android.dialer.widget.BidiTextView
+      android:id="@+id/contact_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
-      android:layout_toEndOf="@+id/quick_contact_photo"
-      android:layout_toStartOf="@+id/call_back_button"
-      android:gravity="center_vertical"
-      android:minHeight="@dimen/call_details_contact_photo_size"
-      android:orientation="vertical">
+      android:layout_marginTop="@dimen/dialer_space_section_gap"
+      android:gravity="center_horizontal"
+      android:textAppearance="@style/TextAppearance.Dialer.Heading.Caller" />
 
-    <com.android.dialer.widget.BidiTextView
-        android:id="@+id/contact_name"
-        style="@style/Dialer.TextAppearance.Primary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/photo_text_margin"/>
+  <com.android.dialer.widget.BidiTextView
+      android:id="@+id/phone_number"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/dialer_space_control_gap"
+      android:gravity="center_horizontal"
+      android:textAppearance="@style/TextAppearance.Dialer.Body.Description"
+      android:textSize="17sp" />
 
-    <com.android.dialer.widget.BidiTextView
-        android:id="@+id/phone_number"
-        style="@style/Dialer.TextAppearance.Secondary.Ellipsize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/photo_text_margin"/>
-
-    <TextView
-        android:id="@+id/network"
-        style="@style/Dialer.TextAppearance.Secondary.Ellipsize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/photo_text_margin"
-        android:visibility="gone"/>
-
-
-  </LinearLayout>
+  <TextView
+      android:id="@+id/network"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:textAppearance="@style/TextAppearance.Dialer.Body.Description"
+      android:visibility="gone" />
 
   <ImageView
       android:id="@+id/call_back_button"
-      android:layout_width="@dimen/call_back_button_size"
-      android:layout_height="@dimen/call_back_button_size"
-      android:layout_alignParentEnd="true"
-      android:background="?android:attr/selectableItemBackgroundBorderless"
+      android:layout_width="@dimen/call_details_action_button_size"
+      android:layout_height="@dimen/call_details_action_button_size"
+      android:layout_marginTop="@dimen/dialer_space_section_gap"
+      android:background="@drawable/call_details_action_button_bg"
       android:contentDescription="@string/call"
       android:scaleType="center"
       android:src="@drawable/quantum_ic_call_vd_theme_24"
-      app:tint="?colorIcon" />
+      app:tint="?attr/dialerColorTextPrimary" />
 
-
-  <RelativeLayout
+  <LinearLayout
       android:id="@+id/assisted_dialing_container"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/ad_container_height"
-      android:layout_below="@+id/contact_information"
-      android:background="?android:attr/selectableItemBackground"
-      android:gravity="center_vertical">
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/dialer_space_section_gap"
+      android:background="@drawable/dialer_card_single"
+      android:gravity="center_vertical"
+      android:orientation="horizontal"
+      android:padding="20dp">
 
     <ImageView
         android:id="@+id/assisted_dialing_globe"
-        android:layout_width="@dimen/ad_icon_size"
-        android:layout_height="@dimen/ad_icon_size"
-        android:layout_marginTop="@dimen/ad_icon_margin_top_offset"
-        android:layout_marginStart="@dimen/ad_icon_margin_start_offset"
-        android:scaleType="fitCenter"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:importantForAccessibility="no"
         android:src="@drawable/quantum_ic_language_vd_theme_24"
-        app:tint="?colorIcon" />
+        app:tint="?attr/dialerColorTextSecondary" />
 
     <TextView
         android:id="@+id/assisted_dialing_text"
-        style="@style/Dialer.TextAppearance.Secondary.Ellipsize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/ad_text_margin_start"
-        android:layout_marginEnd="@dimen/ad_end_margin"
-        android:layout_toEndOf="@id/assisted_dialing_globe"/>
+        android:layout_marginStart="17dp"
+        android:textAppearance="@style/TextAppearance.Dialer.Body.Description" />
+  </LinearLayout>
 
-  </RelativeLayout>
-
-</RelativeLayout>
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/dialer_space_section_gap"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp"
+      android:text="@string/call_details_recent_activity"
+      android:textAppearance="@style/TextAppearance.Dialer.Body.Description" />
+</LinearLayout>

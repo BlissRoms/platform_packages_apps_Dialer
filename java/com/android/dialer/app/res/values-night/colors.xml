@@ -18,8 +18,6 @@
   <color name="dialer_fab_icon_color">#ff000000</color>
 
   <!-- Recents redesign tokens (dark). -->
-  <color name="recents_nav_bar_bg">#CC2D2D2D</color>
-  <color name="recents_nav_glass_tint">#592D2D2D</color>
 
   <!-- Redesigned settings screen (dark). -->
 </resources>

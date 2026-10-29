@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/recents_favorite_width"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/recents_favorite_gap"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:contentDescription="@string/recents_favorites_add_description">
+
+  <FrameLayout
+      android:layout_width="@dimen/recents_favorite_photo_size"
+      android:layout_height="@dimen/recents_favorite_photo_size"
+      android:background="@drawable/recents_favorite_add_bg">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:importantForAccessibility="no"
+        android:src="@drawable/quantum_ic_person_add_vd_theme_24"
+        android:tint="?attr/dialerColorTextSecondary" />
+  </FrameLayout>
+
+  <TextView
+      android:id="@+id/favorite_name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/dialer_space_control_gap"
+      android:ellipsize="end"
+      android:gravity="center_horizontal"
+      android:maxLines="1"
+      android:textAppearance="@style/TextAppearance.Dialer.Body.Description"
+      android:text="@string/recents_favorites_add"
+      android:importantForAccessibility="no" />
+</LinearLayout>

@@ -41,13 +41,15 @@
 
   <style name="CallLogActionStyle">
     <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">@dimen/call_log_action_height</item>
-    <item name="android:background">?android:attr/selectableItemBackground</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:minHeight">@dimen/recents_action_height</item>
+    <item name="android:background">@drawable/recents_row_surface</item>
     <item name="android:orientation">horizontal</item>
     <item name="android:gravity">center_vertical</item>
   </style>
 
   <style name="CallLogActionTextStyle" parent="Dialer.TextAppearance.Primary.Ellipsize">
+    <item name="android:textSize">17sp</item>
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:paddingStart">@dimen/call_log_action_horizontal_padding</item>
@@ -63,6 +65,14 @@
     <item name="android:paddingEnd">@dimen/call_log_action_horizontal_padding</item>
     <item name="android:focusable">true</item>
     <item name="android:importantForAccessibility">no</item>
+  </style>
+
+  <style name="CallLogActionTextStyle.Destructive">
+    <item name="android:textColor">?attr/dialerColorDestructiveText</item>
+  </style>
+
+  <style name="CallLogActionIconStyle.Destructive">
+    <item name="android:tint">?attr/dialerColorDestructiveText</item>
   </style>
 
   <style name="CallLogActionIconStyle">
@@ -99,6 +109,24 @@
   <!-- Rounded-square corner treatment for the Recents dialpad FAB. -->
   <style name="RecentsFabShape">
     <item name="cornerFamily">rounded</item>
-    <item name="cornerSize">14.84dp</item>
+    <item name="cornerSize">@dimen/dialer_radius_key</item>
+  </style>
+  <style name="Recents.Chip" parent="">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:minHeight">34dp</item>
+    <item name="android:layout_marginEnd">@dimen/dialer_space_control_gap</item>
+    <item name="android:gravity">center</item>
+    <item name="android:paddingStart">16dp</item>
+    <item name="android:paddingEnd">16dp</item>
+    <item name="android:paddingTop">10dp</item>
+    <item name="android:paddingBottom">10dp</item>
+    <item name="android:background">@drawable/recents_chip_bg</item>
+    <item name="android:textColor">@color/recents_chip_text</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:letterSpacing">-0.03</item>
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:clickable">true</item>
+    <item name="android:focusable">true</item>
   </style>
 </resources>

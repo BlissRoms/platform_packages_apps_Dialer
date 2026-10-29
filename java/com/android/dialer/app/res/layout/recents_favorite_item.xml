@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/recents_favorite_width"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/recents_favorite_gap"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+  <QuickContactBadge
+      android:id="@+id/favorite_photo"
+      android:layout_width="@dimen/recents_favorite_photo_size"
+      android:layout_height="@dimen/recents_favorite_photo_size"
+      android:importantForAccessibility="no" />
+
+  <TextView
+      android:id="@+id/favorite_name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/dialer_space_control_gap"
+      android:ellipsize="end"
+      android:gravity="center_horizontal"
+      android:maxLines="1"
+      android:textAppearance="@style/TextAppearance.Dialer.Body.Description" />
+</LinearLayout>

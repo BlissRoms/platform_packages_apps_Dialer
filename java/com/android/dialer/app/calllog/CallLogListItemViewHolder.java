@@ -20,15 +20,12 @@ package com.android.dialer.app.calllog;
 import android.Manifest.permission;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ArgbEvaluator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.provider.BlockedNumberContract;
 import android.provider.CallLog;
@@ -50,14 +47,15 @@ import android.view.ViewStub;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.contacts.common.dialog.CallSubjectDialog;
+import com.android.dialer.theme.base.CardPosition;
 import com.android.dialer.R;
 import com.android.dialer.app.calllog.CallLogAdapter.OnActionModeStateChangedListener;
 import com.android.dialer.app.calllog.calllogcache.CallLogCache;
@@ -112,7 +110,8 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
   /** The text of the header for a day grouping. */
   public final TextView dayGroupHeader;
   /** The view containing the details for the call log row, including the action buttons. */
-  public final CardView callLogEntryView;
+  public final LinearLayout callLogEntryView;
+  public CardPosition cardPosition = CardPosition.SINGLE;
   /** The actionable view which places a call to the number corresponding to the call log row. */
   public final ImageView primaryActionButtonView;
 
@@ -236,7 +235,7 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
       DialerQuickContactBadge dialerQuickContactView,
       View primaryActionView,
       PhoneCallDetailsViews phoneCallDetailsViews,
-      CardView callLogEntryView,
+      LinearLayout callLogEntryView,
       TextView dayGroupHeader,
       ImageView primaryActionButtonView) {
     super(rootView);
@@ -308,7 +307,7 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
         (DialerQuickContactBadge) view.findViewById(R.id.quick_contact_photo),
         view.findViewById(R.id.primary_action_view),
         PhoneCallDetailsViews.fromView(view),
-        (CardView) view.findViewById(R.id.call_log_row),
+        (LinearLayout) view.findViewById(R.id.call_log_row),
         (TextView) view.findViewById(R.id.call_log_day_group_label),
         (ImageView) view.findViewById(R.id.primary_action_button));
   }
@@ -732,33 +731,14 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
     if (shouldExpand == isExpanded) {
       return;
     }
-    Resources res = context.getResources();
     actionsView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
     int currentHeight = callLogEntryView.getMeasuredHeight();
     int additionalHeight = actionsView.getMeasuredHeight();
-
-    int targetHeight;
-    int colorFrom, colorTo;
-    TimeInterpolator interpolator;
-    int targetVisibility;
-    float targetElevation;
-    if (shouldExpand) {
-      targetHeight = currentHeight + additionalHeight;
-      colorFrom = res.getColor(android.R.color.transparent, context.getTheme());
-      colorTo  = res.getColor(R.color.cardBackgroundColor, context.getTheme());
-      interpolator = new AccelerateDecelerateInterpolator();
-      targetVisibility = View.VISIBLE;
-      targetElevation = 4f;
-    } else {
-      targetHeight = currentHeight - additionalHeight;
-      colorFrom  = res.getColor(R.color.cardBackgroundColor, context.getTheme());
-      colorTo = res.getColor(android.R.color.transparent, context.getTheme());
-      interpolator = new DecelerateInterpolator();
-      targetVisibility = View.GONE;
-      targetElevation = 0f;
-      // need to do this before animating, otherwise the color changes are weird
-      callLogEntryView.setCardElevation(targetElevation);
-    }
+    int targetHeight =
+        shouldExpand ? currentHeight + additionalHeight : currentHeight - additionalHeight;
+    int targetVisibility = shouldExpand ? View.VISIBLE : View.GONE;
+    TimeInterpolator interpolator =
+        shouldExpand ? new AccelerateDecelerateInterpolator() : new DecelerateInterpolator();
 
     ValueAnimator heightAnimator = ValueAnimator.ofInt(currentHeight, targetHeight);
     heightAnimator.addUpdateListener(animation -> {
@@ -767,28 +747,29 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
     });
     heightAnimator.setInterpolator(interpolator);
     heightAnimator.setDuration(200);
-
-    ValueAnimator colorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-    colorAnimator.setDuration(200);
-    colorAnimator.addUpdateListener(animator -> callLogEntryView.setCardBackgroundColor(
-            (int) animator.getAnimatedValue()));
-
-    AnimatorSet animatorSet = new AnimatorSet();
-    animatorSet.playTogether(heightAnimator, colorAnimator);
-    animatorSet.addListener(new AnimatorListenerAdapter() {
+    heightAnimator.addListener(new AnimatorListenerAdapter() {
       @Override
       public void onAnimationEnd(Animator animation) {
         super.onAnimationEnd(animation);
         actionsView.setVisibility(targetVisibility);
-        callLogEntryView.setCardElevation(targetElevation);
-
-        // we need to set this so we can expand again
         ViewGroup.LayoutParams params = callLogEntryView.getLayoutParams();
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         callLogEntryView.setLayoutParams(params);
       }
     });
-    animatorSet.start();
+    heightAnimator.start();
+  }
+
+  public void applyCardPosition(CardPosition position) {
+    cardPosition = position;
+    callLogEntryView.setBackgroundResource(CardPosition.clipBackground(position));
+    ViewGroup.MarginLayoutParams params =
+        (ViewGroup.MarginLayoutParams) callLogEntryView.getLayoutParams();
+    params.bottomMargin =
+        position.hasRowBelow()
+            ? context.getResources().getDimensionPixelSize(R.dimen.recents_row_gap)
+            : 0;
+    callLogEntryView.setLayoutParams(params);
   }
 
   public void updatePhoto() {
