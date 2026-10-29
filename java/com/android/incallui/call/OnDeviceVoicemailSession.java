@@ -23,13 +23,9 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.provider.DocumentsContract;
-import androidx.preference.PreferenceManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.speech.tts.TextToSpeech;
@@ -40,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.dialer.common.LogUtil;
+import com.android.dialer.voicemail.ondevice.OnDeviceVoicemailLocation;
 
 import android.provider.VoicemailContract;
 import android.content.ContentValues;
@@ -65,6 +62,7 @@ public class OnDeviceVoicemailSession {
   private static final int BEEP_SAMPLE_RATE = 8000;
 
   private static final long MAX_MESSAGE_DURATION_MS = 60_000L;
+  private static final String MIME_TYPE = "audio/mp4";
 
   private final Context context;
   private final DialerCall call;
@@ -290,12 +288,7 @@ public class OnDeviceVoicemailSession {
       String stamp = new SimpleDateFormat("yyMMdd_HHmmss", Locale.US).format(new Date());
       String fileName = "vm_" + safeNumber + "_" + stamp + ".m4a";
 
-      File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS), "Voicemails");
-      if (!dir.exists()) {
-        dir.mkdirs();
-      }
-      outputFile = new File(dir, fileName);
-      recorder.setOutputFile(outputFile.getAbsolutePath());
+      openOutput(fileName);
 
       new Thread(() -> {
         try {
@@ -342,13 +335,11 @@ public class OnDeviceVoicemailSession {
           LogUtil.w("OnDeviceVoicemailSession.stop", "recorder stop failed (no data?)");
         }
         rec.release();
-        
-        if (outputFile != null) {
-          LogUtil.i(
-              "OnDeviceVoicemailSession.stop", "voicemail saved to %s", outputFile.getAbsolutePath());
-          addVoicemailToProvider(outputFile);
-        }
+        closeOutputFd();
+        addVoicemailToProvider();
       }).start();
+    } else {
+      closeOutputFd();
     }
     if (uplinkTrack != null) {
       try {
@@ -367,18 +358,87 @@ public class OnDeviceVoicemailSession {
     if (audioManager != null) {
       audioManager.setMicrophoneMute(micWasMuted);
     }
-    if (outputFd != null) {
-      try {
-        outputFd.close();
-      } catch (IOException e) {
-        // ignore
+  }
+
+  private void openOutput(String fileName) throws IOException {
+    if (openChosenFolderOutput(fileName)) {
+      return;
+    }
+    File dir = OnDeviceVoicemailLocation.defaultDirectory();
+    if (!dir.exists() && !dir.mkdirs()) {
+      throw new IOException("cannot create " + dir);
+    }
+    outputFile = new File(dir, fileName);
+    recorder.setOutputFile(outputFile.getAbsolutePath());
+    LogUtil.i("OnDeviceVoicemailSession.openOutput", "recording to %s", outputFile);
+  }
+
+  private boolean openChosenFolderOutput(String fileName) {
+    Uri treeUri = OnDeviceVoicemailLocation.getTreeUri(context);
+    if (treeUri == null) {
+      return false;
+    }
+    Uri document = OnDeviceVoicemailLocation.createDocument(context, treeUri, MIME_TYPE, fileName);
+    if (document == null) {
+      return false;
+    }
+    try {
+      outputFd = context.getContentResolver().openFileDescriptor(document, "rw");
+      if (outputFd == null) {
+        throw new IOException("no descriptor for " + document);
       }
-      outputFd = null;
+      recorder.setOutputFile(outputFd.getFileDescriptor());
+      outputUri = document;
+      LogUtil.i("OnDeviceVoicemailSession.openOutput", "recording to chosen folder");
+      return true;
+    } catch (IOException | RuntimeException e) {
+      LogUtil.e("OnDeviceVoicemailSession.openOutput", "chosen folder unusable, using default", e);
+      closeOutputFd();
+      OnDeviceVoicemailLocation.deleteDocument(context, document);
+      return false;
     }
   }
 
-  private void addVoicemailToProvider(File file) {
-    if (file == null || !file.exists()) {
+  private void discardEmptyDocument() {
+    if (outputUri != null) {
+      OnDeviceVoicemailLocation.deleteDocument(context, outputUri);
+      outputUri = null;
+    }
+  }
+
+  private void closeOutputFd() {
+    if (outputFd == null) {
+      return;
+    }
+    try {
+      outputFd.close();
+    } catch (IOException e) {
+      LogUtil.w("OnDeviceVoicemailSession.closeOutputFd", "close failed");
+    }
+    outputFd = null;
+  }
+
+  private InputStream openRecording() throws IOException {
+    if (outputUri != null) {
+      InputStream in = context.getContentResolver().openInputStream(outputUri);
+      if (in == null) {
+        throw new IOException("cannot read " + outputUri);
+      }
+      return in;
+    }
+    return new FileInputStream(outputFile);
+  }
+
+  private boolean hasRecording() {
+    if (recordingStartTime == 0) {
+      return false;
+    }
+    return outputUri != null || (outputFile != null && outputFile.exists());
+  }
+
+  private void addVoicemailToProvider() {
+    if (!hasRecording()) {
+      discardEmptyDocument();
       return;
     }
     long durationMs = System.currentTimeMillis() - recordingStartTime;
@@ -399,7 +459,7 @@ public class OnDeviceVoicemailSession {
       Uri newVoicemailUri = context.getContentResolver().insert(uri, values);
       if (newVoicemailUri != null) {
         try (OutputStream out = context.getContentResolver().openOutputStream(newVoicemailUri);
-             InputStream in = new FileInputStream(file)) {
+             InputStream in = openRecording()) {
           byte[] buffer = new byte[1024];
           int len;
           while ((len = in.read(buffer)) != -1) {

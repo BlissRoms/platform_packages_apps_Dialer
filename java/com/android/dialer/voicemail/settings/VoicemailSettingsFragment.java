@@ -18,8 +18,9 @@
 package com.android.dialer.voicemail.settings;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telecom.PhoneAccount;
@@ -27,11 +28,13 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.TelephonyManager;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
@@ -41,11 +44,11 @@ import com.android.dialer.common.Assert;
 import com.android.dialer.common.LogUtil;
 import com.android.dialer.notification.NotificationChannelManager;
 import com.android.dialer.telecom.TelecomUtil;
+import com.android.dialer.voicemail.ondevice.OnDeviceVoicemailLocation;
 import com.android.voicemail.VoicemailClient;
 import com.android.voicemail.VoicemailClient.ActivationStateListener;
 import com.android.voicemail.VoicemailComponent;
 
-import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Optional;
@@ -76,6 +79,9 @@ public class VoicemailSettingsFragment extends DialerPreferenceFragment
   private SwitchPreferenceCompat visualVoicemailPreference;
   private SwitchPreferenceCompat voicemailAutoArchivePreference;
   private Preference voicemailChangePinPreference;
+  private final ActivityResultLauncher<Uri> locationPicker =
+      registerForActivityResult(
+          new ActivityResultContracts.OpenDocumentTree(), this::onLocationPicked);
 
   @Override
   public void onCreate(Bundle icicle) {
@@ -88,6 +94,7 @@ public class VoicemailSettingsFragment extends DialerPreferenceFragment
   @Override
   public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
     getPreferenceManager().setStorageDeviceProtected();
+    OnDeviceVoicemailLocation.migrateLegacyValue(getContext());
   }
 
   @Override
@@ -172,73 +179,49 @@ public class VoicemailSettingsFragment extends DialerPreferenceFragment
     voicemailChangePinPreference = findPreference(getString(R.string.voicemail_change_pin_key));
     voicemailChangePinPreference.setOrder(VMSettingOrdering.VOICEMAIL_CHANGE_PIN);
 
-    Preference locationPreference = findPreference(getString(R.string.on_device_voicemail_location_key));
+    Preference onDeviceCategory =
+        findPreference(getString(R.string.on_device_voicemail_category_key));
+    if (onDeviceCategory != null) {
+      onDeviceCategory.setOrder(VMSettingOrdering.ON_DEVICE_VOICEMAIL);
+    }
+
+    Preference locationPreference =
+        findPreference(getString(R.string.on_device_voicemail_location_key));
     if (locationPreference != null) {
-      locationPreference.setOnPreferenceClickListener(preference -> {
-        try {
-          Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-          intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION 
-              | Intent.FLAG_GRANT_WRITE_URI_PERMISSION 
-              | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-          startActivityForResult(intent, 1001);
-        } catch (Exception e) {
-          android.widget.Toast.makeText(getContext(), "Failed to open folder picker", android.widget.Toast.LENGTH_SHORT).show();
-        }
-        return true;
-      });
-      updateLocationPreferenceSummary(locationPreference);
+      locationPreference.setOnPreferenceClickListener(
+          preference -> {
+            launchLocationPicker();
+            return true;
+          });
+      locationPreference.setSummary(OnDeviceVoicemailLocation.describe(getContext()));
     }
   }
 
-  private void updateLocationPreferenceSummary(Preference locationPreference) {
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-    String uriString = prefs.getString("on_device_voicemail_location_uri", null);
-    if (uriString != null) {
-      String displayPath = uriString;
-      try {
-        android.net.Uri uri = android.net.Uri.parse(uriString);
-        if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
-          String docId = android.provider.DocumentsContract.getTreeDocumentId(uri);
-          String[] split = docId.split(":");
-          if (split.length >= 2) {
-            if ("primary".equalsIgnoreCase(split[0])) {
-              displayPath = android.os.Environment.getExternalStorageDirectory() + "/" + split[1];
-            } else {
-              displayPath = split[0] + "/" + split[1];
-            }
-          }
-        }
-      } catch (Exception e) {
-        // Ignore parsing errors, fallback to raw uriString
-      }
-      locationPreference.setSummary(displayPath);
-    } else {
-      File dir = new File(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_PODCASTS), "Voicemails");
-      locationPreference.setSummary(dir.getAbsolutePath());
+  private void launchLocationPicker() {
+    try {
+      locationPicker.launch(null);
+    } catch (ActivityNotFoundException e) {
+      LogUtil.e("VoicemailSettingsFragment.launchLocationPicker", "no folder picker", e);
+      Toast.makeText(
+              getContext(), R.string.on_device_voicemail_location_picker_failed, Toast.LENGTH_SHORT)
+          .show();
     }
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == 1001 && resultCode == android.app.Activity.RESULT_OK && data != null) {
-      android.net.Uri uri = data.getData();
-      if (uri != null) {
-        try {
-          final int takeFlags = data.getFlags()
-              & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-              | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-          getContext().getContentResolver().takePersistableUriPermission(uri, takeFlags);
-          SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-          prefs.edit().putString("on_device_voicemail_location_uri", uri.toString()).apply();
-          Preference locationPreference = findPreference(getString(R.string.on_device_voicemail_location_key));
-          if (locationPreference != null) {
-            updateLocationPreferenceSummary(locationPreference);
-          }
-        } catch (Exception e) {
-          android.util.Log.e("VoicemailSettings", "Failed to take persistable URI permission", e);
-        }
-      }
+  private void onLocationPicked(@Nullable Uri uri) {
+    if (uri == null) {
+      return;
+    }
+    try {
+      OnDeviceVoicemailLocation.setTreeUri(getContext(), uri);
+    } catch (SecurityException e) {
+      LogUtil.e("VoicemailSettingsFragment.onLocationPicked", "cannot keep folder access", e);
+      return;
+    }
+    Preference locationPreference =
+        findPreference(getString(R.string.on_device_voicemail_location_key));
+    if (locationPreference != null) {
+      locationPreference.setSummary(OnDeviceVoicemailLocation.describe(getContext()));
     }
   }
 
@@ -402,7 +385,8 @@ public class VoicemailSettingsFragment extends DialerPreferenceFragment
     VMSettingOrdering.VOICEMAIL_TRANSCRIPTION_DONATION,
     VMSettingOrdering.VOICEMAIL_CHANGE_PIN,
     VMSettingOrdering.VOICEMAIL_AUTO_ARCHIVE,
-    VMSettingOrdering.ADVANCED_SETTING
+    VMSettingOrdering.ADVANCED_SETTING,
+    VMSettingOrdering.ON_DEVICE_VOICEMAIL
   })
   private @interface VMSettingOrdering {
     int NOTIFICATIONS = 1;
@@ -412,5 +396,6 @@ public class VoicemailSettingsFragment extends DialerPreferenceFragment
     int VOICEMAIL_CHANGE_PIN = 5;
     int VOICEMAIL_AUTO_ARCHIVE = 6;
     int ADVANCED_SETTING = 7;
+    int ON_DEVICE_VOICEMAIL = 8;
   }
 }
