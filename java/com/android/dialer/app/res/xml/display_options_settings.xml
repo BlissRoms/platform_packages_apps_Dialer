@@ -19,24 +19,57 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <ListPreference
-      android:dialogTitle="@string/display_options_sort_list_by"
-      android:key="@string/display_options_sort_list_by_key"
-      android:summary="%s"
-      android:entries="@array/contact_sort_order_entries"
-      android:entryValues="@array/contact_sort_order_values"
-      android:title="@string/display_options_sort_list_by"
-      android:defaultValue="@string/display_options_sort_by_given_name_value"
-      app:iconSpaceReserved="false"/>
+  <PreferenceCategory
+      android:key="@string/display_options_contacts_category_key"
+      android:title="@string/display_options_contacts_category"
+      app:iconSpaceReserved="false">
 
-  <ListPreference
-      android:dialogTitle="@string/display_options_view_names_as"
-      android:key="@string/display_options_view_names_as_key"
-      android:summary="%s"
-      android:entries="@array/contact_display_order_entries"
-      android:entryValues="@array/contact_display_order_values"
-      android:title="@string/display_options_view_names_as"
-      android:defaultValue="@string/display_options_view_given_name_first_value"
-      app:iconSpaceReserved="false"/>
+    <ListPreference
+        android:dialogTitle="@string/display_options_sort_list_by"
+        android:key="@string/display_options_sort_list_by_key"
+        android:summary="%s"
+        android:entries="@array/contact_sort_order_entries"
+        android:entryValues="@array/contact_sort_order_values"
+        android:title="@string/display_options_sort_list_by"
+        android:defaultValue="@string/display_options_sort_by_given_name_value"
+        app:iconSpaceReserved="false"/>
+
+    <ListPreference
+        android:dialogTitle="@string/display_options_view_names_as"
+        android:key="@string/display_options_view_names_as_key"
+        android:summary="%s"
+        android:entries="@array/contact_display_order_entries"
+        android:entryValues="@array/contact_display_order_values"
+        android:title="@string/display_options_view_names_as"
+        android:defaultValue="@string/display_options_view_given_name_first_value"
+        app:iconSpaceReserved="false"/>
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:title="@string/settings_section_personalisation"
+      app:iconSpaceReserved="false">
+
+    <ListPreference
+        android:dialogTitle="@string/display_options_theme_title"
+        android:key="@string/dialer_theme_mode_key"
+        android:summary="%s"
+        android:entries="@array/display_options_theme_entries"
+        android:entryValues="@array/dialer_theme_mode_values"
+        android:title="@string/display_options_theme_title"
+        android:persistent="false"
+        app:iconSpaceReserved="false"/>
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:title="@string/display_options_material_you_category"
+      app:iconSpaceReserved="false">
+
+    <SwitchPreferenceCompat
+        android:key="@string/dialer_wallpaper_color_key"
+        android:title="@string/display_options_wallpaper_color_title"
+        android:summary="@string/display_options_wallpaper_color_summary"
+        android:persistent="false"
+        app:iconSpaceReserved="false"/>
+  </PreferenceCategory>
 
 </PreferenceScreen>

@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 
 import com.android.dialer.inject.HasRootComponent;
 import com.android.dialer.notification.NotificationChannelManager;
+import com.android.dialer.theme.base.DialerThemeApplier;
 
 /** A common application subclass for all Dialer build variants. */
 public abstract class DialerApplication extends Application implements HasRootComponent {
@@ -33,6 +34,7 @@ public abstract class DialerApplication extends Application implements HasRootCo
   public void onCreate() {
     Trace.beginSection("DialerApplication.onCreate");
     super.onCreate();
+    DialerThemeApplier.install(this);
     NotificationChannelManager.initChannels(this);
     Trace.endSection();
   }

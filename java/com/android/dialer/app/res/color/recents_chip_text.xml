@@ -16,6 +16,6 @@
 -->
 <!-- Filter chip label: light when selected, muted otherwise. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:state_selected="true" android:color="@color/recents_chip_selected_text"/>
-  <item android:color="@color/recents_chip_unselected_text"/>
+  <item android:state_selected="true" android:color="?attr/dialerColorOnAccent"/>
+  <item android:color="?attr/dialerColorTextSecondary"/>
 </selector>

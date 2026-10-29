@@ -4,6 +4,6 @@
   SPDX-License-Identifier: Apache-2.0
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:color="@color/dialer_theme_color" android:state_selected="true"/>
+  <item android:color="?attr/dialerColorAccent" android:state_selected="true"/>
   <item android:color="?android:attr/textColorPrimary"/>
 </selector>

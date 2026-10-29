@@ -49,6 +49,8 @@ import com.android.dialer.common.LogUtil;
 import com.android.dialer.compat.telephony.TelephonyManagerCompat;
 import com.android.dialer.helplines.HelplineActivity;
 import com.android.dialer.lookup.LookupSettingsFragment;
+import com.android.dialer.theme.base.ThemeMode;
+import com.android.dialer.theme.base.ThemePreferences;
 import com.android.dialer.util.PermissionsUtil;
 import com.android.dialer.voicemail.settings.VoicemailSettingsFragment;
 import com.android.voicemail.VoicemailClient;
@@ -104,16 +106,13 @@ public class SettingsRedesignFragment extends Fragment {
 
     // ---- Personalisation ----
     addSection(inflater, R.string.settings_section_personalisation);
-    if (showDisplayOptions()) {
-      addNavRow(
-          inflater,
-          getString(R.string.display_options_title),
-          null,
-          () ->
-              openSubFragment(
-                  DisplayOptionsSettingsFragment.class,
-                  getString(R.string.display_options_title)));
-    }
+    addNavRow(
+        inflater,
+        getString(R.string.display_options_title),
+        themeModeLabel(new ThemePreferences(requireContext()).getThemeMode()),
+        () ->
+            openSubFragment(
+                DisplayOptionsSettingsFragment.class, getString(R.string.display_options_title)));
     addNavRow(
         inflater,
         getString(R.string.sounds_and_vibration_title),
@@ -362,7 +361,7 @@ public class SettingsRedesignFragment extends Fragment {
               ViewGroup.LayoutParams.MATCH_PARENT, Math.max(1, Math.round(density)));
       params.setMarginStart(Math.round(20 * density));
       divider.setLayoutParams(params);
-      divider.setBackgroundColor(getResources().getColor(R.color.settings_row_divider, null));
+      divider.setBackgroundColor(requireContext().getColor(R.color.settings_row_divider));
       currentCard.addView(divider);
     }
     View row = inflater.inflate(R.layout.settings_redesign_row, currentCard, false);
@@ -464,12 +463,15 @@ public class SettingsRedesignFragment extends Fragment {
     }
   }
 
-  /**
-   * Display options aren't useful for languages such as Chinese, Japanese or Korean where contacts
-   * are sorted and displayed family-name-first by default. Mirrors the legacy preference logic.
-   */
-  private boolean showDisplayOptions() {
-    return getResources().getBoolean(R.bool.config_display_order_user_changeable)
-        && getResources().getBoolean(R.bool.config_sort_order_user_changeable);
+  private String themeModeLabel(ThemeMode mode) {
+    switch (mode) {
+      case LIGHT:
+        return getString(R.string.display_options_theme_light);
+      case DARK:
+        return getString(R.string.display_options_theme_dark);
+      case AUTOMATIC:
+      default:
+        return getString(R.string.display_options_theme_automatic);
+    }
   }
 }

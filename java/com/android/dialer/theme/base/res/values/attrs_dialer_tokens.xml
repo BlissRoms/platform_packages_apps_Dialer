@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <attr name="dialerColorCanvas" format="color" />
+  <attr name="dialerColorSurface" format="color" />
+  <attr name="dialerColorSurfaceMuted" format="color" />
+  <attr name="dialerColorOutline" format="color" />
+  <attr name="dialerColorPlaceholder" format="color" />
+  <attr name="dialerColorTextPrimary" format="color" />
+  <attr name="dialerColorTextSecondary" format="color" />
+  <attr name="dialerColorIconMuted" format="color" />
+  <attr name="dialerColorAccent" format="color" />
+  <attr name="dialerColorOnAccent" format="color" />
+  <attr name="dialerColorAccentText" format="color" />
+  <attr name="dialerColorDestructive" format="color" />
+  <attr name="dialerColorDestructiveText" format="color" />
+  <attr name="dialerColorSuccess" format="color" />
+</resources>

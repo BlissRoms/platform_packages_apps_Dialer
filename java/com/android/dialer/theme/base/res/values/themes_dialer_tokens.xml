@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <style name="ThemeOverlay.Dialer.Brand" parent="">
+    <item name="dialerColorCanvas">@color/dialer_brand_canvas</item>
+    <item name="dialerColorSurface">@color/dialer_brand_surface</item>
+    <item name="dialerColorSurfaceMuted">@color/dialer_brand_surface_muted</item>
+    <item name="dialerColorOutline">@color/dialer_brand_outline</item>
+    <item name="dialerColorPlaceholder">@color/dialer_brand_placeholder</item>
+    <item name="dialerColorTextPrimary">@color/dialer_brand_text_primary</item>
+    <item name="dialerColorTextSecondary">@color/dialer_brand_text_secondary</item>
+    <item name="dialerColorIconMuted">@color/dialer_brand_icon_muted</item>
+    <item name="dialerColorAccent">@color/dialer_brand_accent</item>
+    <item name="dialerColorOnAccent">@color/dialer_brand_on_accent</item>
+    <item name="dialerColorAccentText">@color/dialer_brand_accent_text</item>
+    <item name="dialerColorDestructive">@color/dialer_brand_destructive</item>
+    <item name="dialerColorDestructiveText">@color/dialer_brand_destructive_text</item>
+    <item name="dialerColorSuccess">@color/dialer_brand_success</item>
+  </style>
+
+  <style name="ThemeOverlay.Dialer.Wallpaper" parent="">
+    <item name="dialerColorAccent">@color/dialer_wallpaper_accent</item>
+    <item name="dialerColorOnAccent">@color/dialer_wallpaper_on_accent</item>
+    <item name="dialerColorAccentText">@color/dialer_wallpaper_accent_text</item>
+    <item name="dialerColorCanvas">@color/dialer_wallpaper_canvas</item>
+    <item name="dialerColorSurface">@color/dialer_wallpaper_surface</item>
+    <item name="dialerColorSurfaceMuted">@color/dialer_wallpaper_surface_muted</item>
+    <item name="dialerColorOutline">@color/dialer_wallpaper_outline</item>
+    <item name="dialerColorTextPrimary">@color/dialer_wallpaper_text_primary</item>
+    <item name="dialerColorTextSecondary">@color/dialer_wallpaper_text_secondary</item>
+  </style>
+</resources>

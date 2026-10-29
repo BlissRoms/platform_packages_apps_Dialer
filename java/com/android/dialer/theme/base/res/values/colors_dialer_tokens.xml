@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <color name="dialer_brand_canvas">#F6F6F6</color>
+  <color name="dialer_brand_surface">#FFFFFF</color>
+  <color name="dialer_brand_surface_muted">#E2E2E2</color>
+  <color name="dialer_brand_outline">#E2E2E2</color>
+  <color name="dialer_brand_placeholder">#D9D9D9</color>
+  <color name="dialer_brand_text_primary">#000000</color>
+  <color name="dialer_brand_text_secondary">#6B6B6B</color>
+  <color name="dialer_brand_icon_muted">#A5A5A5</color>
+  <color name="dialer_brand_accent">#043FF9</color>
+  <color name="dialer_brand_on_accent">#FFFFFF</color>
+  <color name="dialer_brand_accent_text">#043FF9</color>
+  <color name="dialer_brand_destructive">#FF3C00</color>
+  <color name="dialer_brand_destructive_text">#D93300</color>
+  <color name="dialer_brand_success">#00BF29</color>
+
+  <color name="dialer_wallpaper_accent">@android:color/system_accent1_600</color>
+  <color name="dialer_wallpaper_on_accent">@android:color/system_accent1_0</color>
+  <color name="dialer_wallpaper_accent_text">@android:color/system_accent1_600</color>
+  <color name="dialer_wallpaper_canvas">@android:color/system_neutral1_10</color>
+  <color name="dialer_wallpaper_surface">@android:color/system_neutral1_0</color>
+  <color name="dialer_wallpaper_surface_muted">@android:color/system_neutral2_100</color>
+  <color name="dialer_wallpaper_outline">@android:color/system_neutral2_100</color>
+  <color name="dialer_wallpaper_text_primary">@android:color/system_neutral1_900</color>
+  <color name="dialer_wallpaper_text_secondary">@android:color/system_neutral2_700</color>
+
+  <color name="dialer_fixed_dark_canvas">#000000</color>
+  <color name="dialer_fixed_dark_surface">#1C1C1C</color>
+</resources>

@@ -16,8 +16,4 @@
   -->
 <resources>
   <!-- Quick response (reply-with-message) bottom sheet, Material You tones. -->
-  <color name="qr_sheet_surface">@android:color/system_neutral2_50</color>
-  <color name="qr_on_surface">@android:color/system_neutral1_900</color>
-  <color name="qr_icon">@android:color/system_accent1_600</color>
-  <color name="qr_handle">@android:color/system_neutral2_300</color>
 </resources>

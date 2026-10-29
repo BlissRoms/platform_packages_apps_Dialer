@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <style name="TextAppearance.Dialer.Display.Caller" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">42sp</item>
+    <item name="android:textFontWeight">500</item>
+    <item name="android:letterSpacing">-0.02</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
+  </style>
+
+  <style name="TextAppearance.Dialer.Heading.Caller" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">32sp</item>
+    <item name="android:textFontWeight">500</item>
+    <item name="android:letterSpacing">-0.02</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
+  </style>
+
+  <style name="TextAppearance.Dialer.Heading.Page" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">28sp</item>
+    <item name="android:textFontWeight">500</item>
+    <item name="android:letterSpacing">-0.02</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
+  </style>
+
+  <style name="TextAppearance.Dialer.Body.PhoneNumber" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">25sp</item>
+    <item name="android:textFontWeight">400</item>
+    <item name="android:letterSpacing">-0.02</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
+  </style>
+
+  <style name="TextAppearance.Dialer.Heading.Dialpad" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">25sp</item>
+    <item name="android:textFontWeight">500</item>
+    <item name="android:letterSpacing">-0.03</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
+  </style>
+
+  <style name="TextAppearance.Dialer.Body.Title" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">18sp</item>
+    <item name="android:textFontWeight">500</item>
+    <item name="android:letterSpacing">-0.02</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
+  </style>
+
+  <style name="TextAppearance.Dialer.Body.Navigation" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">17sp</item>
+    <item name="android:textFontWeight">500</item>
+    <item name="android:letterSpacing">-0.03</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
+  </style>
+
+  <style name="TextAppearance.Dialer.Body.Description" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:textFontWeight">400</item>
+    <item name="android:letterSpacing">-0.02</item>
+    <item name="android:textColor">?attr/dialerColorTextSecondary</item>
+  </style>
+
+  <style name="TextAppearance.Dialer.Label.Metadata" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:textFontWeight">500</item>
+    <item name="android:letterSpacing">-0.02</item>
+    <item name="android:textColor">?attr/dialerColorTextSecondary</item>
+  </style>
+
+  <style name="TextAppearance.Dialer.Label.SettingValue" parent="">
+    <item name="android:fontFamily">@string/dialer_font_family</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:textFontWeight">600</item>
+    <item name="android:letterSpacing">-0.02</item>
+    <item name="android:textColor">?attr/dialerColorAccentText</item>
+  </style>
+</resources>

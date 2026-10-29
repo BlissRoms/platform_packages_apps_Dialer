@@ -16,8 +16,6 @@
   -->
 <resources>
   <color name="answer_swipe_track_background">#FFF5F5F5</color>
-  <color name="answer_swipe_puck_background">@android:color/system_accent1_600</color>
-  <color name="answer_swipe_puck_icon">@android:color/system_accent1_0</color>
   <color name="answer_message_pill_background">#FFF5F5F5</color>
   <color name="answer_message_pill_foreground">#FF000000</color>
 </resources>

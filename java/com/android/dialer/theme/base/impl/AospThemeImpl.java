@@ -27,7 +27,9 @@ import androidx.annotation.StyleRes;
 
 import com.android.dialer.R;
 import com.android.dialer.common.Assert;
+import com.android.dialer.theme.base.DialerThemeApplier;
 import com.android.dialer.theme.base.Theme;
+import com.android.dialer.theme.base.ThemePreferences;
 
 import javax.inject.Singleton;
 
@@ -55,11 +57,13 @@ public class AospThemeImpl implements Theme {
 
     context = context.getApplicationContext();
     context.setTheme(getApplicationThemeRes());
+    Context themedContext = new ContextThemeWrapper(context, getApplicationThemeRes());
+    DialerThemeApplier.applyOverlays(
+        themedContext.getTheme(), new ThemePreferences(context).getAccentSource());
     TypedArray array =
-        context
+        themedContext
             .getTheme()
             .obtainStyledAttributes(
-                getApplicationThemeRes(),
                 new int[] {
                   android.R.attr.colorPrimary,
                   android.R.attr.colorPrimaryDark,

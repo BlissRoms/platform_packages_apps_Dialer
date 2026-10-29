@@ -115,7 +115,7 @@ public class VoicemailPlaybackLayout extends LinearLayout
                 handler.removeCallbacks(deleteCallback);
               })
               .setActionTextColor(
-                  context.getResources().getColor(R.color.dialer_snackbar_action_text_color))
+                  context.getColor(R.color.dialer_snackbar_action_text_color))
               .show();
         }
       };

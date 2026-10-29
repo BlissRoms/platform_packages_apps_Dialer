@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <dimen name="dialer_radius_card">20dp</dimen>
+  <dimen name="dialer_radius_pane">30dp</dimen>
+  <dimen name="dialer_radius_key">15dp</dimen>
+  <dimen name="dialer_space_page_inset">20dp</dimen>
+  <dimen name="dialer_space_section_gap">27dp</dimen>
+  <dimen name="dialer_space_control_gap">7dp</dimen>
+</resources>

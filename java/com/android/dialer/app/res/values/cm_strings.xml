@@ -61,6 +61,19 @@
 
     <!-- Redesigned settings screen -->
     <string name="settings_section_personalisation">Personalisation</string>
+    <string name="display_options_contacts_category">Contacts</string>
+    <string name="display_options_theme_title">Theme</string>
+    <string name="display_options_theme_automatic">Automatic</string>
+    <string name="display_options_theme_light">Light mode</string>
+    <string name="display_options_theme_dark">Dark mode</string>
+    <string-array name="display_options_theme_entries">
+      <item>@string/display_options_theme_automatic</item>
+      <item>@string/display_options_theme_light</item>
+      <item>@string/display_options_theme_dark</item>
+    </string-array>
+    <string name="display_options_material_you_category">Material You</string>
+    <string name="display_options_wallpaper_color_title">Enable wallpaper color</string>
+    <string name="display_options_wallpaper_color_summary">Match the app color with the wallpaper color</string>
     <string name="settings_section_call">Call settings</string>
     <string name="settings_section_privacy">Privacy &amp; Security</string>
     <string name="settings_section_help">Help</string>
