@@ -29,14 +29,19 @@ import android.telecom.PhoneAccount;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import androidx.slidingpanelayout.widget.SlidingPaneLayout;
 
 import com.android.dialer.R;
 import com.android.dialer.app.BaseActivity;
@@ -52,6 +57,14 @@ public class DialerSettingsActivity extends BaseActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
   protected SharedPreferences preferences;
+  private final OnBackPressedCallback closeDetailPaneCallback =
+      new OnBackPressedCallback(false) {
+        @Override
+        public void handleOnBackPressed() {
+          slidingPane.closePane();
+        }
+      };
+  private SlidingPaneLayout slidingPane;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -74,40 +87,117 @@ public class DialerSettingsActivity extends BaseActivity implements
 
     // If savedInstanceState is non-null, the activity is being recreated and the fragment is
     // already restored.
+    slidingPane = findViewById(R.id.settings_panes);
+    slidingPane.addPanelSlideListener(
+        new SlidingPaneLayout.PanelSlideListener() {
+          @Override
+          public void onPanelSlide(@NonNull View panel, float slideOffset) {}
+
+          @Override
+          public void onPanelOpened(@NonNull View panel) {
+            updatePanes();
+          }
+
+          @Override
+          public void onPanelClosed(@NonNull View panel) {
+            updatePanes();
+          }
+        });
+    slidingPane.addOnLayoutChangeListener(
+        (view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> updatePanes());
+    getSupportFragmentManager().addOnBackStackChangedListener(this::updatePanes);
+    getOnBackPressedDispatcher().addCallback(this, closeDetailPaneCallback);
+
+    // If savedInstanceState is non-null, the activity is being recreated and the fragment is
+    // already restored.
     if (savedInstanceState == null) {
-      Fragment fragment;
-      if (initialFragment == null) {
-        // Default entry point: the redesigned card-based settings root.
-        fragment = new SettingsRedesignFragment();
-      } else {
-        // Deep link (header: scheme): host the requested preference fragment under our header.
-        fragment = SettingsSubScreenFragment.newInstance(
-                initialFragment, getString(R.string.dialer_settings_label), null);
-      }
-
       getSupportFragmentManager().beginTransaction()
-              .replace(R.id.content_frame, fragment)
-              .commit();
+              .replace(R.id.settings_list, new SettingsRedesignFragment())
+              .commitNow();
+      if (initialFragment != null) {
+        openRootSubFragment(initialFragment, getString(R.string.dialer_settings_label), null);
+      }
     }
-
   }
 
   /**
    * Opens a legacy preference sub-screen hosted under a custom header. The host avoids the system
    * ActionBar entirely so there is no header flash when navigating back to the redesigned root.
    */
+  public void openRootSubFragment(
+      @NonNull String fragmentClass, CharSequence title, @Nullable Bundle args) {
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    FragmentTransaction transaction = fragmentManager.beginTransaction();
+    if (!slidingPane.isSlideable()) {
+      transaction.setCustomAnimations(R.anim.settings_fade_in, R.anim.settings_fade_out);
+    }
+    transaction
+            .replace(R.id.settings_detail,
+                    SettingsSubScreenFragment.newInstance(fragmentClass, title, args))
+            .commitNow();
+    slidingPane.openPane();
+    updatePanes();
+  }
+
   public void openSubFragment(
       @NonNull String fragmentClass, CharSequence title, @Nullable Bundle args) {
-    getSupportFragmentManager().beginTransaction()
-            .setCustomAnimations(
-                    R.anim.settings_slide_in_right,
-                    R.anim.settings_slide_out_left,
-                    R.anim.settings_slide_in_left,
-                    R.anim.settings_slide_out_right)
-            .replace(R.id.content_frame,
+    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+    if (slidingPane.isSlideable()) {
+      transaction.setCustomAnimations(
+              R.anim.settings_slide_in_right,
+              R.anim.settings_hold,
+              R.anim.settings_hold,
+              R.anim.settings_slide_out_right);
+    } else {
+      transaction.setCustomAnimations(
+              R.anim.settings_fade_in,
+              R.anim.settings_fade_out,
+              R.anim.settings_fade_in,
+              R.anim.settings_fade_out);
+    }
+    transaction
+            .replace(R.id.settings_detail,
                     SettingsSubScreenFragment.newInstance(fragmentClass, title, args))
             .addToBackStack(null)
             .commit();
+  }
+
+  private void updatePanes() {
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    boolean twoPane = !slidingPane.isSlideable();
+    closeDetailPaneCallback.setEnabled(
+        !twoPane && slidingPane.isOpen() && fragmentManager.getBackStackEntryCount() == 0);
+
+    Fragment root = fragmentManager.findFragmentById(R.id.settings_list);
+    Fragment detail = fragmentManager.findFragmentById(R.id.settings_detail);
+    if (detail instanceof SettingsSubScreenFragment) {
+      ((SettingsSubScreenFragment) detail).setBackVisible(!twoPane);
+      if (twoPane) {
+        slidingPane.openPane();
+      }
+    }
+    if (!(root instanceof SettingsRedesignFragment)) {
+      return;
+    }
+    SettingsRedesignFragment list = (SettingsRedesignFragment) root;
+    list.setSelectedRow(
+        twoPane && detail instanceof SettingsSubScreenFragment
+            ? ((SettingsSubScreenFragment) detail).getTargetFragmentClass()
+            : null);
+    if (twoPane && detail == null) {
+      slidingPane.post(this::openFirstRowIfDetailEmpty);
+    }
+  }
+
+  private void openFirstRowIfDetailEmpty() {
+    FragmentManager fragmentManager = getSupportFragmentManager();
+    Fragment root = fragmentManager.findFragmentById(R.id.settings_list);
+    if (!fragmentManager.isStateSaved()
+        && fragmentManager.findFragmentById(R.id.settings_detail) == null
+        && root instanceof SettingsRedesignFragment) {
+      ((SettingsRedesignFragment) root).openFirstRow();
+    }
   }
 
   @Override

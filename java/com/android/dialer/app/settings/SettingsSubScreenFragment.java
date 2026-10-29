@@ -59,12 +59,23 @@ public class SettingsSubScreenFragment extends Fragment {
     return inflater.inflate(R.layout.settings_subscreen, parent, false);
   }
 
+  void setBackVisible(boolean visible) {
+    View view = getView();
+    if (view != null) {
+      view.findViewById(R.id.header_back).setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+  }
+
+  String getTargetFragmentClass() {
+    return requireArguments().getString(ARG_FRAGMENT_CLASS);
+  }
+
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     Bundle args = requireArguments();
-    ((TextView) view.findViewById(R.id.sub_title)).setText(args.getCharSequence(ARG_TITLE));
-    view.findViewById(R.id.sub_back)
+    ((TextView) view.findViewById(R.id.header_title)).setText(args.getCharSequence(ARG_TITLE));
+    view.findViewById(R.id.header_back)
         .setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
     if (getChildFragmentManager().findFragmentById(R.id.sub_content) == null) {

@@ -8,6 +8,7 @@ package com.android.dialer.theme.base;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 import com.android.dialer.R;
@@ -39,6 +40,20 @@ public final class ThemePreferences {
 
   public void setWallpaperColorEnabled(boolean enabled) {
     prefs.edit().putBoolean(wallpaperColorKey, enabled).apply();
+  }
+
+  public boolean isThemeModeKey(@Nullable String key) {
+    return themeModeKey.equals(key);
+  }
+
+  public void registerOnChangeListener(
+      SharedPreferences.OnSharedPreferenceChangeListener listener) {
+    prefs.registerOnSharedPreferenceChangeListener(listener);
+  }
+
+  public void unregisterOnChangeListener(
+      SharedPreferences.OnSharedPreferenceChangeListener listener) {
+    prefs.unregisterOnSharedPreferenceChangeListener(listener);
   }
 
   public AccentSource getAccentSource() {

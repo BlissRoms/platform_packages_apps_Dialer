@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.slidingpanelayout.widget.SlidingPaneLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_layout"
+    android:id="@+id/settings_panes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/dialerColorCanvas"
     android:fitsSystemWindows="true">
 
     <FrameLayout
+        android:id="@+id/settings_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/content_frame" />
+        android:layout_height="match_parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/settings_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</androidx.slidingpanelayout.widget.SlidingPaneLayout>

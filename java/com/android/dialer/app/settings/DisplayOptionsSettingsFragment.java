@@ -22,7 +22,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.dialer.R;
@@ -30,7 +29,7 @@ import com.android.dialer.theme.base.DialerThemeApplier;
 import com.android.dialer.theme.base.ThemeMode;
 import com.android.dialer.theme.base.ThemePreferences;
 
-public class DisplayOptionsSettingsFragment extends PreferenceFragmentCompat {
+public class DisplayOptionsSettingsFragment extends DialerPreferenceFragment {
 
   @Override
   public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {

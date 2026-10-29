@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="@dimen/dialer_space_page_inset"
+    android:paddingEnd="@dimen/dialer_space_page_inset"
+    android:paddingTop="@dimen/dialer_space_page_inset"
+    android:paddingBottom="7dp">
+
+  <ImageButton
+      android:id="@+id/header_back"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:background="@drawable/settings_back_circle"
+      android:foreground="?android:attr/selectableItemBackgroundBorderless"
+      android:src="@drawable/quantum_ic_arrow_back_vd_theme_24"
+      android:tint="?attr/dialerColorTextPrimary"
+      android:scaleType="centerInside"
+      android:contentDescription="@string/settings_back_content_description" />
+
+  <TextView
+      android:id="@+id/header_title"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_marginStart="17dp"
+      android:text="@string/dialer_settings_label"
+      android:textAppearance="@style/TextAppearance.Dialer.Heading.Page" />
+</LinearLayout>

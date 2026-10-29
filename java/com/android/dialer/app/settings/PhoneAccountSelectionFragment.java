@@ -26,7 +26,6 @@ import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
@@ -39,7 +38,7 @@ import java.util.List;
  * Preference screen that lists SIM phone accounts to select from, and forwards the selected account
  * to {@link #PARAM_TARGET_FRAGMENT}.
  */
-public class PhoneAccountSelectionFragment extends PreferenceFragmentCompat {
+public class PhoneAccountSelectionFragment extends DialerPreferenceFragment {
 
   /** The {@link PreferenceFragmentCompat} to launch after the account is selected. */
   public static final String PARAM_TARGET_FRAGMENT = "target_fragment";
@@ -101,16 +100,9 @@ public class PhoneAccountSelectionFragment extends PreferenceFragmentCompat {
     @Override
     protected void onClick() {
       super.onClick();
-      Fragment fragment = getChildFragmentManager()
-              .getFragmentFactory()
-              .instantiate(getActivity().getClassLoader(), targetFragment);
       arguments.putParcelable(phoneAccountHandleKey, phoneAccountHandle);
-      fragment.setArguments(arguments);
-      getParentFragmentManager().beginTransaction()
-              .replace(R.id.content_frame, fragment)
-              .addToBackStack(null)
-              .commit();
-      setTitle(titleRes);
+      ((DialerSettingsActivity) requireActivity())
+          .openSubFragment(targetFragment, getString(titleRes), arguments);
     }
   }
 

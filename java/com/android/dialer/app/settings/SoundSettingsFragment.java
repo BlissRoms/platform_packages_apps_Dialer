@@ -42,14 +42,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.dialer.R;
 import com.android.dialer.util.SettingsUtil;
 
-public class SoundSettingsFragment extends PreferenceFragmentCompat
+public class SoundSettingsFragment extends DialerPreferenceFragment
     implements Preference.OnPreferenceChangeListener {
 
   private static final String BUTTON_SMART_MUTE_KEY = "button_smart_mute";

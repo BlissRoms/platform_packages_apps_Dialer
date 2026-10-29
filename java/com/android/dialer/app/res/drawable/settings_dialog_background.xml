@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:inset="16dp">
+  <shape android:shape="rectangle">
+    <solid android:color="?attr/dialerColorSurface" />
+    <corners android:radius="@dimen/dialer_radius_pane" />
+  </shape>
+</inset>

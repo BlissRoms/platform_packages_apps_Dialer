@@ -31,12 +31,12 @@ import android.telephony.TelephonyManager;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.dialer.R;
+import com.android.dialer.app.settings.DialerPreferenceFragment;
 import com.android.dialer.common.Assert;
 import com.android.dialer.common.LogUtil;
 import com.android.dialer.notification.NotificationChannelManager;
@@ -54,7 +54,7 @@ import java.util.Optional;
  * Fragment for voicemail settings. Requires {@link VoicemailClient#PARAM_PHONE_ACCOUNT_HANDLE} set
  * in arguments.
  */
-public class VoicemailSettingsFragment extends PreferenceFragmentCompat
+public class VoicemailSettingsFragment extends DialerPreferenceFragment
     implements Preference.OnPreferenceChangeListener, ActivationStateListener {
 
   // Extras copied from com.android.phone.settings.VoicemailSettingsActivity,

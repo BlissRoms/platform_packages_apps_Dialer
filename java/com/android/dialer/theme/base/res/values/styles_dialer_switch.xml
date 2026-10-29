@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <style name="Widget.Dialer.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+    <item name="thumbIcon">@drawable/settings_switch_thumb_icon</item>
+    <item name="android:background">@null</item>
+  </style>
+
+  <style name="ThemeOverlay.Dialer.Switch" parent="Theme.Material3.DayNight">
+    <item name="colorPrimary">?attr/dialerColorAccent</item>
+    <item name="colorOnPrimary">?attr/dialerColorOnAccent</item>
+    <item name="colorPrimaryContainer">?attr/dialerColorOnAccent</item>
+    <item name="colorOnPrimaryContainer">?attr/dialerColorAccent</item>
+    <item name="colorSurfaceContainerHighest">?attr/dialerColorSurfaceMuted</item>
+    <item name="colorOutline">?attr/dialerColorIconMuted</item>
+    <item name="colorOnSurface">?attr/dialerColorTextPrimary</item>
+    <item name="colorSurface">?attr/dialerColorSurface</item>
+  </style>
+</resources>

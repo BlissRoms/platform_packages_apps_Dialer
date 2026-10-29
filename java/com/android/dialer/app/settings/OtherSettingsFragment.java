@@ -25,13 +25,12 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.dialer.R;
 
-public class OtherSettingsFragment extends PreferenceFragmentCompat
+public class OtherSettingsFragment extends DialerPreferenceFragment
     implements Preference.OnPreferenceChangeListener {
 
   private static final String ENABLE_POST_CALL = "enable_post_call";

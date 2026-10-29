@@ -18,9 +18,7 @@
     android:id="@+id/section_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="12dp"
-    android:paddingEnd="12dp"
-    android:paddingTop="24dp"
-    android:paddingBottom="12dp"
-    android:textColor="@color/recents_subtitle_text"
-    android:textSize="14sp"/>
+    android:paddingTop="@dimen/dialer_space_section_gap"
+    android:paddingBottom="13dp"
+    android:textAppearance="@style/TextAppearance.Dialer.Body.Description"
+    android:textSize="17sp" />

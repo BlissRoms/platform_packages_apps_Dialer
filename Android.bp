@@ -225,6 +225,7 @@ android_app {
         "androidx.localbroadcastmanager_localbroadcastmanager",
         "androidx.preference_preference",
         "androidx.recyclerview_recyclerview",
+        "androidx.slidingpanelayout_slidingpanelayout",
         "apache-commons-compress",
         "com.google.android.material_material",
         "dagger2",

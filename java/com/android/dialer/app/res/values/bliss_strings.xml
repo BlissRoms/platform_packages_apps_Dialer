@@ -35,4 +35,16 @@
     <!-- Dialer postcall -->
     <string name="enable_post_call_title">Post call snackbar</string>
     <string name="enable_post_call_summary">Enable post call notifications at the bottom of screen</string>
+
+    <!-- Settings row descriptions -->
+    <string name="settings_display_options_description">Change your appearance according to your feel</string>
+    <string name="settings_sounds_description">Control your output level of sounds and intensity of vibrations</string>
+    <string name="settings_quick_responses_description">Send instant message instead of picking up</string>
+    <string name="settings_lookup_description">Search unknown number on the internet and fetch information</string>
+    <string name="settings_calling_accounts_description">Configure SIM rules and other features</string>
+    <string name="settings_call_recording_description">Record calls automatically while connected</string>
+    <string name="settings_accessibility_description">TTY and hearing aid options</string>
+    <string name="settings_voicemail_description">Notifications, greeting and storage</string>
+    <string name="settings_helplines_description">Important numbers for your region</string>
+    <string name="settings_other_description">Post call snackbar and proximity sensor</string>
 </resources>

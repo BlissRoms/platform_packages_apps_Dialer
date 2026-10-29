@@ -32,11 +32,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import com.google.android.material.materialswitch.MaterialSwitch;
@@ -55,6 +57,9 @@ import com.android.dialer.util.PermissionsUtil;
 import com.android.dialer.voicemail.settings.VoicemailSettingsFragment;
 import com.android.voicemail.VoicemailClient;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Card-based root of the dialer settings screen. Renders the redesigned grouped layout and routes
  * each entry to the existing settings fragment or system intent. Sub-screens continue to use the
@@ -68,6 +73,16 @@ public class SettingsRedesignFragment extends Fragment {
    * {@code com.android.incallui.InCallPresenter}; keep both in sync. Defaults to enabled.
    */
   private static final String KEY_CALL_BLOCKING = "settings_call_blocking";
+
+  private final Map<String, View> rowsByFragment = new LinkedHashMap<>();
+  private ThemePreferences themePreferences;
+  private final SharedPreferences.OnSharedPreferenceChangeListener themeModeListener =
+      (sharedPreferences, key) -> {
+        if (themePreferences.isThemeModeKey(key)) {
+          refreshThemeModeValue();
+        }
+      };
+  @Nullable private TextView themeModeValue;
 
   /**
    * Last known call-waiting value. Seeds the switch so it stays stable when the platform's status
@@ -89,55 +104,87 @@ public class SettingsRedesignFragment extends Fragment {
   }
 
   @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    themePreferences = new ThemePreferences(requireContext());
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    themePreferences.registerOnChangeListener(themeModeListener);
+    refreshThemeModeValue();
+  }
+
+  @Override
+  public void onStop() {
+    themePreferences.unregisterOnChangeListener(themeModeListener);
+    super.onStop();
+  }
+
+  @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     preferences =
         PreferenceManager.getDefaultSharedPreferences(requireContext().getApplicationContext());
     container = view.findViewById(R.id.settings_container);
 
-    view.findViewById(R.id.settings_back)
-        .setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+    view.findViewById(R.id.header_back).setOnClickListener(v -> requireActivity().finish());
 
     buildSettings();
   }
 
   private void buildSettings() {
+    rowsByFragment.clear();
     LayoutInflater inflater = LayoutInflater.from(requireContext());
 
     // ---- Personalisation ----
     addSection(inflater, R.string.settings_section_personalisation);
-    addNavRow(
+    View displayOptionsRow = registerRow(addNavRow(
         inflater,
+        R.drawable.settings_ic_palette,
         getString(R.string.display_options_title),
-        themeModeLabel(new ThemePreferences(requireContext()).getThemeMode()),
+        getString(R.string.settings_display_options_description),
+        themeModeLabel(themePreferences.getThemeMode()),
         () ->
             openSubFragment(
-                DisplayOptionsSettingsFragment.class, getString(R.string.display_options_title)));
-    addNavRow(
+                DisplayOptionsSettingsFragment.class, getString(R.string.display_options_title))),
+                DisplayOptionsSettingsFragment.class);
+    themeModeValue = displayOptionsRow.findViewById(R.id.row_value);
+    registerRow(addNavRow(
         inflater,
+        R.drawable.quantum_ic_volume_up_vd_theme_24,
         getString(R.string.sounds_and_vibration_title),
+        getString(R.string.settings_sounds_description),
         getString(R.string.settings_sounds_summary_default),
-        this::openSoundSettings);
+        this::openSoundSettings), SoundSettingsFragment.class);
 
     // ---- Call settings ----
     addSection(inflater, R.string.settings_section_call);
     addNavRow(
         inflater,
+        R.drawable.quantum_ic_message_vd_theme_24,
         getString(R.string.respond_via_sms_setting_title),
+        getString(R.string.settings_quick_responses_description),
         null,
         () -> openIntent(new Intent(TelecomManager.ACTION_SHOW_RESPOND_VIA_SMS_SETTINGS)));
-    addNavRow(
+    registerRow(addNavRow(
         inflater,
+        R.drawable.quantum_ic_language_vd_theme_24,
         getString(R.string.settings_phone_number_lookup_title),
+        getString(R.string.settings_lookup_description),
         null,
         () ->
             openSubFragment(
                 LookupSettingsFragment.class,
-                getString(R.string.settings_phone_number_lookup_title)));
+                getString(R.string.settings_phone_number_lookup_title))),
+                LookupSettingsFragment.class);
     addCallWaitingRow(inflater);
     addNavRow(
         inflater,
+        R.drawable.settings_ic_person,
         getString(R.string.phone_account_settings_label),
+        getString(R.string.settings_calling_accounts_description),
         null,
         () -> {
           Intent intent = new Intent(TelecomManager.ACTION_CHANGE_PHONE_ACCOUNTS);
@@ -145,29 +192,45 @@ public class SettingsRedesignFragment extends Fragment {
           openIntent(intent);
         });
     if (CallRecorderService.isEnabled(requireContext())) {
-      addNavRow(
+      registerRow(addNavRow(
           inflater,
+          R.drawable.quantum_ic_record_white_36,
           getString(R.string.call_recording_category_title),
+          getString(R.string.settings_call_recording_description),
           null,
           () ->
               openSubFragment(
                   CallRecordingSettingsFragment.class,
-                  getString(R.string.call_recording_category_title)));
+                  getString(R.string.call_recording_category_title))),
+                  CallRecordingSettingsFragment.class);
     }
     if (showAccessibility()) {
       addNavRow(
           inflater,
+          R.drawable.settings_ic_accessibility,
           getString(R.string.accessibility_settings_title),
+          getString(R.string.settings_accessibility_description),
           null,
           () -> openIntent(new Intent(TelecomManager.ACTION_SHOW_CALL_ACCESSIBILITY_SETTINGS)));
     }
     addVoicemailRow(inflater);
+    registerRow(addNavRow(
+        inflater,
+        R.drawable.settings_ic_tune,
+        getString(R.string.other_settings_label),
+        getString(R.string.settings_other_description),
+        null,
+        () ->
+            openSubFragment(
+                OtherSettingsFragment.class, getString(R.string.other_settings_label))),
+        OtherSettingsFragment.class);
 
     // ---- Privacy & Security ----
     if (BlockedNumberContract.canCurrentUserBlockNumbers(requireContext())) {
       addSection(inflater, R.string.settings_section_privacy);
       addToggleRow(
           inflater,
+          R.drawable.quantum_ic_block_vd_theme_24,
           getString(R.string.settings_call_blocking_title),
           getString(R.string.settings_call_blocking_summary),
           KEY_CALL_BLOCKING,
@@ -178,7 +241,9 @@ public class SettingsRedesignFragment extends Fragment {
     addSection(inflater, R.string.settings_section_help);
     addNavRow(
         inflater,
+        R.drawable.ic_help,
         getString(R.string.action_menu_helplines),
+        getString(R.string.settings_helplines_description),
         null,
         () -> openIntent(new Intent(requireContext(), HelplineActivity.class)));
   }
@@ -210,29 +275,57 @@ public class SettingsRedesignFragment extends Fragment {
     container.addView(currentCard);
   }
 
-  private void addNavRow(
+  public void openFirstRow() {
+    if (!rowsByFragment.isEmpty()) {
+      rowsByFragment.values().iterator().next().callOnClick();
+    }
+  }
+
+  private void refreshThemeModeValue() {
+    if (themeModeValue != null) {
+      themeModeValue.setText(themeModeLabel(themePreferences.getThemeMode()));
+    }
+  }
+
+  public void setSelectedRow(@Nullable String fragmentClass) {
+    for (Map.Entry<String, View> entry : rowsByFragment.entrySet()) {
+      entry.getValue().setActivated(entry.getKey().equals(fragmentClass));
+    }
+  }
+
+  private View registerRow(View row, Class<? extends Fragment> fragmentClass) {
+    rowsByFragment.put(fragmentClass.getName(), row);
+    return row;
+  }
+
+  private View addNavRow(
       LayoutInflater inflater,
+      @DrawableRes int icon,
       CharSequence title,
-      @Nullable CharSequence secondary,
+      @Nullable CharSequence description,
+      @Nullable CharSequence value,
       Runnable action) {
-    View row = inflateRow(inflater);
+    View row = inflateRow(inflater, icon);
     ((TextView) row.findViewById(R.id.row_title)).setText(title);
-    if (secondary != null) {
-      TextView secondaryView = row.findViewById(R.id.row_secondary);
-      secondaryView.setText(secondary);
-      secondaryView.setVisibility(View.VISIBLE);
+    setRowSummary(row, description);
+    if (value != null) {
+      TextView valueView = row.findViewById(R.id.row_value);
+      valueView.setText(value);
+      valueView.setVisibility(View.VISIBLE);
     }
     row.findViewById(R.id.row_chevron).setVisibility(View.VISIBLE);
     row.setOnClickListener(v -> action.run());
+    return row;
   }
 
   private void addToggleRow(
       LayoutInflater inflater,
+      @DrawableRes int icon,
       CharSequence title,
       @Nullable CharSequence summary,
       String prefKey,
       boolean defaultValue) {
-    View row = inflateRow(inflater);
+    View row = inflateRow(inflater, icon);
     ((TextView) row.findViewById(R.id.row_title)).setText(title);
     setRowSummary(row, summary);
     MaterialSwitch toggle = row.findViewById(R.id.row_switch);
@@ -249,7 +342,7 @@ public class SettingsRedesignFragment extends Fragment {
    * permanently if the platform does not support the query).
    */
   private void addCallWaitingRow(LayoutInflater inflater) {
-    View row = inflateRow(inflater);
+    View row = inflateRow(inflater, R.drawable.quantum_ic_phone_in_talk_vd_theme_24);
     ((TextView) row.findViewById(R.id.row_title)).setText(R.string.settings_call_waiting_title);
     setRowSummary(row, getString(R.string.settings_call_waiting_summary));
     MaterialSwitch toggle = row.findViewById(R.id.row_switch);
@@ -351,20 +444,10 @@ public class SettingsRedesignFragment extends Fragment {
     summaryView.setVisibility(View.VISIBLE);
   }
 
-  /** Inflates a row into the active card, inserting a divider above it when not the first row. */
-  private View inflateRow(LayoutInflater inflater) {
-    if (currentCard.getChildCount() > 0) {
-      float density = getResources().getDisplayMetrics().density;
-      View divider = new View(requireContext());
-      LinearLayout.LayoutParams params =
-          new LinearLayout.LayoutParams(
-              ViewGroup.LayoutParams.MATCH_PARENT, Math.max(1, Math.round(density)));
-      params.setMarginStart(Math.round(20 * density));
-      divider.setLayoutParams(params);
-      divider.setBackgroundColor(requireContext().getColor(R.color.settings_row_divider));
-      currentCard.addView(divider);
-    }
+  private View inflateRow(LayoutInflater inflater, @DrawableRes int icon) {
     View row = inflater.inflate(R.layout.settings_redesign_row, currentCard, false);
+    ((ImageView) row.findViewById(R.id.row_icon)).setImageResource(icon);
+    row.findViewById(R.id.row_icon_container).setVisibility(View.VISIBLE);
     currentCard.addView(row);
     return row;
   }
@@ -377,7 +460,7 @@ public class SettingsRedesignFragment extends Fragment {
       Class<? extends Fragment> fragmentClass, CharSequence title, @Nullable Bundle args) {
     if (getActivity() instanceof DialerSettingsActivity) {
       ((DialerSettingsActivity) getActivity())
-          .openSubFragment(fragmentClass.getName(), title, args);
+          .openRootSubFragment(fragmentClass.getName(), title, args);
     }
   }
 
@@ -405,19 +488,26 @@ public class SettingsRedesignFragment extends Fragment {
       bundle.putBundle(PhoneAccountSelectionFragment.PARAM_ARGUMENTS, new Bundle());
       bundle.putInt(
           PhoneAccountSelectionFragment.PARAM_TARGET_TITLE_RES, R.string.voicemail_settings_label);
-      addNavRow(
+      registerRow(registerRow(addNavRow(
           inflater,
+          R.drawable.quantum_ic_voicemail_vd_theme_24,
           title,
+          getString(R.string.settings_voicemail_description),
           null,
-          () -> openSubFragment(PhoneAccountSelectionFragment.class, title, bundle));
+          () -> openSubFragment(PhoneAccountSelectionFragment.class, title, bundle)),
+          PhoneAccountSelectionFragment.class),
+          VoicemailSettingsFragment.class);
     } else {
       Bundle bundle = new Bundle();
       bundle.putParcelable(VoicemailClient.PARAM_PHONE_ACCOUNT_HANDLE, soleAccount);
-      addNavRow(
+      registerRow(addNavRow(
           inflater,
+          R.drawable.quantum_ic_voicemail_vd_theme_24,
           title,
+          getString(R.string.settings_voicemail_description),
           null,
-          () -> openSubFragment(VoicemailSettingsFragment.class, title, bundle));
+          () -> openSubFragment(VoicemailSettingsFragment.class, title, bundle)),
+          VoicemailSettingsFragment.class);
     }
   }
 

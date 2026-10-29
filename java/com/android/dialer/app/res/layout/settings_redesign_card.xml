@@ -19,5 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/recents_row_card_bg"
-    android:clipToOutline="true"/>
+    android:background="@drawable/settings_card_clip"
+    android:clipToOutline="true"
+    android:divider="@drawable/settings_row_gap"
+    android:showDividers="middle" />

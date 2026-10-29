@@ -22,13 +22,12 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.dialer.R;
 
 /** Dedicated call recording settings (audio format), split out from the sound settings screen. */
-public class CallRecordingSettingsFragment extends PreferenceFragmentCompat
+public class CallRecordingSettingsFragment extends DialerPreferenceFragment
     implements Preference.OnPreferenceChangeListener {
 
   private static final String KEY_RECORDING_WARNING_PRESENTED = "recording_warning_presented";

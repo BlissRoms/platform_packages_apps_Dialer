@@ -19,19 +19,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp"
-    android:layout_marginBottom="8dp"
-    android:minHeight="62dp"
+    android:layout_marginStart="@dimen/dialer_space_page_inset"
+    android:layout_marginEnd="@dimen/dialer_space_page_inset"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:background="@drawable/recents_row_card_bg"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:clipToOutline="true"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp"
-    android:paddingTop="14dp"
-    android:paddingBottom="14dp">
+    android:padding="20dp">
+
+  <FrameLayout
+      android:id="@android:id/icon_frame"
+      android:layout_width="44dp"
+      android:layout_height="44dp"
+      android:layout_marginEnd="17dp">
+
+    <ImageView
+        android:id="@android:id/icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:tint="?attr/dialerColorTextPrimary" />
+  </FrameLayout>
 
   <LinearLayout
       android:layout_width="0dp"
@@ -43,24 +49,20 @@
         android:id="@android:id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/recents_name_text"
-        android:textSize="16sp"
-        android:ellipsize="marquee"/>
+        android:textAppearance="@style/TextAppearance.Dialer.Body.Title" />
 
     <TextView
         android:id="@android:id/summary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:textColor="@color/recents_subtitle_text"
-        android:textSize="14sp"/>
+        android:layout_marginTop="4dp"
+        android:textAppearance="@style/TextAppearance.Dialer.Body.Description" />
   </LinearLayout>
 
   <FrameLayout
       android:id="@android:id/widget_frame"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="12dp"
-      android:gravity="center_vertical"
-      android:orientation="vertical"/>
+      android:layout_marginStart="17dp"
+      android:gravity="center_vertical" />
 </LinearLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <integer name="settings_transition_duration">250</integer>
+
+  <style name="Animation.Dialer.Settings" parent="@android:style/Animation.Activity">
+    <item name="android:activityOpenEnterAnimation">@anim/settings_slide_in_right</item>
+    <item name="android:activityOpenExitAnimation">@anim/settings_hold</item>
+    <item name="android:activityCloseEnterAnimation">@anim/settings_hold</item>
+    <item name="android:activityCloseExitAnimation">@anim/settings_slide_out_right</item>
+  </style>
+</resources>
