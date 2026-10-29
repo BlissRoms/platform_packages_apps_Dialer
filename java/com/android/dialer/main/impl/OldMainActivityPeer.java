@@ -29,7 +29,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.CallLog.Calls;
-import android.provider.ContactsContract.QuickContact;
 import android.provider.VoicemailContract;
 import android.telecom.PhoneAccount;
 import android.telecom.PhoneAccountHandle;
@@ -61,7 +60,6 @@ import com.android.dialer.common.concurrent.DialerExecutorComponent;
 import com.android.dialer.common.concurrent.SupportUiListener;
 import com.android.dialer.contactsfragment.ContactsFragment;
 import com.android.dialer.contactsfragment.ContactsFragment.Header;
-import com.android.dialer.contactsfragment.ContactsFragment.OnContactSelectedListener;
 import com.android.dialer.database.CallLogQueryHandler;
 import com.android.dialer.database.Database;
 import com.android.dialer.dialpadview.DialpadFragment;
@@ -119,7 +117,7 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
   private final TransactionSafeActivity activity;
 
   // Contacts
-  private MainOnContactSelectedListener onContactSelectedListener;
+  private ContactProfileController contactProfileController;
 
   // Dialpad and Search
   private MainDialpadFragmentHost dialpadFragmentHostInterface;
@@ -200,7 +198,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
   }
 
   private void initLayout(Bundle savedInstanceState) {
-    onContactSelectedListener = new MainOnContactSelectedListener(activity);
     dialpadFragmentHostInterface = new MainDialpadFragmentHost();
 
     snackbarContainer = activity.findViewById(R.id.coordinator_layout);
@@ -245,6 +242,9 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
 
     searchController = getNewMainSearchController(bottomNav, fab, toolbar, snackbarContainer);
     toolbar.setSearchBarListener(searchController);
+    contactProfileController = new ContactProfileController(activity, searchController);
+    searchController.addOnSearchShowListener(contactProfileController);
+    contactProfileController.restoreVisibility();
 
     onDialpadQueryChangedListener = getNewOnDialpadQueryChangedListener(searchController);
     dialpadListener =
@@ -443,18 +443,18 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
   @Override
   public boolean onBackPressed() {
     LogUtil.enterBlock("OldMainActivityPeer.onBackPressed");
-    if (searchController.onBackPressed()) {
+    if (contactProfileController.onBackPressed()) {
       return true;
     }
-    return false;
+    return searchController.onBackPressed();
   }
 
   @Nullable
   @Override
   @SuppressWarnings("unchecked") // Casts are checked using runtime methods
   public <T> T getImpl(Class<T> callbackInterface) {
-    if (callbackInterface.isInstance(onContactSelectedListener)) {
-      return (T) onContactSelectedListener;
+    if (callbackInterface.isInstance(contactProfileController)) {
+      return (T) contactProfileController;
     } else if (callbackInterface.isInstance(onDialpadQueryChangedListener)) {
       return (T) onDialpadQueryChangedListener;
     } else if (callbackInterface.isInstance(dialpadListener)) {
@@ -488,23 +488,6 @@ public class OldMainActivityPeer implements MainActivityPeer, FragmentUtilListen
   public MainOnDialpadQueryChangedListener getNewOnDialpadQueryChangedListener(
       MainSearchController mainSearchController) {
     return new MainOnDialpadQueryChangedListener(mainSearchController);
-  }
-
-  /** @see OnContactSelectedListener */
-  private static final class MainOnContactSelectedListener implements OnContactSelectedListener {
-
-    private final Context context;
-
-    MainOnContactSelectedListener(Context context) {
-      this.context = context;
-    }
-
-    @Override
-    public void onContactSelected(ImageView photo, Uri contactUri, long contactId) {
-      // TODO(calderwoodra): Add impression logging
-      QuickContact.showQuickContact(
-          context, photo, contactUri, QuickContact.MODE_LARGE, null /* excludeMimes */);
-    }
   }
 
   /** @see OnDialpadQueryChangedListener */

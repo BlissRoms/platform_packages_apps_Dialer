@@ -56,4 +56,22 @@
     <string name="recents_favorites_add_description">Add a favorite</string>
     <string name="call_details_recent_activity">Recent activity</string>
     <string name="dialpad_close_button_content_description">Close dialpad</string>
+    <string name="contact_profile_recent_activity">Recent activity</string>
+    <string name="contact_profile_settings">Contact settings</string>
+    <string name="contact_profile_block">Block number</string>
+    <string name="contact_profile_unblock">Unblock number</string>
+    <string name="contact_profile_open_in_contacts">Open in Contacts</string>
+    <string name="contact_profile_delete">Delete</string>
+    <string name="contact_profile_delete_confirm">Delete this contact?</string>
+    <string name="contact_profile_call_time">Call time <xliff:g id="duration" example="1m 22s">%s</xliff:g></string>
+    <string name="contact_profile_call_meta"><xliff:g id="label" example="Mobile">%1$s</xliff:g> • <xliff:g id="time" example="4:32 PM">%2$s</xliff:g></string>
+    <string name="contact_profile_star">Add to favorites</string>
+    <string name="contact_profile_unstar">Remove from favorites</string>
+    <string name="contact_profile_edit">Edit contact</string>
+    <string name="contact_profile_share">Share contact</string>
+    <string name="contact_profile_call">Call</string>
+    <string name="contact_profile_message">Send message</string>
+    <string name="contact_profile_video">Video call</string>
+    <string name="contact_profile_email">Send email</string>
+    <string name="contact_profile_action_failed">Couldn\'t update this contact</string>
 </resources>

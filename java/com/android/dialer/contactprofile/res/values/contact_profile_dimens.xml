@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+  <dimen name="contact_profile_top_button_size">48dp</dimen>
+  <dimen name="contact_profile_top_button_padding">10dp</dimen>
+  <dimen name="contact_profile_top_button_gap">13dp</dimen>
+  <dimen name="contact_profile_top_row_padding">16dp</dimen>
+  <dimen name="contact_profile_avatar_size">100dp</dimen>
+  <dimen name="contact_profile_action_size">56dp</dimen>
+  <dimen name="contact_profile_action_gap">17dp</dimen>
+  <dimen name="contact_profile_row_gap">3dp</dimen>
+  <dimen name="contact_profile_call_row_min_height">65dp</dimen>
+  <dimen name="contact_profile_call_row_padding_horizontal">17dp</dimen>
+  <dimen name="contact_profile_call_row_padding_vertical">12dp</dimen>
+  <dimen name="contact_profile_call_type_icon_size">12dp</dimen>
+  <dimen name="contact_profile_call_meta_gap">5dp</dimen>
+  <dimen name="contact_profile_banner_height">200dp</dimen>
+  <dimen name="contact_profile_banner_blur_radius">50dp</dimen>
+  <dimen name="contact_profile_photo_top_margin">150dp</dimen>
+</resources>

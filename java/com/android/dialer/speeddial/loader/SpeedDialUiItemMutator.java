@@ -185,6 +185,50 @@ public final class SpeedDialUiItemMutator {
             new String[] {Long.toString(speedDialUiItem.contactId())});
   }
 
+  public ListenableFuture<Optional<SpeedDialUiItem>> loadContact(long contactId) {
+    return backgroundExecutor.submit(() -> loadContactSync(contactId));
+  }
+
+  @WorkerThread
+  public Optional<SpeedDialUiItem> loadContactSync(long contactId) {
+    Assert.isWorkerThread();
+    try (Cursor cursor =
+        appContext
+            .getContentResolver()
+            .query(
+                Phone.CONTENT_URI,
+                SpeedDialUiItem.getPhoneProjection(isPrimaryDisplayNameOrder()),
+                Phone.CONTACT_ID + " = ?",
+                new String[] {Long.toString(contactId)},
+                null)) {
+      if (cursor == null || !cursor.moveToFirst()) {
+        return Optional.empty();
+      }
+      SpeedDialUiItem item =
+          SpeedDialUiItem.fromCursor(
+              appContext.getResources(), cursor, CallUtil.isVideoEnabled(appContext));
+      return Optional.of(withSpeedDialEntry(item));
+    }
+  }
+
+  private SpeedDialUiItem withSpeedDialEntry(SpeedDialUiItem item) {
+    for (SpeedDialEntry entry : getSpeedDialEntryDao().getAllEntries()) {
+      if (entry.contactId() != item.contactId()) {
+        continue;
+      }
+      SpeedDialUiItem.Builder builder =
+          item.toBuilder()
+              .setSpeedDialEntryId(entry.id())
+              .setPinnedPosition(entry.pinnedPosition());
+      Channel defaultChannel = entry.defaultChannel();
+      if (defaultChannel != null && item.channels().contains(defaultChannel)) {
+        builder.setDefaultChannel(defaultChannel);
+      }
+      return builder.build();
+    }
+    return item;
+  }
+
   /**
    * Takes a contact uri from {@link Phone#CONTENT_URI} and updates {@link Phone#STARRED} to be
    * true, if it isn't already or Inserts the contact into the {@link SpeedDialEntryDatabaseHelper}

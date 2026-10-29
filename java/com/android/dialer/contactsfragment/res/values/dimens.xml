@@ -15,16 +15,10 @@
   ~ limitations under the License
   -->
 <resources>
-  <dimen name="photo_size">40dp</dimen>
-  <dimen name="header_width">56dp</dimen>
-  <dimen name="row_height">56dp</dimen>
-  <dimen name="row_start_padding">16dp</dimen>
-  <dimen name="row_end_margin">16dp</dimen>
-  <dimen name="row_top_bottom_padding">8dp</dimen>
-
-  <dimen name="text_padding_start">16dp</dimen>
-  <dimen name="text_padding_end">8dp</dimen>
-  <dimen name="text_size">16sp</dimen>
+  <dimen name="photo_size">50dp</dimen>
+  <dimen name="contact_row_min_height">90dp</dimen>
+  <dimen name="contact_row_gap">3dp</dimen>
+  <dimen name="contact_group_gap">17dp</dimen>
 
   <dimen name="fast_scroller_touch_target_width">20dp</dimen>
 

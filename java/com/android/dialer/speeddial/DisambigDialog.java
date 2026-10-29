@@ -81,6 +81,9 @@ public class DisambigDialog extends DialogFragment {
     View view = inflater.inflate(R.layout.disambig_dialog_layout, null, false);
     container = view.findViewById(R.id.communication_avenue_container);
     rememberThisChoice = view.findViewById(R.id.remember_this_choice_checkbox);
+    if (speedDialUiItem.speedDialEntryId() == null) {
+      view.findViewById(R.id.remember_this_choice_container).setVisibility(View.GONE);
+    }
     insertOptions(container.findViewById(R.id.communication_avenue_container), channels);
     return new AlertDialog.Builder(getActivity()).setView(view).create();
   }

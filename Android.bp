@@ -144,6 +144,7 @@ android_app {
         "java/com/android/dialer/clipboard/res",
         "java/com/android/dialer/common/res",
         "java/com/android/dialer/contactphoto/res",
+        "java/com/android/dialer/contactprofile/res",
         "java/com/android/dialer/contacts/displaypreference/res",
         "java/com/android/dialer/contacts/resources/res",
         "java/com/android/dialer/contactsfragment/res",

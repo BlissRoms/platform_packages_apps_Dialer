@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 /** Utility class for formatting duration and data usage in call log entries. */
 public class CallLogDurations {
 
-  private static CharSequence formatDuration(Context context, long elapsedSeconds) {
+  public static CharSequence formatDuration(Context context, long elapsedSeconds) {
     // Getting this method into a good state took a bunch of work between eng, i18n team and
     // translators. If at all possible, the strings should not be changed or updated.
     long minutes = TimeUnit.SECONDS.toMinutes(elapsedSeconds);

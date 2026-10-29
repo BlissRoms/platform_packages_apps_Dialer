@@ -34,7 +34,7 @@ final class AddContactViewHolder extends RecyclerView.ViewHolder implements OnCl
 
   AddContactViewHolder(View view) {
     super(view);
-    view.setOnClickListener(this);
+    view.findViewById(R.id.click_target).setOnClickListener(this);
     context = view.getContext();
   }
 

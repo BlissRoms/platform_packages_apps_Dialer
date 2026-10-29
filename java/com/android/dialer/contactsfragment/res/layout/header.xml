@@ -17,9 +17,11 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/header"
-    android:layout_width="@dimen/header_width"
-    android:layout_height="@dimen/row_height"
-    android:textColor="?android:attr/colorAccent"
-    android:gravity="center"
-    android:textStyle="bold"
-    style="@style/Dialer.TextAppearance.Header2"/>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="8dp"
+    android:paddingTop="@dimen/contact_group_gap"
+    android:paddingEnd="8dp"
+    android:paddingBottom="@dimen/dialer_space_control_gap"
+    android:textAppearance="@style/TextAppearance.Dialer.Label.Metadata"
+    android:textColor="?attr/dialerColorTextPrimary"/>

@@ -13,9 +13,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.android.dialer.callintent.CallInitiationType;
-import com.android.dialer.callintent.CallIntentBuilder;
 import com.android.dialer.common.concurrent.SupportUiListener;
-import com.android.dialer.precall.PreCall;
 import com.android.dialer.speeddial.ContextMenu.ContextMenuItemListener;
 import com.android.dialer.speeddial.database.SpeedDialEntry.Channel;
 import com.android.dialer.speeddial.loader.SpeedDialUiItem;
@@ -41,22 +39,13 @@ public final class FavoriteContactActions implements ContextMenuItemListener {
   }
 
   public void call(SpeedDialUiItem speedDialUiItem, FragmentManager fragmentManager) {
-    if (speedDialUiItem.defaultChannel() != null) {
-      placeCall(speedDialUiItem.defaultChannel());
-    } else if (speedDialUiItem.channels().size() == 1) {
-      placeCall(speedDialUiItem.channels().get(0));
-    } else {
-      DisambigDialog.show(speedDialUiItem, fragmentManager);
-    }
+    ContactCalls.call(
+        activity, speedDialUiItem, fragmentManager, CallInitiationType.Type.SPEED_DIAL);
   }
 
   @Override
   public void placeCall(Channel channel) {
-    PreCall.start(
-        activity,
-        new CallIntentBuilder(channel.number(), CallInitiationType.Type.SPEED_DIAL)
-            .setAllowAssistedDial(true)
-            .setIsVideoCall(channel.isVideoTechnology()));
+    ContactCalls.placeCall(activity, channel, CallInitiationType.Type.SPEED_DIAL);
   }
 
   @Override

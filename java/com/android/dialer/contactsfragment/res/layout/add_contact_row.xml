@@ -15,37 +15,41 @@
  ~ See the License for the specific language governing permissions and
  ~ limitations under the License
  -->
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/click_target"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/row_height"
-    android:layout_marginTop="8dp"
-    android:layout_marginStart="@dimen/header_width"
-    android:layout_marginEnd="@dimen/row_end_margin"
-    android:paddingTop="@dimen/row_top_bottom_padding"
-    android:paddingBottom="@dimen/row_top_bottom_padding"
-    android:paddingStart="@dimen/row_start_padding"
-    android:gravity="center_vertical"
-    android:background="?android:attr/selectableItemBackground">
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dialer_space_page_inset"
+    android:paddingEnd="@dimen/dialer_space_page_inset">
 
-  <ImageView
-      android:id="@+id/photo"
-      android:layout_width="@dimen/photo_size"
-      android:layout_height="@dimen/photo_size"
-      android:src="@drawable/quantum_ic_person_add_vd_theme_24"
-      android:scaleType="center"
-      app:tint="?colorIcon" />
-
-  <TextView
-      android:id="@+id/contact_name"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:paddingStart="@dimen/text_padding_start"
-      android:paddingEnd="@dimen/text_padding_end"
+  <LinearLayout
+      android:id="@+id/click_target"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/contact_row_min_height"
+      android:padding="@dimen/dialer_space_page_inset"
+      android:background="@drawable/dialer_card_single"
+      android:clipToOutline="true"
+      android:foreground="?android:attr/selectableItemBackground"
       android:gravity="center_vertical"
-      android:text="@string/all_contacts_empty_add_contact_action"
-      style="@style/Dialer.TextAppearance.Primary"/>
-</LinearLayout>
+      android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="@dimen/photo_size"
+        android:layout_height="@dimen/photo_size"
+        android:importantForAccessibility="no"
+        android:scaleType="center"
+        android:src="@drawable/quantum_ic_person_add_vd_theme_24"
+        android:tint="?attr/dialerColorAccentText"/>
+
+    <TextView
+        android:id="@+id/contact_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/dialer_space_control_gap"
+        android:text="@string/all_contacts_empty_add_contact_action"
+        android:textAppearance="@style/TextAppearance.Dialer.Body.Title"/>
+  </LinearLayout>
+</FrameLayout>

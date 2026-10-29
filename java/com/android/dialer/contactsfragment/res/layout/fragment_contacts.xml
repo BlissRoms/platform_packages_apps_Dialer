@@ -24,7 +24,7 @@
       android:id="@+id/recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="?android:attr/colorBackground"
+      android:paddingTop="@dimen/dialer_space_control_gap"
       android:paddingBottom="@dimen/floating_action_button_list_bottom_padding"
       android:clipToPadding="false"/>
 
@@ -59,9 +59,6 @@
         android:paddingEnd="16dp"
         android:src="@drawable/fast_scroller_scroll_bar" />
   </com.android.dialer.contactsfragment.FastScroller>
-
-  <!-- Anchored header view -->
-  <include layout="@layout/header"/>
 
   <com.android.dialer.widget.EmptyContentView
       android:id="@+id/empty_list_view"

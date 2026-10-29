@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/contact_profile_call_row_min_height"
+    android:paddingStart="@dimen/contact_profile_call_row_padding_horizontal"
+    android:paddingTop="@dimen/contact_profile_call_row_padding_vertical"
+    android:paddingEnd="@dimen/contact_profile_call_row_padding_horizontal"
+    android:paddingBottom="@dimen/contact_profile_call_row_padding_vertical"
+    android:clipToOutline="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+  <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/contact_profile_call_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Dialer.Body.Title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialer_space_control_gap"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+      <ImageView
+          android:id="@+id/contact_profile_call_type"
+          android:layout_width="@dimen/contact_profile_call_type_icon_size"
+          android:layout_height="@dimen/contact_profile_call_type_icon_size"
+          android:importantForAccessibility="no"/>
+
+      <TextView
+          android:id="@+id/contact_profile_call_meta"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/contact_profile_call_meta_gap"
+          android:textAppearance="@style/TextAppearance.Dialer.Body.Description"
+          android:textColor="?attr/dialerColorTextSecondary"/>
+    </LinearLayout>
+  </LinearLayout>
+
+  <ImageView
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:importantForAccessibility="no"
+      android:src="@drawable/quantum_ic_call_vd_theme_24"
+      android:tint="?attr/dialerColorTextSecondary"/>
+</LinearLayout>

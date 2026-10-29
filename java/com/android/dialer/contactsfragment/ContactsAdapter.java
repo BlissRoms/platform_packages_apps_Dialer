@@ -22,11 +22,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract.Contacts;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.IntDef;
-import androidx.collection.ArrayMap;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.dialer.R;
@@ -36,9 +35,11 @@ import com.android.dialer.contactphoto.ContactPhotoManager;
 import com.android.dialer.contactsfragment.ContactsFragment.Header;
 import com.android.dialer.contactsfragment.ContactsFragment.OnContactSelectedListener;
 import com.android.dialer.lettertile.LetterTileDrawable;
+import com.android.dialer.theme.base.CardPosition;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.function.LongConsumer;
 
 /** List adapter for the union of all contacts associated with every account on the device. */
 final class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -52,10 +53,10 @@ final class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   @IntDef({UNKNOWN_VIEW_TYPE, ADD_CONTACT_VIEW_TYPE, CONTACT_VIEW_TYPE})
   @interface ContactsViewType {}
 
-  private final ArrayMap<ContactViewHolder, Integer> holderMap = new ArrayMap<>();
   private final Context context;
   private final @Header int header;
   private final OnContactSelectedListener onContactSelectedListener;
+  private final LongConsumer onContactCallClicked;
 
   // List of contact sublist headers
   private String[] headers = new String[0];
@@ -63,12 +64,22 @@ final class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
   private int[] counts = new int[0];
   // Cursor with list of contacts
   private Cursor cursor;
+  @Nullable private Uri selectedContact;
 
   ContactsAdapter(
-      Context context, @Header int header, OnContactSelectedListener onContactSelectedListener) {
+      Context context,
+      @Header int header,
+      OnContactSelectedListener onContactSelectedListener,
+      LongConsumer onContactCallClicked) {
     this.context = context;
     this.header = header;
     this.onContactSelectedListener = Assert.isNotNull(onContactSelectedListener);
+    this.onContactCallClicked = onContactCallClicked;
+  }
+
+  void setSelectedContact(@Nullable Uri contactUri) {
+    selectedContact = contactUri;
+    notifyItemRangeChanged(0, getItemCount());
   }
 
   void updateCursor(Cursor cursor) {
@@ -99,7 +110,8 @@ final class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
       case CONTACT_VIEW_TYPE:
         return new ContactViewHolder(
             LayoutInflater.from(context).inflate(R.layout.contact_row, parent, false),
-            onContactSelectedListener);
+            onContactSelectedListener,
+            onContactCallClicked);
       case UNKNOWN_VIEW_TYPE:
       default:
         throw Assert.createIllegalStateFailException("Invalid view type: " + viewType);
@@ -113,7 +125,6 @@ final class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     ContactViewHolder contactViewHolder = (ContactViewHolder) viewHolder;
-    holderMap.put(contactViewHolder, position);
     cursor.moveToPosition(position);
     if (header != Header.NONE) {
       cursor.moveToPrevious();
@@ -135,11 +146,17 @@ final class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     String photoDescription = context.getString(R.string.description_quick_contact_for, name);
     contactViewHolder.getPhoto().setContentDescription(photoDescription);
 
-    // Always show the view holder's header if it's the first item in the list. Otherwise, compare
-    // it to the previous element and only show the anchored header if the row elements fall into
-    // the same sublists.
-    boolean showHeader = position == 0 || !header.equals(getHeaderString(position - 1));
-    contactViewHolder.bind(header, name, contactUri, getContactId(cursor), showHeader);
+    boolean previousInGroup = position > 0 && header.equals(getHeaderString(position - 1));
+    boolean nextInGroup =
+        position + 1 < getItemCount() && header.equals(getHeaderString(position + 1));
+    contactViewHolder.bind(
+        header,
+        name,
+        contactUri,
+        getContactId(cursor),
+        CardPosition.of(previousInGroup, nextInGroup),
+        cursor.getInt(ContactsCursorLoader.CONTACT_HAS_PHONE_NUMBER) == 1,
+        contactUri.equals(selectedContact));
   }
 
   /**
@@ -152,24 +169,6 @@ final class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
       return ADD_CONTACT_VIEW_TYPE;
     }
     return CONTACT_VIEW_TYPE;
-  }
-
-  @Override
-  public void onViewRecycled(RecyclerView.ViewHolder contactViewHolder) {
-    super.onViewRecycled(contactViewHolder);
-    if (contactViewHolder instanceof ContactViewHolder) {
-      holderMap.remove(contactViewHolder);
-    }
-  }
-
-  void refreshHeaders() {
-    for (ContactViewHolder holder : holderMap.keySet()) {
-      int position = holderMap.get(holder);
-      boolean showHeader =
-          position == 0 || !getHeaderString(position).equals(getHeaderString(position - 1));
-      int visibility = showHeader ? View.VISIBLE : View.INVISIBLE;
-      holder.getHeaderView().setVisibility(visibility);
-    }
   }
 
   @Override

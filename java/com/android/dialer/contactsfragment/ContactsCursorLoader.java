@@ -34,6 +34,7 @@ final class ContactsCursorLoader extends CursorLoader {
   public static final int CONTACT_PHOTO_ID = 2;
   public static final int CONTACT_PHOTO_URI = 3;
   public static final int CONTACT_LOOKUP_KEY = 4;
+  public static final int CONTACT_HAS_PHONE_NUMBER = 5;
 
   public static final String[] CONTACTS_PROJECTION_DISPLAY_NAME_PRIMARY =
       new String[] {
@@ -42,6 +43,7 @@ final class ContactsCursorLoader extends CursorLoader {
         Contacts.PHOTO_ID, // 2
         Contacts.PHOTO_THUMBNAIL_URI, // 3
         Contacts.LOOKUP_KEY, // 4
+        Contacts.HAS_PHONE_NUMBER,
       };
 
   public static final String[] CONTACTS_PROJECTION_DISPLAY_NAME_ALTERNATIVE =
@@ -51,6 +53,7 @@ final class ContactsCursorLoader extends CursorLoader {
         Contacts.PHOTO_ID, // 2
         Contacts.PHOTO_THUMBNAIL_URI, // 3
         Contacts.LOOKUP_KEY, // 4
+        Contacts.HAS_PHONE_NUMBER,
       };
 
   ContactsCursorLoader(Context context, boolean hasPhoneNumbers) {

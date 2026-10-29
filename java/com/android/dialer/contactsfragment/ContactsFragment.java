@@ -30,7 +30,6 @@ import android.view.View;
 import android.view.View.OnScrollChangeListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -43,9 +42,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.dialer.R;
+import com.android.dialer.callintent.CallInitiationType;
 import com.android.dialer.common.Assert;
 import com.android.dialer.common.FragmentUtils;
 import com.android.dialer.common.LogUtil;
+import com.android.dialer.common.concurrent.DialerExecutorComponent;
+import com.android.dialer.common.concurrent.SupportUiListener;
+import com.android.dialer.speeddial.ContactCalls;
+import com.android.dialer.speeddial.loader.SpeedDialUiItem;
+import com.android.dialer.speeddial.loader.UiItemLoaderComponent;
 import com.android.dialer.util.DialerUtils;
 import com.android.dialer.util.IntentUtil;
 import com.android.dialer.util.PermissionsUtil;
@@ -55,6 +60,7 @@ import com.android.dialer.widget.EmptyContentView.OnEmptyViewActionButtonClicked
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
+import java.util.Optional;
 
 /** Fragment containing a list of all contacts. */
 public class ContactsFragment extends Fragment
@@ -70,6 +76,9 @@ public class ContactsFragment extends Fragment
     /** Header that allows the user to add a new contact. */
     int ADD_CONTACT = 1;
   }
+
+  public static final String SELECTED_CONTACT_REQUEST = "selected_contact";
+  public static final String SELECTED_CONTACT_URI = "selected_contact_uri";
 
   private static final String EXTRA_HEADER = "extra_header";
   private static final String EXTRA_HAS_PHONE_NUMBERS = "extra_has_phone_numbers";
@@ -97,10 +106,10 @@ public class ContactsFragment extends Fragment
           });
 
   private FastScroller fastScroller;
-  private TextView anchoredHeader;
   private RecyclerView recyclerView;
   private LinearLayoutManager manager;
   private ContactsAdapter adapter;
+  private SupportUiListener<Optional<SpeedDialUiItem>> contactCallListener;
   private EmptyContentView emptyContentView;
 
   private @Header int header;
@@ -169,11 +178,16 @@ public class ContactsFragment extends Fragment
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_contacts, container, false);
     fastScroller = view.findViewById(R.id.fast_scroller);
-    anchoredHeader = view.findViewById(R.id.header);
     recyclerView = view.findViewById(R.id.recycler_view);
+    contactCallListener =
+        DialerExecutorComponent.get(requireContext())
+            .createUiListener(getChildFragmentManager(), "contact_call_loader");
     adapter =
         new ContactsAdapter(
-            getContext(), header, FragmentUtils.getParent(this, OnContactSelectedListener.class));
+            getContext(),
+            header,
+            FragmentUtils.getParent(this, OnContactSelectedListener.class),
+            this::callContact);
     recyclerView.setAdapter(adapter);
     manager =
         new LinearLayoutManager(getContext()) {
@@ -205,6 +219,20 @@ public class ContactsFragment extends Fragment
     }
 
     return view;
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    getParentFragmentManager()
+        .setFragmentResultListener(
+            SELECTED_CONTACT_REQUEST,
+            getViewLifecycleOwner(),
+            (requestKey, result) -> {
+              if (adapter != null) {
+                adapter.setSelectedContact(result.getParcelable(SELECTED_CONTACT_URI, Uri.class));
+              }
+            });
   }
 
   @Override
@@ -249,27 +277,9 @@ public class ContactsFragment extends Fragment
     adapter = null;
   }
 
-  /*
-   * When our recycler view updates, we need to ensure that our row headers and anchored header
-   * are in the correct state.
-   *
-   * The general rule is, when the row headers are shown, our anchored header is hidden. When the
-   * recycler view is scrolling through a sublist that has more than one element, we want to show
-   * out anchored header, to create the illusion that our row header has been anchored. In all
-   * other situations, we want to hide the anchor because that means we are transitioning between
-   * two sublists.
-   */
   @Override
   public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
     fastScroller.updateContainerAndScrollBarPosition(recyclerView);
-    int firstVisibleItem = manager.findFirstVisibleItemPosition();
-    int firstCompletelyVisible = manager.findFirstCompletelyVisibleItemPosition();
-    if (firstCompletelyVisible == RecyclerView.NO_POSITION) {
-      // No items are visible, so there are no headers to update.
-      return;
-    }
-    String anchoredHeaderString = adapter.getHeaderString(firstCompletelyVisible);
-
     OnContactsListScrolledListener listener =
         FragmentUtils.getParent(this, OnContactsListScrolledListener.class);
     if (listener != null) {
@@ -277,29 +287,6 @@ public class ContactsFragment extends Fragment
           recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_DRAGGING
               || fastScroller.isDragStarted());
     }
-
-    // If the user swipes to the top of the list very quickly, there is some strange behavior
-    // between this method updating headers and adapter#onBindViewHolder updating headers.
-    // To overcome this, we refresh the headers to ensure they are correct.
-    if (firstVisibleItem == firstCompletelyVisible && firstVisibleItem == 0) {
-      adapter.refreshHeaders();
-      anchoredHeader.setVisibility(View.INVISIBLE);
-    } else if (firstVisibleItem != 0) { // skip the add contact row
-      if (adapter.getHeaderString(firstVisibleItem).equals(anchoredHeaderString)) {
-        anchoredHeader.setText(anchoredHeaderString);
-        anchoredHeader.setVisibility(View.VISIBLE);
-        getContactHolder(firstVisibleItem).getHeaderView().setVisibility(View.INVISIBLE);
-        getContactHolder(firstCompletelyVisible).getHeaderView().setVisibility(View.INVISIBLE);
-      } else {
-        anchoredHeader.setVisibility(View.INVISIBLE);
-        getContactHolder(firstVisibleItem).getHeaderView().setVisibility(View.VISIBLE);
-        getContactHolder(firstCompletelyVisible).getHeaderView().setVisibility(View.VISIBLE);
-      }
-    }
-  }
-
-  private ContactViewHolder getContactHolder(int position) {
-    return ((ContactViewHolder) recyclerView.findViewHolderForAdapterPosition(position));
   }
 
   @Override
@@ -333,6 +320,21 @@ public class ContactsFragment extends Fragment
     if (listener != null) {
       listener.onContactsFragmentHiddenChanged(hidden);
     }
+  }
+
+  private void callContact(long contactId) {
+    contactCallListener.listen(
+        requireContext(),
+        UiItemLoaderComponent.get(requireContext()).speedDialUiItemMutator().loadContact(contactId),
+        item ->
+            item.ifPresent(
+                contact ->
+                    ContactCalls.call(
+                        requireContext(),
+                        contact,
+                        getChildFragmentManager(),
+                        CallInitiationType.Type.QUICK_CONTACTS)),
+        throwable -> LogUtil.e("ContactsFragment.callContact", "failed to load contact", throwable));
   }
 
   private void loadContacts() {

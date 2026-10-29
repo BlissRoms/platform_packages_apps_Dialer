@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: The BlissRoms Project
+  SPDX-License-Identifier: Apache-2.0
+-->
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialpad_side_pane_bg"
+    android:clipToOutline="true"
+    android:fillViewport="true">
+
+<LinearLayout
+    android:id="@+id/contact_profile_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="invisible">
+
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/contact_profile_banner"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/contact_profile_banner_height"
+        android:background="?attr/dialerColorSurfaceMuted"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:id="@+id/contact_profile_top_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/contact_profile_top_row_padding"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+      <ImageButton
+          android:id="@+id/contact_profile_back"
+          style="@style/ContactProfile.TopButton"
+          android:contentDescription="@string/settings_back_content_description"
+          android:src="@drawable/quantum_ic_arrow_back_vd_theme_24"/>
+
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="0dp"
+          android:layout_weight="1"/>
+
+      <ImageButton
+          android:id="@+id/contact_profile_star"
+          style="@style/ContactProfile.TopButton"
+          android:contentDescription="@string/contact_profile_star"
+          android:src="@drawable/quantum_ic_star_outline_vd_theme_24"/>
+
+      <ImageButton
+          android:id="@+id/contact_profile_edit"
+          style="@style/ContactProfile.TopButton"
+          android:layout_marginStart="@dimen/contact_profile_top_button_gap"
+          android:contentDescription="@string/contact_profile_edit"
+          android:src="@drawable/quantum_ic_edit_vd_theme_24"/>
+
+      <ImageButton
+          android:id="@+id/contact_profile_share"
+          style="@style/ContactProfile.TopButton"
+          android:layout_marginStart="@dimen/contact_profile_top_button_gap"
+          android:contentDescription="@string/contact_profile_share"
+          android:src="@drawable/ic_contact_profile_share"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/contact_profile_photo_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/contact_profile_photo_top_margin">
+        <QuickContactBadge
+            android:id="@+id/contact_profile_photo"
+            android:layout_width="@dimen/contact_profile_avatar_size"
+            android:layout_height="@dimen/contact_profile_avatar_size"
+            android:layout_gravity="center_horizontal"
+            android:clickable="false"
+            android:focusable="false"/>
+    </FrameLayout>
+  </FrameLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/dialer_space_page_inset"
+      android:paddingEnd="@dimen/dialer_space_page_inset"
+      android:paddingBottom="@dimen/dialer_space_page_inset"
+      android:gravity="center_horizontal"
+      android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/contact_profile_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialer_space_section_gap"
+        android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textAppearance="@style/TextAppearance.Dialer.Display.Caller"/>
+
+    <LinearLayout
+        android:id="@+id/contact_profile_actions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialer_space_section_gap"
+        android:orientation="horizontal">
+
+      <ImageButton
+          android:id="@+id/contact_profile_call"
+          style="@style/ContactProfile.ActionButton"
+          android:layout_marginStart="0dp"
+          android:contentDescription="@string/contact_profile_call"
+          android:src="@drawable/quantum_ic_phone_in_talk_vd_theme_24"/>
+
+      <ImageButton
+          android:id="@+id/contact_profile_message"
+          style="@style/ContactProfile.ActionButton"
+          android:contentDescription="@string/contact_profile_message"
+          android:src="@drawable/quantum_ic_message_vd_theme_24"/>
+
+      <ImageButton
+          android:id="@+id/contact_profile_video"
+          style="@style/ContactProfile.ActionButton"
+          android:contentDescription="@string/contact_profile_video"
+          android:src="@drawable/quantum_ic_videocam_vd_theme_24"/>
+
+      <ImageButton
+          android:id="@+id/contact_profile_email"
+          style="@style/ContactProfile.ActionButton"
+          android:contentDescription="@string/contact_profile_email"
+          android:src="@drawable/ic_contact_profile_email"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/contact_profile_recent_label"
+        style="@style/ContactProfile.SectionLabel"
+        android:text="@string/contact_profile_recent_activity"/>
+
+    <LinearLayout
+        android:id="@+id/contact_profile_recent_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+    <TextView
+        style="@style/ContactProfile.SectionLabel"
+        android:text="@string/contact_profile_settings"/>
+
+    <TextView
+        android:id="@+id/contact_profile_open"
+        style="@style/ContactProfile.SettingRow.Neutral"
+        android:layout_marginBottom="@dimen/contact_profile_row_gap"
+        android:background="@drawable/dialer_card_top"
+        android:drawableStart="@drawable/quantum_ic_person_vd_theme_24"
+        android:text="@string/contact_profile_open_in_contacts"/>
+
+    <TextView
+        android:id="@+id/contact_profile_block"
+        style="@style/ContactProfile.SettingRow"
+        android:layout_marginBottom="@dimen/contact_profile_row_gap"
+        android:background="@drawable/dialer_card_middle"
+        android:drawableStart="@drawable/quantum_ic_block_vd_theme_24"
+        android:text="@string/contact_profile_block"/>
+
+    <TextView
+        android:id="@+id/contact_profile_delete"
+        style="@style/ContactProfile.SettingRow"
+        android:background="@drawable/dialer_card_bottom"
+        android:drawableStart="@drawable/quantum_ic_delete_vd_theme_24"
+        android:text="@string/contact_profile_delete"/>
+  </LinearLayout>
+</LinearLayout>
+</androidx.core.widget.NestedScrollView>

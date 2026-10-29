@@ -299,6 +299,10 @@ public class MainSearchController implements SearchBarListener {
                 : R.string.dialpad_button_content_description));
   }
 
+  public void addOnSearchShowListener(OnSearchShowListener listener) {
+    onSearchShowListenerList.add(listener);
+  }
+
   public void toggleDialpad() {
     if (isSidePane() && isDialpadVisible()) {
       closeSearch(/* animate= */ true);

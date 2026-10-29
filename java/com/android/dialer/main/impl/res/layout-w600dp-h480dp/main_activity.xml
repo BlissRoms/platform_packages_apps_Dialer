@@ -98,4 +98,15 @@
       android:layout_marginEnd="@dimen/dialer_space_page_inset"
       android:layout_marginBottom="@dimen/dialer_space_page_inset"
       android:visibility="gone"/>
+
+  <FrameLayout
+      android:id="@+id/contact_profile_container"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:layout_weight="2"
+      android:layout_marginStart="@dimen/dialer_space_control_gap"
+      android:layout_marginTop="@dimen/dialer_space_page_inset"
+      android:layout_marginEnd="@dimen/dialer_space_page_inset"
+      android:layout_marginBottom="@dimen/dialer_space_page_inset"
+      android:visibility="gone"/>
 </LinearLayout>
