@@ -128,6 +128,7 @@ public class CallStatsFragment extends Fragment implements
 
     mSumHeaderView = view.findViewById(R.id.sum_header);
     mDateFilterView = view.findViewById(R.id.date_filter);
+    new FilterSpinnerHelper(view, false, this);
 
     return view;
   }

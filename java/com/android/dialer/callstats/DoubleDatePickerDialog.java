@@ -164,7 +164,7 @@ public class DoubleDatePickerDialog extends AlertDialog
         return v;
       }
     };
-    quickSelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    quickSelAdapter.setDropDownViewResource(R.layout.call_log_filter_spinner_item);
 
     mQuickSelSpinner = view.findViewById(R.id.date_quick_selection);
     mQuickSelSpinner.setOnItemSelectedListener(this);

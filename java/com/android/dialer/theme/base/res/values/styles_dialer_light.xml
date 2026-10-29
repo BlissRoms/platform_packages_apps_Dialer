@@ -142,6 +142,10 @@
     <item name="thumbTint">@color/dialer_background_color</item>
   </style>
 
+  <style name="Widget.Dialer.Spinner" parent="Widget.AppCompat.Spinner">
+    <item name="android:popupBackground">@drawable/popup_background</item>
+  </style>
+
   <style name="Dialer.Settings.DropDownSpinnerStyle" parent="@android:style/Widget.Material.Spinner">
     <item name="android:popupBackground">@drawable/popup_background</item>
   </style>

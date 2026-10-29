@@ -19,22 +19,95 @@
     android:id="@+id/calllog_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
+    android:background="?attr/dialerColorCanvas"
     android:orientation="vertical">
-  <com.android.contacts.common.list.ViewPagerTabs
-      android:id="@+id/viewpager_header"
-      style="@style/DialtactsActionBarTabTextStyle"
+
+  <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="@dimen/tab_height"
-      android:layout_gravity="top"
-      android:elevation="@dimen/tab_elevation"
-      android:orientation="horizontal"
-      android:textAllCaps="false"/>
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/dialer_space_page_inset"
+      android:paddingTop="@dimen/dialer_space_page_inset"
+      android:paddingEnd="@dimen/dialer_space_page_inset"
+      android:paddingBottom="@dimen/dialer_space_control_gap"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/header_back"
+        android:layout_width="@dimen/dialer_touch_target_min_size"
+        android:layout_height="@dimen/dialer_touch_target_min_size"
+        android:background="@drawable/settings_back_circle"
+        android:contentDescription="@string/settings_back_content_description"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerInside"
+        android:src="@drawable/quantum_ic_arrow_back_vd_theme_24"
+        android:tint="?attr/dialerColorTextPrimary"/>
+
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="17dp"
+        android:layout_marginEnd="@dimen/dialer_space_control_gap"
+        android:text="@string/call_log_activity_title"
+        android:textAppearance="@style/TextAppearance.Dialer.Heading.Page"/>
+
+    <ImageButton
+        android:id="@+id/header_overflow"
+        android:layout_width="@dimen/dialer_touch_target_min_size"
+        android:layout_height="@dimen/dialer_touch_target_min_size"
+        android:background="@drawable/settings_back_circle"
+        android:contentDescription="@string/action_menu_overflow_description"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerInside"
+        android:src="@drawable/quantum_ic_more_vert_vd_theme_24"
+        android:tint="?attr/dialerColorTextPrimary"/>
+  </LinearLayout>
+
+  <HorizontalScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/dialer_space_page_inset"
+      android:paddingEnd="@dimen/dialer_space_page_inset"
+      android:clipToPadding="false"
+      android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dialer_space_control_gap"
+        android:paddingBottom="@dimen/dialer_space_control_gap"
+        android:orientation="horizontal">
+
+      <TextView
+          android:id="@+id/history_chip_all"
+          style="@style/Recents.Chip"
+          android:text="@string/call_log_all_title"/>
+
+      <TextView
+          android:id="@+id/history_chip_missed"
+          style="@style/Recents.Chip"
+          android:text="@string/call_log_missed_title"/>
+
+      <TextView
+          android:id="@+id/history_chip_stats"
+          style="@style/Recents.Chip"
+          android:text="@string/call_log_stats_title"/>
+
+      <TextView
+          android:id="@+id/history_chip_voicemail"
+          style="@style/Recents.Chip"
+          android:text="@string/voicemail"/>
+    </LinearLayout>
+  </HorizontalScrollView>
+
   <androidx.viewpager.widget.ViewPager
       android:id="@+id/call_log_pager"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="1"/>
+
   <RelativeLayout
       android:id="@+id/floating_action_button_container"
       android:layout_width="0dp"

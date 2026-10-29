@@ -46,6 +46,7 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.android.dialer.R;
+import com.android.dialer.app.calllog.CallLogActivity;
 import com.android.dialer.callrecord.impl.CallRecorderService;
 import com.android.dialer.common.LogUtil;
 import com.android.dialer.compat.telephony.TelephonyManagerCompat;
@@ -161,6 +162,13 @@ public class SettingsRedesignFragment extends Fragment {
 
     // ---- Call settings ----
     addSection(inflater, R.string.settings_section_call);
+    addNavRow(
+        inflater,
+        R.drawable.quantum_ic_history_vd_theme_24,
+        getString(R.string.settings_call_history_title),
+        getString(R.string.settings_call_history_description),
+        null,
+        () -> openIntent(new Intent(requireContext(), CallLogActivity.class)));
     addNavRow(
         inflater,
         R.drawable.quantum_ic_message_vd_theme_24,

@@ -160,7 +160,7 @@
         <activity
             android:name="com.android.dialer.app.calllog.CallLogActivity"
             android:label="@string/call_log_activity_title"
-            android:theme="@style/DialtactsTheme" />
+            android:theme="@style/CallHistoryTheme" />
 
         <activity
             android:name="com.android.dialer.app.AccountSelectionActivity"

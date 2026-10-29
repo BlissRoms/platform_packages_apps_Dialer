@@ -45,6 +45,8 @@
     <string name="settings_call_recording_description">Record calls automatically while connected</string>
     <string name="settings_accessibility_description">TTY and hearing aid options</string>
     <string name="settings_voicemail_description">Notifications, greeting and storage</string>
+    <string name="settings_call_history_title">Call history &amp; statistics</string>
+    <string name="settings_call_history_description">All calls and call time per contact</string>
     <string name="settings_helplines_description">Important numbers for your region</string>
     <string name="settings_other_description">Post call snackbar and proximity sensor</string>
 

@@ -15,6 +15,12 @@
   ~ limitations under the License
   -->
 <resources>
+  <style name="CallHistoryTheme" parent="DialtactsTheme">
+    <item name="android:windowAnimationStyle">@style/Animation.Dialer.Settings</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+  </style>
+
   <style name="DialtactsTheme" parent="Dialer.ThemeBase.ActionBar">
     <item name="android:windowLightNavigationBar">true</item>
     <item name="android:navigationBarColor">?android:attr/windowBackground</item>

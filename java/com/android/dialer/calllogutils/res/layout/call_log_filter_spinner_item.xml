@@ -27,6 +27,7 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@android:id/text1"
   style="@style/Dialer.TextAppearance.Primary"
   android:layout_width="match_parent"
   android:layout_height="?android:attr/listPreferredItemHeightSmall"

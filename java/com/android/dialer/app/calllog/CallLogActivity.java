@@ -20,18 +20,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.CallLog.Calls;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.TextView;
 
-import androidx.appcompat.app.ActionBar;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.contacts.common.list.ViewPagerTabs;
 import com.android.dialer.R;
 import com.android.dialer.callstats.CallStatsFragment;
 import com.android.dialer.callstats.DoubleDatePickerDialog;
@@ -50,7 +50,12 @@ public class CallLogActivity extends TransactionSafeActivity implements
   private static final int TAB_INDEX_VOICEMAIL = 3;
   private static final int TAB_INDEX_COUNT = 4;
   private ViewPager viewPager;
-  private ViewPagerTabs viewPagerTabs;
+  private static final int[] TAB_CHIP_IDS = {
+    R.id.history_chip_all, R.id.history_chip_missed, R.id.history_chip_stats,
+    R.id.history_chip_voicemail
+  };
+
+  private final TextView[] tabChips = new TextView[TAB_CHIP_IDS.length];
   private ViewPagerAdapter viewPagerAdapter;
   private CallLogFragment allCallsFragment;
   private CallLogFragment missedCallsFragment;
@@ -67,11 +72,8 @@ public class CallLogActivity extends TransactionSafeActivity implements
     setContentView(R.layout.call_log_activity);
     getWindow().setBackgroundDrawable(null);
 
-    final ActionBar actionBar = getSupportActionBar();
-    actionBar.setDisplayShowHomeEnabled(true);
-    actionBar.setDisplayHomeAsUpEnabled(true);
-    actionBar.setDisplayShowTitleEnabled(true);
-    actionBar.setElevation(0);
+    findViewById(R.id.header_back).setOnClickListener(v -> navigateHome());
+    findViewById(R.id.header_overflow).setOnClickListener(this::showOverflowMenu);
 
     int startingTab = TAB_INDEX_ALL;
     final Intent intent = getIntent();
@@ -96,10 +98,14 @@ public class CallLogActivity extends TransactionSafeActivity implements
     viewPager.setOffscreenPageLimit(1);
     viewPager.setOnPageChangeListener(this);
 
-    viewPagerTabs = findViewById(R.id.viewpager_header);
-
-    viewPagerTabs.setViewPager(viewPager);
+    for (int tab = 0; tab < TAB_CHIP_IDS.length; tab++) {
+      int tabIndex = tab;
+      tabChips[tab] = findViewById(TAB_CHIP_IDS[tab]);
+      tabChips[tab].setOnClickListener(
+          v -> viewPager.setCurrentItem(getRtlPosition(tabIndex)));
+    }
     viewPager.setCurrentItem(startingTab);
+    updateTabChips(getRtlPosition(viewPager.getCurrentItem()));
 
     setupInsets(findViewById(R.id.calllog_frame));
   }
@@ -126,58 +132,73 @@ public class CallLogActivity extends TransactionSafeActivity implements
     super.onStop();
   }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    final MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.call_log_options, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-    final MenuItem itemDeleteAll = menu.findItem(R.id.delete_all);
+  private void showOverflowMenu(View anchor) {
+    PopupMenu popupMenu = new PopupMenu(this, anchor);
+    popupMenu.inflate(R.menu.call_log_options);
+    MenuItem itemDeleteAll = popupMenu.getMenu().findItem(R.id.delete_all);
     if (allCallsFragment != null && itemDeleteAll != null) {
-      // If onPrepareOptionsMenu is called before fragments are loaded, don't do anything.
-      final CallLogAdapter adapter = allCallsFragment.getAdapter();
+      CallLogAdapter adapter = allCallsFragment.getAdapter();
       itemDeleteAll.setVisible(adapter != null && !adapter.isEmpty());
     }
-    return true;
+    Fragment pageFragment = currentPageFragment();
+    if (pageFragment != null) {
+      pageFragment.onCreateOptionsMenu(popupMenu.getMenu(), popupMenu.getMenuInflater());
+      pageFragment.onPrepareOptionsMenu(popupMenu.getMenu());
+    }
+    popupMenu.setOnMenuItemClickListener(
+        item -> {
+          if (!isSafeToCommitTransactions()) {
+            return true;
+          }
+          if (item.getItemId() == R.id.delete_all) {
+            ClearCallLogDialog.show(getSupportFragmentManager());
+            return true;
+          }
+          return pageFragment != null && pageFragment.onOptionsItemSelected(item);
+        });
+    popupMenu.show();
+  }
+
+  @Nullable
+  private Fragment currentPageFragment() {
+    switch (getRtlPosition(viewPager.getCurrentItem())) {
+      case TAB_INDEX_ALL:
+        return allCallsFragment;
+      case TAB_INDEX_MISSED:
+        return missedCallsFragment;
+      case TAB_INDEX_STATS:
+        return statsFragment;
+      case TAB_INDEX_VOICEMAIL:
+        return voicemailFragment;
+      default:
+        return null;
+    }
+  }
+
+  private void navigateHome() {
+    final Intent intent = new Intent("com.android.dialer.main.impl.MAIN");
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    startActivity(intent);
+  }
+
+  private void updateTabChips(int selectedTab) {
+    for (int tab = 0; tab < tabChips.length; tab++) {
+      tabChips[tab].setSelected(tab == selectedTab);
+    }
   }
 
   @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    if (!isSafeToCommitTransactions()) {
-      return true;
-    }
-
-    if (item.getItemId() == android.R.id.home) {
-      final Intent intent = new Intent("com.android.dialer.main.impl.MAIN");
-      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-      startActivity(intent);
-      return true;
-    } else if (item.getItemId() == R.id.delete_all) {
-      ClearCallLogDialog.show(getSupportFragmentManager());
-      return true;
-    }
-    return super.onOptionsItemSelected(item);
-  }
-
-  @Override
-  public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    viewPagerTabs.onPageScrolled(position, positionOffset, positionOffsetPixels);
-  }
+  public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
   @Override
   public void onPageSelected(int position) {
     updateMissedCalls(position);
     selectedPageIndex = position;
-    viewPagerTabs.onPageSelected(position);
+    updateTabChips(getRtlPosition(position));
   }
 
   @Override
-  public void onPageScrollStateChanged(int state) {
-    viewPagerTabs.onPageScrollStateChanged(state);
-  }
+  public void onPageScrollStateChanged(int state) {}
 
   @Override
   public void onDateSet(long from, long to) {

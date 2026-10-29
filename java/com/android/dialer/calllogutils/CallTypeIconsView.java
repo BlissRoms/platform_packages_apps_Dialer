@@ -18,6 +18,7 @@
 package com.android.dialer.calllogutils;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -74,10 +75,11 @@ public class CallTypeIconsView extends View {
         context.getTheme().obtainStyledAttributes(attrs, R.styleable.CallTypeIconsView, 0, 0);
     useLargeIcons = typedArray.getBoolean(R.styleable.CallTypeIconsView_useLargeIcons, false);
     typedArray.recycle();
-    if (resources == null) {
+    int themeKey = Resources.themeKey(context);
+    if (resources == null || resources.themeKey != themeKey) {
       resources = new Resources(context, false);
     }
-    if (largeResources == null && useLargeIcons) {
+    if (useLargeIcons && (largeResources == null || largeResources.themeKey != themeKey)) {
       largeResources = new Resources(context, true);
     }
   }
@@ -236,6 +238,14 @@ public class CallTypeIconsView extends View {
 
   private static class Resources {
 
+    final int themeKey;
+
+    static int themeKey(Context context) {
+      int nightMode =
+          context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+      return 31 * context.getColor(R.color.answered_incoming_call) + nightMode;
+    }
+
     // Drawable representing an incoming answered call.
     public final Drawable incoming;
 
@@ -282,6 +292,7 @@ public class CallTypeIconsView extends View {
     public Resources(Context context, boolean largeIcons) {
       final android.content.res.Resources r = context.getResources();
       android.content.res.Resources.Theme contextTheme = context.getTheme();
+      themeKey = themeKey(context);
 
       incoming = getBitmap(context, R.drawable.quantum_ic_call_received_vd_theme_24,
               r.getColor(R.color.answered_incoming_call, contextTheme), largeIcons);
@@ -293,7 +304,7 @@ public class CallTypeIconsView extends View {
       // Need to make a copy of the arrow drawable, otherwise the same instance colored
       // above will be recolored here.
       missed = getBitmap(context, R.drawable.quantum_ic_call_missed_vd_theme_24,
-              r.getColor(R.color.dialer_red, contextTheme), largeIcons);
+              r.getColor(R.color.missed_call, contextTheme), largeIcons);
 
       Theme theme = ThemeComponent.get(context).theme();
       int iconColor = theme.getColorIcon();

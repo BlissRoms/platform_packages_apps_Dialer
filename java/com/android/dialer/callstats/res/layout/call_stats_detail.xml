@@ -105,7 +105,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/ec_divider_top_bottom_margin"
         android:layout_marginBottom="@dimen/ec_divider_top_bottom_margin"
-        android:background="#12000000" />
+        android:background="?attr/dialerColorOutline" />
 
       <TextView
         android:id="@+id/call_detail_action_copy"
