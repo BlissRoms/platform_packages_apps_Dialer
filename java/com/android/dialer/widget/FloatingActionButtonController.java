@@ -31,6 +31,7 @@ import androidx.annotation.DrawableRes;
 
 import com.android.dialer.R;
 import com.android.dialer.common.Assert;
+import com.android.dialer.util.DialerUtils;
 
 /** Controls the movement and appearance of the dial action button. */
 public class FloatingActionButtonController {
@@ -91,8 +92,8 @@ public class FloatingActionButtonController {
   public void changeIcon(Context context, @DrawableRes int iconId, String description) {
     if (this.fabIconId != iconId) {
       fab.setImageResource(iconId);
-      fab.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(
-              android.R.color.white, context.getTheme())));
+      fab.setImageTintList(
+          ColorStateList.valueOf(DialerUtils.resolveColor(context, R.attr.dialerColorOnAccent)));
       this.fabIconId = iconId;
     }
     if (!fab.getContentDescription().equals(description)) {

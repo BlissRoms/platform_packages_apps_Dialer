@@ -43,7 +43,7 @@ import com.android.dialer.notification.NotificationChannelManager;
 import com.android.dialer.notification.NotificationManagerUtils;
 import com.android.dialer.phonenumbercache.ContactInfo;
 import com.android.dialer.telecom.TelecomUtil;
-import com.android.dialer.theme.base.ThemeComponent;
+import com.android.dialer.util.DialerUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -140,7 +140,9 @@ final class VisualVoicemailNotifier {
   private static NotificationCompat.Builder createNotificationBuilder(@NonNull Context context) {
     return new NotificationCompat.Builder(context)
         .setSmallIcon(android.R.drawable.stat_notify_voicemail)
-        .setColor(ThemeComponent.get(context).theme().getColorPrimary())
+        .setColor(
+            DialerUtils.resolveColor(
+                context.getApplicationContext(), R.attr.dialerColorAccent))
         .setGroup(GROUP_KEY)
         .setOnlyAlertOnce(true)
         .setAutoCancel(true);

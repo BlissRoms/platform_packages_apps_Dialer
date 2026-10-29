@@ -20,7 +20,7 @@
       android:layout_width="match_parent"
       android:layout_height="1dp"
       android:layout_gravity="bottom"
-      android:background="#D8D8D8"
+      android:background="?attr/dialerColorOutline"
       android:visibility="gone"/>
 
   <TextView

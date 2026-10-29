@@ -145,7 +145,7 @@
               android:layout_gravity="center_vertical"
               android:textColor="@color/recents_subtitle_text"
               android:textSize="13sp"
-              style="Dialer.TextAppearance.Secondary.Ellipsize"/>
+              style="@style/Dialer.TextAppearance.Secondary.Ellipsize"/>
 
           </LinearLayout>
 
@@ -156,7 +156,7 @@
             android:layout_marginTop="@dimen/call_log_call_account_margin_bottom"
             android:layout_marginEnd="@dimen/call_log_icon_margin"
             android:visibility="gone"
-            style="Dialer.TextAppearance.Secondary2.Ellipsize"/>
+            style="@style/Dialer.TextAppearance.Secondary2.Ellipsize"/>
 
         </LinearLayout>
 

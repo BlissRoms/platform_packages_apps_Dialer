@@ -15,7 +15,6 @@
   ~ limitations under the License
   -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:state_enabled="false"
-      android:color="#EEEEEE" />
-  <item android:color="#2A56C6" />
+  <item android:state_enabled="false" android:color="?attr/dialerColorIconMuted"/>
+  <item android:color="?attr/dialerColorOnAccent"/>
 </selector>

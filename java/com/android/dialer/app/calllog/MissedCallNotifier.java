@@ -64,7 +64,6 @@ import com.android.dialer.notification.missedcalls.MissedCallNotificationTags;
 import com.android.dialer.phonenumbercache.ContactInfo;
 import com.android.dialer.phonenumberutil.PhoneNumberHelper;
 import com.android.dialer.precall.PreCall;
-import com.android.dialer.theme.base.ThemeComponent;
 import com.android.dialer.util.DialerUtils;
 import com.android.dialer.util.IntentUtil;
 
@@ -371,7 +370,9 @@ public class MissedCallNotifier implements Worker<Pair<Integer, String>, Void> {
     return new Notification.Builder(context, NotificationChannelId.MISSED_CALL)
         .setGroup(MissedCallConstants.GROUP_KEY)
         .setSmallIcon(android.R.drawable.stat_notify_missed_call)
-        .setColor(ThemeComponent.get(context).theme().getColorPrimary())
+        .setColor(
+            DialerUtils.resolveColor(
+                context.getApplicationContext(), R.attr.dialerColorAccent))
         .setAutoCancel(true)
         .setOnlyAlertOnce(true)
         .setShowWhen(true)

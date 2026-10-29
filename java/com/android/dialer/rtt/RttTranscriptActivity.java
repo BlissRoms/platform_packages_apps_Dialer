@@ -33,6 +33,7 @@ import com.android.dialer.common.concurrent.DialerExecutorComponent;
 import com.android.dialer.common.concurrent.SupportUiListener;
 import com.android.dialer.glidephotomanager.PhotoInfo;
 import com.android.dialer.protos.ProtoParsers;
+import com.android.dialer.util.DialerUtils;
 import com.android.dialer.widget.DialerToolbar;
 
 /** Activity holds RTT transcript. */
@@ -61,8 +62,8 @@ public class RttTranscriptActivity extends BaseActivity {
     setContentView(R.layout.activity_rtt_transcript);
     setupInsets(findViewById(R.id.main_layout));
     toolbar = findViewById(R.id.toolbar);
-    toolbar.setBackgroundColor(getColor(R.color.rtt_transcript_primary_color));
-    getWindow().setStatusBarColor(getColor(R.color.rtt_transcript_primary_color_dark));
+    toolbar.setBackgroundColor(DialerUtils.resolveColor(this, R.attr.dialerColorCanvas));
+    getWindow().setStatusBarColor(DialerUtils.resolveColor(this, R.attr.dialerColorCanvas));
 
     RecyclerView recyclerView = findViewById(R.id.rtt_recycler_view);
     LinearLayoutManager layoutManager = new LinearLayoutManager(this);

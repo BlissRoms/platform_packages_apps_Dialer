@@ -79,6 +79,7 @@
 
   <!-- TODO(a bug): investigate making this style's parent Dialer.ThemeBase.NoActionBar -->
   <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.NoActionBar">
+    <item name="alertDialogTheme">@style/Dialer.AlertDialog</item>
     <item name="dialerColorCanvas">@color/dialer_brand_canvas</item>
     <item name="dialerColorSurface">@color/dialer_brand_surface</item>
     <item name="dialerColorSurfaceMuted">@color/dialer_brand_surface_muted</item>

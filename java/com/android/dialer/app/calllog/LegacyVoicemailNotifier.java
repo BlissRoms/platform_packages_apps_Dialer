@@ -41,7 +41,7 @@ import com.android.dialer.notification.DialerNotificationManager;
 import com.android.dialer.notification.NotificationChannelManager;
 import com.android.dialer.phonenumberutil.PhoneNumberHelper;
 import com.android.dialer.telecom.TelecomUtil;
-import com.android.dialer.theme.base.ThemeComponent;
+import com.android.dialer.util.DialerUtils;
 import java.util.List;
 
 /** Shows a notification in the status bar for legacy vociemail. */
@@ -141,7 +141,9 @@ public final class LegacyVoicemailNotifier {
     Notification.Builder builder =
         new Notification.Builder(context)
             .setSmallIcon(resId)
-            .setColor(ThemeComponent.get(context).theme().getColorPrimary())
+            .setColor(
+                DialerUtils.resolveColor(
+                    context.getApplicationContext(), R.attr.dialerColorAccent))
             .setWhen(System.currentTimeMillis())
             .setContentTitle(notificationTitle)
             .setContentText(contentText)

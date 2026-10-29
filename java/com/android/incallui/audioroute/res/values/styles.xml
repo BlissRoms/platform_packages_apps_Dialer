@@ -21,14 +21,12 @@
     <item name="android:background">?android:attr/selectableItemBackground</item>
     <item name="android:drawablePadding">24dp</item>
     <item name="android:gravity">center_vertical</item>
-    <item name="android:textAppearance">
-      @style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large
-    </item>
-    <item name="android:textColor">?android:attr/textColorSecondary</item>
-    <item name="android:drawableTint">?android:attr/textColorSecondary</item>
+    <item name="android:textAppearance">@style/TextAppearance.Dialer.Body.Navigation</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
+    <item name="android:drawableTint">?attr/dialerColorIconMuted</item>
   </style>
 
-  <style name="TransparentBottomSheetDialogTheme" parent="Theme.AppCompat.Light">
+  <style name="TransparentBottomSheetDialogTheme" parent="Theme.AppCompat.DayNight.Dialog">
     <item name="android:background">@android:color/transparent</item>
     <item name="android:windowBackground">@android:color/transparent</item>
     <item name="android:statusBarColor">@android:color/transparent</item>

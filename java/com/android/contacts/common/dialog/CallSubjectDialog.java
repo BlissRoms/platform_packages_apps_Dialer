@@ -53,6 +53,7 @@ import com.android.dialer.common.LogUtil;
 import com.android.dialer.contactphoto.ContactPhotoManager;
 import com.android.dialer.lettertile.LetterTileDrawable;
 import com.android.dialer.precall.PreCall;
+import com.android.dialer.util.DialerUtils;
 import com.android.dialer.util.ViewUtil;
 
 import java.nio.charset.Charset;
@@ -358,10 +359,10 @@ public class CallSubjectDialog extends AppCompatActivity {
             String.valueOf(length), String.valueOf(mLimit)));
     if (length >= mLimit) {
       mCharacterLimitView.setTextColor(
-          getResources().getColor(R.color.call_subject_limit_exceeded, getTheme()));
+          DialerUtils.resolveColor(this, R.attr.dialerColorDestructiveText));
     } else {
       mCharacterLimitView.setTextColor(
-          getResources().getColor(R.color.dialer_secondary_text_color, getTheme()));
+          DialerUtils.resolveColor(this, R.attr.dialerColorTextSecondary));
     }
   }
 

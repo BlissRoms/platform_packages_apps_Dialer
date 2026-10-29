@@ -24,7 +24,7 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="@dimen/rtt_banner_height"
-      android:background="?android:attr/colorPrimaryDark"
+      android:background="?attr/dialerColorSurface"
       android:elevation="3dp"
       android:orientation="horizontal">
     <ImageButton
@@ -38,7 +38,7 @@
         android:contentDescription="@string/incall_content_description_end_call"
         android:scaleType="fitXY"
         android:src="@drawable/quantum_ic_call_end_vd_theme_24"
-        android:tint="@color/dialer_end_call_button_color" />
+        android:tint="?attr/dialerColorDestructive" />
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -90,9 +90,9 @@
       android:layout_height="48dp"
       android:paddingStart="16dp"
       android:paddingEnd="16dp"
-      android:background="@android:color/white"
+      android:background="?attr/dialerColorSurface"
       android:gravity="center_vertical"
-      android:textColor="#DD000000"
-      android:textSize="14sp"/>
+      android:textAppearance="@style/TextAppearance.Dialer.Body.Description"
+      android:textColor="?attr/dialerColorTextPrimary"/>
 
 </LinearLayout>

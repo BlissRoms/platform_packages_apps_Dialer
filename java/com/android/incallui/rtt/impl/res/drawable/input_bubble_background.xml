@@ -14,61 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License
   -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/pill_stroke">
-    <shape android:shape="rectangle">
-      <padding
-          android:bottom="0dp"
-          android:left="1dp"
-          android:right="1dp"
-          android:top="0dp"/>
-      <solid android:color="@android:color/transparent"/>
-      <corners android:radius="24dp"/>
-    </shape>
-  </item>
-  <item>
-    <shape android:shape="rectangle">
-      <padding
-          android:bottom="1dp"
-          android:left="1dp"
-          android:right="1dp"
-          android:top="1dp"/>
-      <solid android:color="#102C3558"/>
-      <corners android:radius="24dp"/>
-    </shape>
-  </item>
-  <item>
-    <shape android:shape="rectangle">
-      <padding
-          android:bottom="1dp"
-          android:left="1dp"
-          android:right="1dp"
-          android:top="0dp"/>
-      <solid android:color="#202C3558"/>
-      <corners android:radius="24dp"/>
-    </shape>
-  </item>
-  <item>
-    <shape android:shape="rectangle">
-      <padding
-          android:bottom="1dp"
-          android:left="1dp"
-          android:right="1dp"
-          android:top="1dp"/>
-      <solid android:color="#382C3558"/>
-      <corners android:radius="24dp"/>
-    </shape>
-  </item>
-  <item>
-    <shape android:shape="rectangle">
-      <padding
-          android:bottom="1dp"
-          android:left="0dp"
-          android:right="0dp"
-          android:top="0dp"/>
-      <solid android:color="#582C3558"/>
-      <corners android:radius="24dp"/>
-    </shape>
-  </item>
-  <item android:drawable="@drawable/pill_background"/>
-</layer-list>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+  <solid android:color="?attr/dialerColorSurface"/>
+  <stroke
+      android:width="1dp"
+      android:color="?attr/dialerColorOutline"/>
+  <corners android:radius="9999dp"/>
+</shape>

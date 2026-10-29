@@ -39,7 +39,7 @@
     <item name="android:layout_marginStart">8dp</item>
     <item name="android:layout_marginEnd">8dp</item>
     <item name="android:padding">8dp</item>
-    <item name="android:textColor">#757575</item>
+    <item name="android:textColor">?attr/dialerColorTextSecondary</item>
     <item name="android:fontFamily">@*android:string/config_headlineFontFamilyMedium</item>
     <item name="android:focusable">true</item>
     <item name="android:singleLine">true</item>
@@ -50,13 +50,13 @@
 
   <style name="RaisedErrorActionStyle" parent="Widget.AppCompat.Button.Colored">
     <item name="android:layout_width">wrap_content</item>
-    <item name="android:colorButtonNormal">?android:attr/colorPrimary</item>
+    <item name="android:colorButtonNormal">?attr/dialerColorAccent</item>
     <item name="android:textSize">14sp</item>
     <item name="android:layout_height">@dimen/call_log_action_height</item>
   </style>
 
   <style name="TosLinkStyle">
-    <item name="android:textColor">?android:attr/colorPrimary</item>
+    <item name="android:textColor">?attr/dialerColorAccentText</item>
     <item name="android:fontFamily">@*android:string/config_headlineFontFamilyMedium</item>
   </style>
 

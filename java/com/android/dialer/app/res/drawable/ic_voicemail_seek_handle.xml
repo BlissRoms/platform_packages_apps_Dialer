@@ -8,4 +8,4 @@
     android:shape="oval"
     android:width="12dp"
     android:height="12dp"
-    android:tint="?android:attr/colorPrimary" />
+    android:tint="?attr/dialerColorAccent" />

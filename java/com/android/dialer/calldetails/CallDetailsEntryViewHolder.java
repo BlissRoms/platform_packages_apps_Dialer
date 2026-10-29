@@ -48,6 +48,7 @@ import com.android.dialer.callrecord.CallRecordingDataStore;
 import com.android.dialer.callrecord.impl.CallRecorderService;
 import com.android.dialer.glidephotomanager.PhotoInfo;
 import com.android.dialer.oem.MotorolaUtils;
+import com.android.dialer.util.DialerUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -219,7 +220,7 @@ public class CallDetailsEntryViewHolder extends RecyclerView.ViewHolder {
         // call history, possibly due to 3rd party call log implementations (e.g. to
         // distinguish between rejected and missed calls). Instead of crashing, just
         // assume that all unknown call types are missed calls.
-        return ContextCompat.getColor(context, R.color.dialer_red);
+        return DialerUtils.resolveColor(context, R.attr.dialerColorDestructiveText);
     }
   }
 }

@@ -44,7 +44,7 @@
       android:layout_weight="1"
       android:text="@string/set_default_account"
       android:textAlignment="viewStart"
-      android:textAppearance="?android:attr/textAppearanceSmall"
+      android:textAppearance="@style/TextAppearance.Dialer.Body.Description"
       android:textColor="?android:attr/textColorSecondary"
       />
 

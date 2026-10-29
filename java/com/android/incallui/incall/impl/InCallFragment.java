@@ -17,6 +17,7 @@
 
 package com.android.incallui.incall.impl;
 
+import android.graphics.Color;
 import android.Manifest;
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
@@ -58,6 +59,7 @@ import com.android.dialer.common.FragmentUtils;
 import com.android.dialer.common.LogUtil;
 import com.android.dialer.multimedia.MultimediaData;
 import com.android.dialer.widget.LockableViewPager;
+import com.android.dialer.util.DialerUtils;
 import com.android.incallui.audioroute.AudioRouteSelectorDialogFragment;
 import com.android.incallui.audioroute.AudioRouteSelectorDialogFragment.AudioRouteSelectorPresenter;
 import com.android.incallui.contactgrid.ContactGridManager;
@@ -465,8 +467,9 @@ public class InCallFragment extends Fragment
     Activity activity = getActivity();
     Window window = activity.getWindow();
     window.setNavigationBarColor(
-        activity.getColor(
-            isShowing ? android.R.color.background_dark : android.R.color.transparent));
+        isShowing
+            ? DialerUtils.resolveColor(activity, R.attr.dialerColorCanvas)
+            : Color.TRANSPARENT);
   }
 
   @Override

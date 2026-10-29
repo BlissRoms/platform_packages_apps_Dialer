@@ -35,11 +35,8 @@
   </array>
 
   <!-- Text color used for character counter when the max limit has been exceeded -->
-  <color name="call_subject_limit_exceeded">#d1041c</color>
 
   <!-- Divider line on the call subject dialog. -->
-  <color name="call_subject_divider">#d8d8d8</color>
 
   <!-- Text color for the SEND & CALL button on the call subject dialog. -->
-  <color name="call_subject_button">#00c853</color>
 </resources>

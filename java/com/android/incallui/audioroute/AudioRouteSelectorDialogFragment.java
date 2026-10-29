@@ -41,7 +41,7 @@ import androidx.core.widget.TextViewCompat;
 import com.android.dialer.R;
 import com.android.dialer.common.FragmentUtils;
 import com.android.dialer.common.LogUtil;
-import com.android.dialer.theme.base.ThemeComponent;
+import com.android.dialer.util.DialerUtils;
 import com.android.incallui.call.TelecomAdapter;
 import com.android.incallui.util.BluetoothUtil;
 
@@ -184,7 +184,7 @@ public class AudioRouteSelectorDialogFragment extends BottomSheetDialogFragment 
 
   private void setColor(TextView item, boolean isSelected) {
     int color = isSelected
-            ? ThemeComponent.get(requireContext()).theme().getColorAccent()
+            ? DialerUtils.resolveColor(requireContext(), R.attr.dialerColorAccent)
             : requireContext().getColor(R.color.nav_item);
     item.setTextColor(color);
     TextViewCompat.setCompoundDrawableTintList(item, ColorStateList.valueOf(color));

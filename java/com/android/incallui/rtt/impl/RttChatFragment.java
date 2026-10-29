@@ -165,11 +165,14 @@ public class RttChatFragment extends Fragment
   public View onCreateView(
       LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.frag_rtt_chat, container, false);
-    view.setSystemUiVisibility(
+    int systemUiFlags =
         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+    if (getResources().getBoolean(R.bool.incall_light_system_bars)) {
+      systemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+    }
+    view.setSystemUiVisibility(systemUiFlags);
     editText = view.findViewById(R.id.rtt_chat_input);
     editText.setOnEditorActionListener(this);
     editText.addTextChangedListener(this);

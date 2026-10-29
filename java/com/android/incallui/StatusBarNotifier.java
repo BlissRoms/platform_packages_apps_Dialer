@@ -58,7 +58,7 @@ import android.text.TextDirectionHeuristics;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
-import androidx.annotation.ColorRes;
+import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
@@ -77,6 +77,7 @@ import com.android.dialer.lettertile.LetterTileDrawable.ContactType;
 import com.android.dialer.notification.NotificationChannelId;
 import com.android.dialer.theme.base.ThemeComponent;
 import com.android.dialer.util.DrawableConverter;
+import com.android.dialer.util.DialerUtils;
 import com.android.incallui.ContactInfoCache.ContactCacheEntry;
 import com.android.incallui.ContactInfoCache.ContactInfoCacheCallback;
 import com.android.incallui.InCallPresenter.InCallState;
@@ -760,13 +761,13 @@ public class StatusBarNotifier
     return call;
   }
 
-  private Spannable getActionText(@StringRes int stringRes, @ColorRes int colorRes) {
+  private Spannable getActionText(@StringRes int stringRes, @AttrRes int colorAttr) {
     Spannable spannable = new SpannableString(context.getText(stringRes));
     // This will only work for cases where the Notification.Builder has a fullscreen intent set
     // Notification.Builder that does not have a full screen intent will take the color of the
     // app and the following leads to a no-op.
     spannable.setSpan(
-        new ForegroundColorSpan(context.getColor(colorRes)), 0, spannable.length(), 0);
+        new ForegroundColorSpan(DialerUtils.resolveColor(context, colorAttr)), 0, spannable.length(), 0);
     return spannable;
   }
 
@@ -780,7 +781,7 @@ public class StatusBarNotifier
         new Notification.Action.Builder(
                 Icon.createWithResource(context, R.drawable.quantum_ic_call_vd_theme_24),
                 getActionText(
-                    R.string.notification_action_answer, R.color.notification_action_accept),
+                    R.string.notification_action_answer, R.attr.dialerColorSuccess),
                 answerVoicePendingIntent)
             .build());
   }
@@ -795,7 +796,7 @@ public class StatusBarNotifier
         new Notification.Action.Builder(
                 Icon.createWithResource(context, R.drawable.quantum_ic_close_vd_theme_24),
                 getActionText(
-                    R.string.notification_action_dismiss, R.color.notification_action_dismiss),
+                    R.string.notification_action_dismiss, R.attr.dialerColorDestructiveText),
                 declinePendingIntent)
             .build());
   }
@@ -866,7 +867,7 @@ public class StatusBarNotifier
                 Icon.createWithResource(context, R.drawable.quantum_ic_videocam_vd_white_24),
                 getActionText(
                     R.string.notification_action_answer_video,
-                    R.color.notification_action_answer_video),
+                    R.attr.dialerColorSuccess),
                 answerVideoPendingIntent)
             .build());
   }
@@ -881,7 +882,7 @@ public class StatusBarNotifier
         new Notification.Action.Builder(
                 Icon.createWithResource(context, R.drawable.quantum_ic_videocam_vd_white_24),
                 getActionText(
-                    R.string.notification_action_accept, R.color.notification_action_accept),
+                    R.string.notification_action_accept, R.attr.dialerColorSuccess),
                 acceptVideoPendingIntent)
             .build());
   }
@@ -896,7 +897,7 @@ public class StatusBarNotifier
         new Notification.Action.Builder(
                 Icon.createWithResource(context, R.drawable.quantum_ic_videocam_vd_white_24),
                 getActionText(
-                    R.string.notification_action_dismiss, R.color.notification_action_dismiss),
+                    R.string.notification_action_dismiss, R.attr.dialerColorDestructiveText),
                 declineVideoPendingIntent)
             .build());
   }

@@ -96,7 +96,7 @@
     <item name="android:gravity">end|center_vertical</item>
     <item name="android:paddingStart">@dimen/call_log_action_horizontal_padding</item>
     <item name="android:paddingEnd">@dimen/call_log_action_horizontal_padding</item>
-    <item name="android:textColor">?android:attr/colorPrimary</item>
+    <item name="android:textColor">?attr/dialerColorAccentText</item>
     <item name="android:fontFamily">@*android:string/config_headlineFontFamilyMedium</item>
     <item name="android:focusable">true</item>
     <item name="android:singleLine">true</item>

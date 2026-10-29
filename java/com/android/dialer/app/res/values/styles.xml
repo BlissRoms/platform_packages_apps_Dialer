@@ -100,7 +100,7 @@
     <item name="android:background">?android:attr/selectableItemBackground</item>
     <item name="android:paddingEnd">@dimen/button_horizontal_padding</item>
     <item name="android:paddingStart">@dimen/button_horizontal_padding</item>
-    <item name="android:textColor">?android:attr/colorPrimary</item>
+    <item name="android:textColor">?attr/dialerColorAccentText</item>
   </style>
 
   <!-- Style for the 'primary' button in a view. Unlike the DialerFlatButtonStyle, this button -->
@@ -109,7 +109,7 @@
     <item name="android:background">@drawable/selectable_primary_flat_button</item>
     <item name="android:paddingEnd">@dimen/button_horizontal_padding</item>
     <item name="android:paddingStart">@dimen/button_horizontal_padding</item>
-    <item name="android:textColor">@android:color/white</item>
+    <item name="android:textColor">?attr/dialerColorOnAccent</item>
   </style>
 
   <!-- Rounded-square corner treatment for the Recents dialpad FAB. -->

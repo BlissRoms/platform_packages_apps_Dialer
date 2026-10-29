@@ -23,7 +23,8 @@
        Note that this must inherit from Theme.AppCompat. We inherit from Theme.AppCompat.Light so
        that the colors of the disambiguation dialog match the colors when it is shown via the
        favorites tiles tab. -->
-  <style name="CallContactsTheme" parent="Theme.AppCompat.Light">
+  <style name="CallContactsTheme" parent="Theme.AppCompat.DayNight">
+    <item name="alertDialogTheme">@style/Dialer.AlertDialog</item>
     <item name="dialerColorCanvas">@color/dialer_brand_canvas</item>
     <item name="dialerColorSurface">@color/dialer_brand_surface</item>
     <item name="dialerColorSurfaceMuted">@color/dialer_brand_surface_muted</item>

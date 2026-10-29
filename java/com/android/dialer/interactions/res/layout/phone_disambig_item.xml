@@ -29,7 +29,7 @@
     android:textStyle="bold"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceMedium"/>
+    android:textAppearance="@style/TextAppearance.Dialer.Body.Title"/>
 
   <!-- Phone number should be displayed ltr -->
   <TextView
@@ -37,7 +37,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="-4dip"
-    android:textAppearance="?android:attr/textAppearanceSmall"
+    android:textAppearance="@style/TextAppearance.Dialer.Body.Description"
     android:textDirection="ltr"/>
 
 </view>

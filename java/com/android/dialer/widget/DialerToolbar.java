@@ -27,7 +27,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.widget.Toolbar;
 
 import com.android.dialer.R;
-import com.android.dialer.theme.base.ThemeComponent;
+import com.android.dialer.util.DialerUtils;
 
 /** Toolbar widget for Dialer. */
 public class DialerToolbar extends Toolbar {
@@ -42,7 +42,7 @@ public class DialerToolbar extends Toolbar {
     subtitle = (BidiTextView) findViewById(R.id.subtitle);
 
     setElevation(getResources().getDimensionPixelSize(R.dimen.toolbar_elevation));
-    setBackgroundColor(ThemeComponent.get(context).theme().getColorPrimary());
+    setBackgroundColor(DialerUtils.resolveColor(context, R.attr.dialerColorCanvas));
     setNavigationIcon(R.drawable.quantum_ic_close_vd_theme_24);
     setNavigationContentDescription(R.string.toolbar_close);
     setNavigationOnClickListener(v -> ((Activity) context).finish());

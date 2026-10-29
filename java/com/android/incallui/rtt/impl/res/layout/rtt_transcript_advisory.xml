@@ -28,7 +28,7 @@
       android:layout_gravity="center_horizontal"
       android:src="@drawable/quantum_ic_question_answer_vd_theme_24"
       android:tintMode="src_in"
-      app:tint="#DEFFFFFF" />
+      app:tint="?attr/dialerColorTextSecondary" />
   <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -38,6 +38,6 @@
       android:paddingEnd="64dp"
       android:gravity="center_horizontal"
       android:text="@string/rtt_transcript_advisory"
-      android:textColor="#FFFFFF"
-      android:textSize="12sp"/>
+      android:textAppearance="@style/TextAppearance.Dialer.Body.Description"
+      android:textColor="?attr/dialerColorTextSecondary"/>
 </LinearLayout>

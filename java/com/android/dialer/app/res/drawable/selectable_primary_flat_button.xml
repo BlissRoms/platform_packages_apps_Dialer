@@ -20,7 +20,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:state_enabled="false">
     <shape>
-      <solid android:color="@color/material_grey_300"/>
+      <solid android:color="?attr/dialerColorSurfaceMuted"/>
       <corners android:radius="28dp"/>
     </shape>
   </item>

@@ -29,6 +29,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.android.dialer.R;
 import com.android.dialer.common.Assert;
+import com.android.dialer.util.DialerUtils;
 
 /**
  * This is the view class for incall paginator visible when a user has EC data attached to their
@@ -64,8 +65,8 @@ public class InCallPaginator extends View implements ViewPager.OnPageChangeListe
     dotRadius = getResources().getDimensionPixelSize(R.dimen.paginator_dot_radius);
     dotsSeparation = getResources().getDimensionPixelSize(R.dimen.paginator_dots_separation);
 
-    int activeDotColor = context.getColor(R.color.paginator_dot);
-    int inactiveDotColor = context.getColor(R.color.paginator_path);
+    int activeDotColor = DialerUtils.resolveColor(context, R.attr.dialerColorAccent);
+    int inactiveDotColor = DialerUtils.resolveColor(context, R.attr.dialerColorOutline);
     activeDotPaintPortrait = new Paint(Paint.ANTI_ALIAS_FLAG);
     activeDotPaintPortrait.setColor(activeDotColor);
     inactiveDotPaintPortrait = new Paint(Paint.ANTI_ALIAS_FLAG);

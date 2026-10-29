@@ -19,7 +19,6 @@ package com.android.dialer.voicemail.settings;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -27,10 +26,13 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorInt;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 
 import com.android.dialer.R;
+import com.android.dialer.util.DialerUtils;
 import com.android.dialer.voicemail.settings.RecordVoicemailGreetingActivity.ButtonState;
 
 /** Custom Button View for Dialer voicemail greeting recording */
@@ -100,33 +102,35 @@ public class RecordButton extends AppCompatButton {
     recordedDrawable = ContextCompat.getDrawable(getContext(), R.drawable.start_playback_drawable);
     playingDrawable = ContextCompat.getDrawable(getContext(), R.drawable.stop_playback_drawable);
 
-    fixQuantumIconTint(Color.WHITE);
+    fixQuantumIconTint(
+        DialerUtils.resolveColor(getContext(), R.attr.dialerColorOnAccent),
+        DialerUtils.resolveColor(getContext(), R.attr.dialerColorOnSuccess));
 
-    mainTrackPaint = getBasePaint(R.color.dialer_call_green);
-    secondaryTrackPaint = getBasePaint(R.color.dialer_call_green);
+    mainTrackPaint = getBasePaint(R.attr.dialerColorSuccess);
+    secondaryTrackPaint = getBasePaint(R.attr.dialerColorSuccess);
     secondaryTrackPaint.setAlpha(secondaryTrackAlpha);
 
     setState(RecordVoicemailGreetingActivity.RECORD_GREETING_INIT);
   }
 
-  private void fixQuantumIconTint(int color) {
+  private void fixQuantumIconTint(@ColorInt int playColor, @ColorInt int recordColor) {
     Drawable playArrow = ((LayerDrawable) recordedDrawable).findDrawableByLayerId(R.id.play_icon);
-    playArrow.mutate().setTint(color);
+    playArrow.mutate().setTint(playColor);
     ((LayerDrawable) recordedDrawable).setDrawableByLayerId(R.id.play_icon, playArrow);
 
     Drawable micIcon = ((LayerDrawable) readyDrawable).findDrawableByLayerId(R.id.record_icon);
-    micIcon.mutate().setTint(color);
+    micIcon.mutate().setTint(recordColor);
     ((LayerDrawable) readyDrawable).setDrawableByLayerId(R.id.record_icon, micIcon);
   }
 
   /** Returns Paint with base attributes for drawing the main and secondary tracks */
-  private Paint getBasePaint(int id) {
+  private Paint getBasePaint(@AttrRes int colorAttr) {
     Paint paint = new Paint();
     paint.setAntiAlias(true);
     paint.setStrokeWidth(trackWidth);
     paint.setStrokeCap(Paint.Cap.ROUND);
     paint.setStyle(Paint.Style.STROKE);
-    paint.setColor(ContextCompat.getColor(getContext(), id));
+    paint.setColor(DialerUtils.resolveColor(getContext(), colorAttr));
     return paint;
   }
 
@@ -144,24 +148,24 @@ public class RecordButton extends AppCompatButton {
   public void setState(@ButtonState int state) {
     switch (state) {
       case RecordVoicemailGreetingActivity.RECORD_GREETING_INIT:
-        mainTrackPaint = getBasePaint(R.color.dialer_call_green);
-        secondaryTrackPaint = getBasePaint(R.color.dialer_call_green);
+        mainTrackPaint = getBasePaint(R.attr.dialerColorSuccess);
+        secondaryTrackPaint = getBasePaint(R.attr.dialerColorSuccess);
         secondaryTrackPaint.setAlpha(secondaryTrackAlpha);
         currentCenterDrawable = readyDrawable;
         break;
       case RecordVoicemailGreetingActivity.RECORD_GREETING_PLAYING_BACK:
-        mainTrackPaint = getBasePaint(R.color.google_blue_500);
-        secondaryTrackPaint = getBasePaint(R.color.google_blue_50);
+        mainTrackPaint = getBasePaint(R.attr.dialerColorAccent);
+        secondaryTrackPaint = getBasePaint(R.attr.dialerColorSurfaceMuted);
         currentCenterDrawable = playingDrawable;
         break;
       case RecordVoicemailGreetingActivity.RECORD_GREETING_RECORDED:
-        mainTrackPaint = getBasePaint(R.color.google_blue_500);
-        secondaryTrackPaint = getBasePaint(R.color.google_blue_50);
+        mainTrackPaint = getBasePaint(R.attr.dialerColorAccent);
+        secondaryTrackPaint = getBasePaint(R.attr.dialerColorSurfaceMuted);
         currentCenterDrawable = recordedDrawable;
         break;
       case RecordVoicemailGreetingActivity.RECORD_GREETING_RECORDING:
-        mainTrackPaint = getBasePaint(R.color.dialer_red);
-        secondaryTrackPaint = getBasePaint(R.color.dialer_red);
+        mainTrackPaint = getBasePaint(R.attr.dialerColorDestructive);
+        secondaryTrackPaint = getBasePaint(R.attr.dialerColorDestructive);
         secondaryTrackPaint.setAlpha(secondaryTrackAlpha);
         currentCenterDrawable = recordingDrawable;
         break;

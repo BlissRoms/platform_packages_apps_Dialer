@@ -15,22 +15,18 @@
   ~ limitations under the License
   -->
 <resources>
-  <style name="RttTranscriptBubble">
-    <item name="android:fontFamily">@*android:string/config_bodyFontFamily</item>
-    <item name="android:textColor">#DD000000</item>
-    <item name="android:textSize">16sp</item>
-  </style>
+  <style name="RttTranscriptBubble" parent="TextAppearance.Dialer.Body.Navigation" />
 
   <style name="RttTranscriptBubble.Remote">
-    <item name="android:textColor">#FFFFFF</item>
+    <item name="android:textColor">?attr/dialerColorOnAccent</item>
   </style>
 
   <style name="RttTranscriptBubble.Local">
-    <item name="android:textColor">#DD000000</item>
+    <item name="android:textColor">?attr/dialerColorTextPrimary</item>
   </style>
 
   <style name="RttTranscriptBubble.Timestamp">
-    <item name="android:textColor">#757575</item>
+    <item name="android:textColor">?attr/dialerColorTextSecondary</item>
     <item name="android:textSize">12sp</item>
   </style>
 </resources>

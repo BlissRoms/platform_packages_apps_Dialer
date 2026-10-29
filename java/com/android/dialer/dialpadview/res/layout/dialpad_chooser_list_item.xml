@@ -32,6 +32,6 @@
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:layout_gravity="center_vertical"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:textColor="?android:attr/colorPrimary"/>
+    android:textAppearance="@style/TextAppearance.Dialer.Body.Title"
+    android:textColor="?attr/dialerColorAccentText"/>
 </LinearLayout>
