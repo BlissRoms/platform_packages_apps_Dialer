@@ -23,33 +23,93 @@
   android:orientation="vertical">
 
   <LinearLayout
-      android:id="@+id/multi_select_select_all_view_content"
+      android:id="@+id/call_log_selection_header"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/tab_height"
-      android:layout_gravity="start"
-      android:background="?attr/dialerColorAccent"
-      android:orientation="horizontal"
+      android:layout_height="wrap_content"
+      android:paddingStart="@dimen/call_log_horizontal_margin"
+      android:paddingEnd="@dimen/call_log_horizontal_margin"
+      android:paddingTop="@dimen/dialer_space_page_inset"
+      android:paddingBottom="@dimen/dialer_space_control_gap"
+      android:orientation="vertical"
       android:visibility="gone">
 
-    <ImageView
-        android:id="@+id/select_all_view_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/select_all_icon_padding"
-        android:paddingRight="@dimen/select_all_icon_padding"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:contentDescription="@string/select_all"
-        android:src="@drawable/ic_empty_check_mark_white_24dp"/>
-    <TextView
-        android:id="@+id/select_all_view_text"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:paddingStart="@dimen/select_all_text_left_padding"
-        android:gravity="center_vertical"
-        android:text="@string/select_all"
-        android:textAllCaps="true"
-        android:textColor="?attr/dialerColorOnAccent"
-        android:textSize="@dimen/select_all_text_size"/>
+        android:orientation="horizontal">
+
+      <ImageButton
+          android:id="@+id/selection_close"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:background="@drawable/settings_back_circle"
+          android:foreground="?android:attr/selectableItemBackgroundBorderless"
+          android:src="@drawable/quantum_ic_close_vd_theme_24"
+          android:tint="?attr/dialerColorTextPrimary"
+          android:scaleType="centerInside"
+          android:contentDescription="@string/call_log_selection_close" />
+
+      <TextView
+          android:id="@+id/selection_title"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginStart="17dp"
+          android:layout_marginEnd="17dp"
+          android:accessibilityLiveRegion="polite"
+          android:maxLines="1"
+          android:ellipsize="end"
+          android:textAppearance="@style/TextAppearance.Dialer.Heading.Page" />
+
+      <ImageButton
+          android:id="@+id/selection_delete"
+          android:layout_width="48dp"
+          android:layout_height="48dp"
+          android:background="@drawable/settings_back_circle"
+          android:foreground="?android:attr/selectableItemBackgroundBorderless"
+          android:src="@drawable/quantum_ic_delete_vd_theme_24"
+          android:tint="?attr/dialerColorDestructiveText"
+          android:scaleType="centerInside"
+          android:contentDescription="@string/delete" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialer_space_section_gap"
+        android:background="@drawable/dialer_card_clip_single"
+        android:clipToOutline="true">
+
+      <LinearLayout
+          android:id="@+id/select_all_row"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="56dp"
+          android:paddingStart="@dimen/call_log_start_margin"
+          android:paddingEnd="@dimen/call_log_outer_margin"
+          android:background="@drawable/recents_row_surface"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/select_all_check"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@null"
+            android:button="@drawable/call_log_select_all_check"
+            android:clickable="false"
+            android:focusable="false"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dialer_space_page_inset"
+            android:text="@string/select_all"
+            android:textAppearance="@style/TextAppearance.Dialer.Body.Title" />
+      </LinearLayout>
+    </FrameLayout>
   </LinearLayout>
 
   <FrameLayout

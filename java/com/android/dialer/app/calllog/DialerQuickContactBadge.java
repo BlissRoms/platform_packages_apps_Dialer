@@ -22,13 +22,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.QuickContactBadge;
 
-import com.android.dialer.app.calllog.CallLogAdapter.OnActionModeStateChangedListener;
+import java.util.function.BooleanSupplier;
 
 /** Allows us to click the contact badge for non multi select mode. */
 class DialerQuickContactBadge extends QuickContactBadge {
 
   private View.OnClickListener extraOnClickListener;
-  private OnActionModeStateChangedListener onActionModeStateChangeListener;
+  private BooleanSupplier isSelectionMode;
 
   public DialerQuickContactBadge(Context context) {
     super(context);
@@ -44,8 +44,7 @@ class DialerQuickContactBadge extends QuickContactBadge {
 
   @Override
   public void onClick(View v) {
-    if (extraOnClickListener != null
-        && onActionModeStateChangeListener.isActionModeStateEnabled()) {
+    if (extraOnClickListener != null && isSelectionMode.getAsBoolean()) {
       extraOnClickListener.onClick(v);
     } else {
       super.onClick(v);
@@ -54,8 +53,8 @@ class DialerQuickContactBadge extends QuickContactBadge {
 
   public void setMulitSelectListeners(
       View.OnClickListener extraOnClickListener,
-      OnActionModeStateChangedListener actionModeStateChangeListener) {
+      BooleanSupplier isSelectionMode) {
     this.extraOnClickListener = extraOnClickListener;
-    onActionModeStateChangeListener = actionModeStateChangeListener;
+    this.isSelectionMode = isSelectionMode;
   }
 }

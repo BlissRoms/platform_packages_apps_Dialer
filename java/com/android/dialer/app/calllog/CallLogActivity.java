@@ -192,6 +192,12 @@ public class CallLogActivity extends TransactionSafeActivity implements
 
   @Override
   public void onPageSelected(int position) {
+    for (CallLogFragment fragment :
+        new CallLogFragment[] {allCallsFragment, missedCallsFragment, voicemailFragment}) {
+      if (fragment != null) {
+        fragment.finishSelection();
+      }
+    }
     updateMissedCalls(position);
     selectedPageIndex = position;
     updateTabChips(getRtlPosition(position));

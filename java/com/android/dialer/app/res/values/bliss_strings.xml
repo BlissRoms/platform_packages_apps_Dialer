@@ -83,4 +83,9 @@
     <string name="contact_profile_action_failed">Couldn\'t update this contact</string>
     <string name="on_device_voicemail_location_uri_key" translatable="false">on_device_voicemail_location_uri</string>
     <string name="on_device_voicemail_location_picker_failed">Couldn\'t open the folder picker</string>
+    <string name="call_log_selection_close">Cancel selection</string>
+    <plurals name="call_log_delete_selected_title">
+        <item quantity="one">Delete this call history entry?</item>
+        <item quantity="other">Delete these <xliff:g id="count" example="3">%d</xliff:g> call history entries?</item>
+    </plurals>
 </resources>

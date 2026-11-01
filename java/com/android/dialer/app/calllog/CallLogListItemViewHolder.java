@@ -57,7 +57,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.contacts.common.dialog.CallSubjectDialog;
 import com.android.dialer.theme.base.CardPosition;
 import com.android.dialer.R;
-import com.android.dialer.app.calllog.CallLogAdapter.OnActionModeStateChangedListener;
 import com.android.dialer.app.calllog.calllogcache.CallLogCache;
 import com.android.dialer.app.voicemail.VoicemailPlaybackLayout;
 import com.android.dialer.app.voicemail.VoicemailPlaybackPresenter;
@@ -83,6 +82,7 @@ import com.android.dialer.util.DialerUtils;
 import com.android.dialer.util.UriUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.function.BooleanSupplier;
 
 /**
  * This is an object containing references to views contained by the call log list item. This
@@ -210,8 +210,8 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
   public boolean isSpam;
 
   private final View.OnClickListener expandCollapseListener;
-  private final OnActionModeStateChangedListener onActionModeStateChangedListener;
   private final View.OnLongClickListener longPressListener;
+  private final BooleanSupplier isSelectionMode;
   private boolean voicemailPrimaryActionButtonClicked;
 
   public int callbackAction;
@@ -227,7 +227,7 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
       OnClickListener blockReportListener,
       View.OnClickListener expandCollapseListener,
       View.OnLongClickListener longClickListener,
-      CallLogAdapter.OnActionModeStateChangedListener actionModeStateChangedListener,
+      BooleanSupplier isSelectionMode,
       CallLogCache callLogCache,
       CallLogListItemHelper callLogListItemHelper,
       VoicemailPlaybackPresenter voicemailPlaybackPresenter,
@@ -242,8 +242,8 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
 
     this.context = context;
     this.expandCollapseListener = expandCollapseListener;
-    onActionModeStateChangedListener = actionModeStateChangedListener;
     longPressListener = longClickListener;
+    this.isSelectionMode = isSelectionMode;
     this.callLogCache = callLogCache;
     this.callLogListItemHelper = callLogListItemHelper;
     this.voicemailPlaybackPresenter = voicemailPlaybackPresenter;
@@ -277,7 +277,7 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
       primaryActionView.setOnLongClickListener(longPressListener);
       quickContactView.setOnLongClickListener(longPressListener);
       quickContactView.setMulitSelectListeners(
-          this.expandCollapseListener, onActionModeStateChangedListener);
+          this.expandCollapseListener, isSelectionMode);
     } else {
       primaryActionView.setOnCreateContextMenuListener(this);
     }
@@ -289,7 +289,7 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
       OnClickListener blockReportListener,
       View.OnClickListener expandCollapseListener,
       View.OnLongClickListener longClickListener,
-      CallLogAdapter.OnActionModeStateChangedListener actionModeStateChangeListener,
+      BooleanSupplier isSelectionMode,
       CallLogCache callLogCache,
       CallLogListItemHelper callLogListItemHelper,
       VoicemailPlaybackPresenter voicemailPlaybackPresenter) {
@@ -299,7 +299,7 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
         blockReportListener,
         expandCollapseListener,
         longClickListener,
-        actionModeStateChangeListener,
+        isSelectionMode,
         callLogCache,
         callLogListItemHelper,
         voicemailPlaybackPresenter,
@@ -335,8 +335,7 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
       blockReportListener.onReportNotSpam(
           displayNumber, number, countryIso, callType, info.sourceType);
     } else if (resId == R.id.context_menu_delete) {
-      AsyncTaskExecutors.createAsyncTaskExecutor()
-          .submit(TASK_DELETE, new DeleteCallTask(context, callIds));
+      deleteCalls(context, callIds);
     }
     return false;
   }
@@ -797,6 +796,11 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
 
   @Override
   public void onClick(View view) {
+    if (view.getId() == R.id.primary_action_button && isSelectionMode.getAsBoolean()) {
+      expandCollapseListener.onClick(primaryActionView);
+      return;
+    }
+
     if (view.getId() == R.id.primary_action_button) {
       CallLogAsyncTaskUtil.markCallAsRead(context, callIds);
     }
@@ -1041,6 +1045,11 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
         String countryIso,
         int callType,
         ContactSource.Type contactSourceType);
+  }
+
+  static void deleteCalls(Context context, long[] callIds) {
+    AsyncTaskExecutors.createAsyncTaskExecutor()
+        .submit(TASK_DELETE, new DeleteCallTask(context, callIds));
   }
 
   private static class DeleteCallTask implements Runnable {

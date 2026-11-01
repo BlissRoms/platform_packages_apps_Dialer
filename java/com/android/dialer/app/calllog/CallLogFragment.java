@@ -42,19 +42,19 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.CheckBox;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -104,15 +104,14 @@ public class CallLogFragment extends Fragment
         CallFetcher,
         MultiSelectRemoveView,
         OnEmptyViewActionButtonClickedListener,
-        CallLogModalAlertManager.Listener,
-        OnClickListener {
+        CallLogModalAlertManager.Listener {
   private static final String KEY_FILTER_TYPE = "filter_type";
+  private static final float DISABLED_ALPHA = 0.38f;
   private static final String KEY_LOG_LIMIT = "log_limit";
   private static final String KEY_DATE_LIMIT = "date_limit";
   private static final String KEY_IS_CALL_LOG_ACTIVITY = "is_call_log_activity";
   private static final String KEY_HAS_READ_CALL_LOG_PERMISSION = "has_read_call_log_permission";
   private static final String KEY_REFRESH_DATA_REQUIRED = "refresh_data_required";
-  private static final String KEY_SELECT_ALL_MODE = "select_all_mode_checked";
 
   // No limit specified for the number of logs to show; use the CallLogQueryHandler's default.
   private static final int NO_LOG_LIMIT = -1;
@@ -126,9 +125,18 @@ public class CallLogFragment extends Fragment
   // See issue 6363009
   private final ContentObserver callLogObserver = new CustomContentObserver();
   private final ContentObserver contactsObserver = new CustomContentObserver();
-  private View multiSelectUnSelectAllViewContent;
-  private TextView selectUnselectAllViewText;
-  private ImageView selectUnselectAllIcon;
+  private View selectionHeader;
+  private TextView selectionTitle;
+  private View selectionDelete;
+  private View selectAllRow;
+  private CheckBox selectAllCheck;
+  private final OnBackPressedCallback selectionBackCallback =
+      new OnBackPressedCallback(false) {
+        @Override
+        public void handleOnBackPressed() {
+          adapter.finishSelection();
+        }
+      };
   private RecyclerView recyclerView;
   private LinearLayoutManager layoutManager;
   private CallLogAdapter adapter;
@@ -164,7 +172,6 @@ public class CallLogFragment extends Fragment
    * True if this instance of the CallLogFragment shown in the CallLogActivity.
    */
   private boolean isCallLogActivity = false;
-  private boolean selectAllMode;
   private final Handler displayUpdateHandler =
       new Handler(Looper.getMainLooper()) {
         @Override
@@ -271,7 +278,6 @@ public class CallLogFragment extends Fragment
       isCallLogActivity = state.getBoolean(KEY_IS_CALL_LOG_ACTIVITY, isCallLogActivity);
       hasReadCallLogPermission = state.getBoolean(KEY_HAS_READ_CALL_LOG_PERMISSION, false);
       refreshDataRequired = state.getBoolean(KEY_REFRESH_DATA_REQUIRED, refreshDataRequired);
-      selectAllMode = state.getBoolean(KEY_SELECT_ALL_MODE, false);
     }
 
     final Activity activity = requireActivity();
@@ -375,7 +381,7 @@ public class CallLogFragment extends Fragment
 
         @Override
         public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            return viewHolder instanceof CallLogListItemViewHolder
+            return viewHolder instanceof CallLogListItemViewHolder && !adapter.isSelectionMode()
                     ? super.getSwipeDirs(recyclerView, viewHolder)
                     : 0;
         }
@@ -433,13 +439,7 @@ public class CallLogFragment extends Fragment
     modalAlertView = (ViewGroup) view.findViewById(R.id.modal_message_container);
     modalAlertManager =
         new CallLogModalAlertManager(LayoutInflater.from(getContext()), modalAlertView, this);
-    multiSelectUnSelectAllViewContent =
-        view.findViewById(R.id.multi_select_select_all_view_content);
-    selectUnselectAllViewText = (TextView) view.findViewById(R.id.select_all_view_text);
-    selectUnselectAllIcon = (ImageView) view.findViewById(R.id.select_all_view_icon);
-    multiSelectUnSelectAllViewContent.setOnClickListener(null);
-    selectUnselectAllIcon.setOnClickListener(this);
-    selectUnselectAllViewText.setOnClickListener(this);
+    setUpSelectionHeader(view);
 
     chipFilterScroll = view.findViewById(R.id.chip_filter_scroll);
     if (showFilterChips()) {
@@ -576,14 +576,6 @@ public class CallLogFragment extends Fragment
     return voicemailPlaybackPresenter;
   }
 
-  private void updateSelectAllState(Bundle savedInstanceState) {
-    if (savedInstanceState != null) {
-      if (savedInstanceState.getBoolean(KEY_SELECT_ALL_MODE, false)) {
-        updateSelectAllIcon();
-      }
-    }
-  }
-
   @Override
   public void onAttach(@NonNull Context context) {
     LogUtil.enterBlock("CallLogFragment.onAttach");
@@ -594,9 +586,11 @@ public class CallLogFragment extends Fragment
   public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
     LogUtil.enterBlock("CallLogFragment.onViewCreated");
     super.onViewCreated(view, savedInstanceState);
+    requireActivity()
+        .getOnBackPressedDispatcher()
+        .addCallback(getViewLifecycleOwner(), selectionBackCallback);
     updateEmptyMessage(callTypeFilter);
     setupData();
-    updateSelectAllState(savedInstanceState);
     adapter.onRestoreInstanceState(savedInstanceState);
   }
 
@@ -693,7 +687,6 @@ public class CallLogFragment extends Fragment
     outState.putBoolean(KEY_IS_CALL_LOG_ACTIVITY, isCallLogActivity);
     outState.putBoolean(KEY_HAS_READ_CALL_LOG_PERMISSION, hasReadCallLogPermission);
     outState.putBoolean(KEY_REFRESH_DATA_REQUIRED, refreshDataRequired);
-    outState.putBoolean(KEY_SELECT_ALL_MODE, selectAllMode);
     if (adapter != null) {
       adapter.onSaveInstanceState(outState);
     }
@@ -960,56 +953,54 @@ public class CallLogFragment extends Fragment
     }
   }
 
+  private void setUpSelectionHeader(View view) {
+    selectionHeader = view.findViewById(R.id.call_log_selection_header);
+    selectionTitle = view.findViewById(R.id.selection_title);
+    selectionDelete = view.findViewById(R.id.selection_delete);
+    selectAllRow = view.findViewById(R.id.select_all_row);
+    selectAllCheck = view.findViewById(R.id.select_all_check);
+    view.findViewById(R.id.selection_close).setOnClickListener(v -> adapter.finishSelection());
+    selectionDelete.setOnClickListener(v -> adapter.deleteSelection());
+    selectAllRow.setOnClickListener(v -> adapter.setAllSelected(!selectAllCheck.isChecked()));
+    selectAllRow.setAccessibilityDelegate(
+        new View.AccessibilityDelegate() {
+          @Override
+          public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
+            super.onInitializeAccessibilityNodeInfo(host, info);
+            info.setClassName(CheckBox.class.getName());
+            info.setCheckable(true);
+            info.setChecked(selectAllCheck.isChecked());
+          }
+        });
+  }
+
+  public void finishSelection() {
+    if (adapter != null) {
+      adapter.finishSelection();
+    }
+  }
+
   @Override
-  public void showMultiSelectRemoveView(boolean show) {
-    multiSelectUnSelectAllViewContent.setVisibility(show ? View.VISIBLE : View.GONE);
-    multiSelectUnSelectAllViewContent.setAlpha(show ? 0 : 1);
-    multiSelectUnSelectAllViewContent.animate().alpha(show ? 1 : 0).start();
+  public void showSelectionHeader(boolean show) {
+    selectionBackCallback.setEnabled(show);
+    selectionHeader.setVisibility(show ? View.VISIBLE : View.GONE);
     if (show) {
-      FragmentUtils.getParentUnsafe(this, CallLogFragmentListener.class)
-          .showMultiSelectRemoveView(true);
-    } else {
-      // This method is called after onDestroy. In DialtactsActivity, ListsFragment implements this
-      // interface and never goes away with configuration changes so this is safe. MainActivity
-      // removes that extra layer though, so we need to check if the parent is still there.
-      CallLogFragmentListener listener =
-          FragmentUtils.getParent(this, CallLogFragmentListener.class);
-      if (listener != null) {
-        listener.showMultiSelectRemoveView(false);
-      }
+      selectionHeader.setAlpha(0);
+      selectionHeader.animate().alpha(1).start();
+    }
+    CallLogFragmentListener listener = FragmentUtils.getParent(this, CallLogFragmentListener.class);
+    if (listener != null) {
+      listener.showMultiSelectRemoveView(show);
     }
   }
 
   @Override
-  public void setSelectAllModeToFalse() {
-    selectAllMode = false;
-    selectUnselectAllIcon.setImageDrawable(AppCompatResources.getDrawable(requireContext(),
-                    R.drawable.ic_empty_check_mark_white_24dp));
-  }
-
-  @Override
-  public void tapSelectAll() {
-    LogUtil.i("CallLogFragment.tapSelectAll", "imitating select all");
-    selectAllMode = true;
-    updateSelectAllIcon();
-  }
-
-  @Override
-  public void onClick(View v) {
-    selectAllMode = !selectAllMode;
-    updateSelectAllIcon();
-  }
-
-  private void updateSelectAllIcon() {
-    if (selectAllMode) {
-      selectUnselectAllIcon.setImageDrawable(AppCompatResources.getDrawable(requireContext(),
-                      R.drawable.ic_check_mark_blue_24dp));
-      getAdapter().onAllSelected();
-    } else {
-      selectUnselectAllIcon.setImageDrawable(AppCompatResources.getDrawable(requireContext(),
-              R.drawable.ic_empty_check_mark_white_24dp));
-      getAdapter().onAllDeselected();
-    }
+  public void onSelectionChanged(int selectedCount, boolean isAllSelected) {
+    selectionTitle.setText(
+        getString(R.string.voicemailMultiSelectActionBarTitle, Integer.toString(selectedCount)));
+    selectionDelete.setEnabled(selectedCount > 0);
+    selectionDelete.setAlpha(selectedCount > 0 ? 1f : DISABLED_ALPHA);
+    selectAllCheck.setChecked(isAllSelected);
   }
 
   public interface HostInterface {
